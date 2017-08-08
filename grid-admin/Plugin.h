@@ -56,6 +56,7 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
     libconfig::Config         itsConfig;
     std::string               itsRedisAddress;
     int                       itsRedisPort;
+    std::string               itsRedisTablePrefix;
 
 
 

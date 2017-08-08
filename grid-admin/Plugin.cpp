@@ -51,8 +51,12 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
     if (!itsConfig.exists("redis.port"))
       throw SmartMet::Spine::Exception(BCP, "The 'redis.port' attribute not specified in the config file");
 
+    if (!itsConfig.exists("redis.tablePrefix"))
+      throw SmartMet::Spine::Exception(BCP, "The 'redis.tablePrefix' attribute not specified in the config file");
+
     itsConfig.lookupValue("redis.address", itsRedisAddress);
     itsConfig.lookupValue("redis.port", itsRedisPort);
+    itsConfig.lookupValue("redis.tablePrefix", itsRedisTablePrefix);
   }
   catch (...)
   {
@@ -80,7 +84,7 @@ void Plugin::init()
 {
   try
   {
-    itsRedis.init(itsRedisAddress.c_str(),itsRedisPort);
+    itsRedis.init(itsRedisAddress.c_str(),itsRedisPort,itsRedisTablePrefix.c_str());
     itsMessageProcessor.init(&itsRedis);
 
     auto engine = itsReactor->getSingleton("grid", NULL);
