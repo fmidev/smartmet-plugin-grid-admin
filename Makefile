@@ -109,7 +109,7 @@ INCLUDES := -Iinclude $(INCLUDES)
 
 # The rules
 
-all: configtest objdir $(LIBFILE)
+all: objdir $(LIBFILE)
 debug: all
 release: all
 profile: all
