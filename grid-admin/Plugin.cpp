@@ -43,7 +43,19 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
             this, "/grid-admin", boost::bind(&Plugin::callRequestHandler, this, _1, _2, _3)))
       throw SmartMet::Spine::Exception(BCP, "Failed to register GridContent request handler");
 
-    itsConfig.readFile(theConfig);
+    try
+    {
+      itsConfig.readFile(theConfig);
+    }
+    catch (libconfig::ParseException& e)
+    {
+      SmartMet::Spine::Exception exception(BCP, "Configuration file parsing error!");
+      exception.addParameter("What",e.what());
+      exception.addParameter("Error",e.getError());
+      exception.addParameter("File",theConfig);
+      exception.addParameter("Line",std::to_string(e.getLine()));
+      throw exception;
+    }
 
     if (!itsConfig.exists("redis.address"))
       throw SmartMet::Spine::Exception(BCP, "The 'redis.address' attribute not specified in the config file");
