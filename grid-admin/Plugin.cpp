@@ -31,6 +31,14 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
 {
   try
   {
+    const char *configAttribute[] =
+    {
+        "redis.address",
+        "redis.port",
+        "redis.tablePrefix",
+        NULL
+    };
+
     itsReactor = theReactor;
     itsRedisAddress = "127.0.0.1";
     itsRedisPort = 6379;
@@ -39,36 +47,26 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
       throw SmartMet::Spine::Exception(BCP, "GridContent plugin and Server API version mismatch");
 
     // Register the handler
-    if (!theReactor->addContentHandler(
-            this, "/grid-admin", boost::bind(&Plugin::callRequestHandler, this, _1, _2, _3)))
+    if (!theReactor->addContentHandler(this, "/grid-admin", boost::bind(&Plugin::callRequestHandler, this, _1, _2, _3)))
       throw SmartMet::Spine::Exception(BCP, "Failed to register GridContent request handler");
 
-    try
+    itsConfigurationFile.readFile(theConfig);
+
+    uint t=0;
+    while (configAttribute[t] != NULL)
     {
-      itsConfig.readFile(theConfig);
-    }
-    catch (libconfig::ParseException& e)
-    {
-      SmartMet::Spine::Exception exception(BCP, "Configuration file parsing error!");
-      exception.addParameter("What",e.what());
-      exception.addParameter("Error",e.getError());
-      exception.addParameter("File",theConfig);
-      exception.addParameter("Line",std::to_string(e.getLine()));
-      throw exception;
+      if (!itsConfigurationFile.findAttribute(configAttribute[t]))
+      {
+        SmartMet::Spine::Exception exception(BCP, "Missing configuration attribute!");
+        exception.addParameter("File",theConfig);
+        exception.addParameter("Attribute",configAttribute[t]);
+      }
+      t++;
     }
 
-    if (!itsConfig.exists("redis.address"))
-      throw SmartMet::Spine::Exception(BCP, "The 'redis.address' attribute not specified in the config file");
-
-    if (!itsConfig.exists("redis.port"))
-      throw SmartMet::Spine::Exception(BCP, "The 'redis.port' attribute not specified in the config file");
-
-    if (!itsConfig.exists("redis.tablePrefix"))
-      throw SmartMet::Spine::Exception(BCP, "The 'redis.tablePrefix' attribute not specified in the config file");
-
-    itsConfig.lookupValue("redis.address", itsRedisAddress);
-    itsConfig.lookupValue("redis.port", itsRedisPort);
-    itsConfig.lookupValue("redis.tablePrefix", itsRedisTablePrefix);
+    itsConfigurationFile.getAttributeValue("redis.address", itsRedisAddress);
+    itsConfigurationFile.getAttributeValue("redis.port", itsRedisPort);
+    itsConfigurationFile.getAttributeValue("redis.tablePrefix", itsRedisTablePrefix);
   }
   catch (...)
   {

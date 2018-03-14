@@ -8,9 +8,9 @@
 #include <spine/SmartMetPlugin.h>
 #include <spine/Reactor.h>
 #include <spine/HTTP.h>
-#include <libconfig.h++>
-#include "grid-content/contentServer/http/server/ServerInterface.h"
-#include "grid-content/contentServer/redis/RedisImplementation.h"
+#include <grid-content/contentServer/http/server/ServerInterface.h>
+#include <grid-content/contentServer/redis/RedisImplementation.h>
+#include <grid-files/common/ConfigurationFile.h>
 
 
 namespace SmartMet
@@ -53,7 +53,7 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
 
     const std::string         itsModuleName;
     SmartMet::Spine::Reactor* itsReactor;
-    libconfig::Config         itsConfig;
+    ConfigurationFile         itsConfigurationFile;
     std::string               itsRedisAddress;
     int                       itsRedisPort;
     std::string               itsRedisTablePrefix;
