@@ -33,9 +33,9 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
   {
     const char *configAttribute[] =
     {
-        "redis.address",
-        "redis.port",
-        "redis.tablePrefix",
+        "smartmet.plugin.grid-admin.redis.address",
+        "smartmet.plugin.grid-admin.redis.port",
+        "smartmet.plugin.grid-admin.redis.tablePrefix",
         NULL
     };
 
@@ -64,9 +64,9 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
       t++;
     }
 
-    itsConfigurationFile.getAttributeValue("redis.address", itsRedisAddress);
-    itsConfigurationFile.getAttributeValue("redis.port", itsRedisPort);
-    itsConfigurationFile.getAttributeValue("redis.tablePrefix", itsRedisTablePrefix);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.redis.address", itsRedisAddress);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.redis.port", itsRedisPort);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.redis.tablePrefix", itsRedisTablePrefix);
   }
   catch (...)
   {
