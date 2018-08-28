@@ -36,7 +36,7 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
         "smartmet.plugin.grid-admin.redis.address",
         "smartmet.plugin.grid-admin.redis.port",
         "smartmet.plugin.grid-admin.redis.tablePrefix",
-        NULL
+        nullptr
     };
 
     itsReactor = theReactor;
@@ -53,7 +53,7 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
     itsConfigurationFile.readFile(theConfig);
 
     uint t=0;
-    while (configAttribute[t] != NULL)
+    while (configAttribute[t] != nullptr)
     {
       if (!itsConfigurationFile.findAttribute(configAttribute[t]))
       {
@@ -70,7 +70,7 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", NULL);
+    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -97,13 +97,13 @@ void Plugin::init()
     itsRedis.init(itsRedisAddress.c_str(),itsRedisPort,itsRedisTablePrefix.c_str());
     itsMessageProcessor.init(&itsRedis);
 
-    auto engine = itsReactor->getSingleton("grid", NULL);
+    auto engine = itsReactor->getSingleton("grid", nullptr);
     if (!engine)
       throw Spine::Exception(BCP, "The 'grid-engine' unavailable!");
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", NULL);
+    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -121,7 +121,7 @@ void Plugin::shutdown()
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", NULL);
+    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -201,7 +201,7 @@ bool Plugin::request(SmartMet::Spine::Reactor &theReactor,
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", NULL);
+    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -255,7 +255,7 @@ void Plugin::requestHandler(SmartMet::Spine::Reactor &theReactor,
     {
       // Catching all exceptions
 
-      SmartMet::Spine::Exception exception(BCP, "Request processing exception!", NULL);
+      SmartMet::Spine::Exception exception(BCP, "Request processing exception!", nullptr);
       exception.addParameter("URI", theRequest.getURI());
       exception.printError();
 
@@ -271,7 +271,7 @@ void Plugin::requestHandler(SmartMet::Spine::Reactor &theReactor,
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", NULL);
+    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
