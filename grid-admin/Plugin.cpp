@@ -187,6 +187,8 @@ bool Plugin::request(SmartMet::Spine::Reactor &theReactor,
     char *content = new char[size+100];
     char *p = content;
 
+    std::unique_ptr<char[]> pContent(content); // This should automatically release the allocated space
+
     for (uint t=0; t<lineCount; t++)
     {
       std::string s = responseMessage.getLineByIndex(t);
@@ -196,7 +198,6 @@ bool Plugin::request(SmartMet::Spine::Reactor &theReactor,
 
     theResponse.setContent(std::string(content));
 
-    delete content;
     return true;
   }
   catch (...)
