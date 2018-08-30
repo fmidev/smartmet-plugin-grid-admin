@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 18.8.29
+Version: 18.8.30
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -14,20 +14,20 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: boost-devel
 BuildRequires: libconfig-devel
-BuildRequires: smartmet-library-spine-devel >= 18.8.20
+BuildRequires: smartmet-library-spine-devel >= 18.8.30
 BuildRequires: smartmet-library-locus-devel >= 18.8.21
 BuildRequires: smartmet-library-macgyver-devel >= 18.8.20
 BuildRequires: smartmet-library-newbase-devel >= 18.8.28
-BuildRequires: smartmet-library-grid-files-devel >= 18.8.28
-BuildRequires: smartmet-library-grid-content-devel >= 18.8.28
-BuildRequires: smartmet-engine-grid-devel >= 18.8.27
+BuildRequires: smartmet-library-grid-files-devel >= 18.8.30
+BuildRequires: smartmet-library-grid-content-devel >= 18.8.30
+BuildRequires: smartmet-engine-grid-devel >= 18.8.30
 BuildRequires: gdal-devel
 Requires: libconfig
 Requires: smartmet-library-locus >= 18.8.21
 Requires: smartmet-library-macgyver >= 18.8.20
 Requires: smartmet-library-newbase >= 18.8.28
-Requires: smartmet-library-spine >= 18.8.20
-Requires: smartmet-engine-grid >= 18.8.27
+Requires: smartmet-library-spine >= 18.8.30
+Requires: smartmet-engine-grid >= 18.8.30
 Requires: smartmet-server >= 18.8.22
 #Requires: boost-date-time
 #Requires: boost-filesystem
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Thu Aug 30 2018 Mika Heiskanen <mika.heiskanen@fmi.fi> - 18.8.30-1.fmi
+- Silenced CodeChecker warnings
+
 * Wed Aug 29 2018 Mika Heiskanen <mika.heiskanen@fmi.fi> - 18.8.29-1.fmi
 - Update to latest version
 
