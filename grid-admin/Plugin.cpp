@@ -17,8 +17,6 @@ namespace Plugin
 namespace GridAdmin
 {
 
-using namespace SmartMet::Spine;
-
 
 // ----------------------------------------------------------------------
 /*!
@@ -26,7 +24,7 @@ using namespace SmartMet::Spine;
  */
 // ----------------------------------------------------------------------
 
-Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
+Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     : SmartMetPlugin(), itsModuleName("GridAdmin")
 {
   try
@@ -44,11 +42,11 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
     itsRedisPort = 6379;
 
     if (theReactor->getRequiredAPIVersion() != SMARTMET_API_VERSION)
-      throw SmartMet::Spine::Exception(BCP, "GridContent plugin and Server API version mismatch");
+      throw Spine::Exception(BCP, "GridContent plugin and Server API version mismatch");
 
     // Register the handler
     if (!theReactor->addContentHandler(this, "/grid-admin", boost::bind(&Plugin::callRequestHandler, this, _1, _2, _3)))
-      throw SmartMet::Spine::Exception(BCP, "Failed to register GridContent request handler");
+      throw Spine::Exception(BCP, "Failed to register GridContent request handler");
 
     itsConfigurationFile.readFile(theConfig);
 
@@ -57,7 +55,7 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
     {
       if (!itsConfigurationFile.findAttribute(configAttribute[t]))
       {
-        SmartMet::Spine::Exception exception(BCP, "Missing configuration attribute!");
+        Spine::Exception exception(BCP, "Missing configuration attribute!");
         exception.addParameter("File",theConfig);
         exception.addParameter("Attribute",configAttribute[t]);
       }
@@ -70,9 +68,13 @@ Plugin::Plugin(SmartMet::Spine::Reactor *theReactor, const char *theConfig)
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
+
+
+
+
 
 // ----------------------------------------------------------------------
 /*!
@@ -85,11 +87,14 @@ Plugin::~Plugin()
 }
 
 
+
+
 // ----------------------------------------------------------------------
 /*!
  * \brief Initializator, in this case trivial
  */
 // ----------------------------------------------------------------------
+
 void Plugin::init()
 {
   try
@@ -103,9 +108,13 @@ void Plugin::init()
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
+
+
+
+
 
 // ----------------------------------------------------------------------
 /*!
@@ -121,20 +130,20 @@ void Plugin::shutdown()
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
 
 
-bool Plugin::request(SmartMet::Spine::Reactor &theReactor,
-                            const HTTP::Request &theRequest,
-                            HTTP::Response &theResponse)
+
+
+bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
   try
   {
-    SmartMet::T::RequestMessage requestMessage;
-    SmartMet::T::ResponseMessage responseMessage;
+    T::RequestMessage requestMessage;
+    T::ResponseMessage responseMessage;
 
     size_t sz = theRequest.getContentLength();
     if (sz == 0)
@@ -202,7 +211,7 @@ bool Plugin::request(SmartMet::Spine::Reactor &theReactor,
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -214,9 +223,7 @@ bool Plugin::request(SmartMet::Spine::Reactor &theReactor,
  */
 // ----------------------------------------------------------------------
 
-void Plugin::requestHandler(SmartMet::Spine::Reactor &theReactor,
-                            const HTTP::Request &theRequest,
-                            HTTP::Response &theResponse)
+void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
   try
   {
@@ -232,11 +239,11 @@ void Plugin::requestHandler(SmartMet::Spine::Reactor &theReactor,
 
       if (response)
       {
-        theResponse.setStatus(HTTP::Status::ok);
+        theResponse.setStatus(Spine::HTTP::Status::ok);
       }
       else
       {
-        theResponse.setStatus(HTTP::Status::not_implemented);
+        theResponse.setStatus(Spine::HTTP::Status::not_implemented);
       }
 
       // Adding response headers
@@ -244,7 +251,7 @@ void Plugin::requestHandler(SmartMet::Spine::Reactor &theReactor,
       boost::posix_time::ptime t_expires = t_now + boost::posix_time::seconds(expires_seconds);
       boost::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
       std::string cachecontrol =
-          "public, max-age=" + boost::lexical_cast<std::string>(expires_seconds);
+          "public, max-age=" + std::to_string(expires_seconds);
       std::string expiration = tformat->format(t_expires);
       std::string modification = tformat->format(t_now);
 
@@ -256,11 +263,11 @@ void Plugin::requestHandler(SmartMet::Spine::Reactor &theReactor,
     {
       // Catching all exceptions
 
-      SmartMet::Spine::Exception exception(BCP, "Request processing exception!", nullptr);
+      Spine::Exception exception(BCP, "Request processing exception!", nullptr);
       exception.addParameter("URI", theRequest.getURI());
       exception.printError();
 
-      theResponse.setStatus(HTTP::Status::bad_request);
+      theResponse.setStatus(Spine::HTTP::Status::bad_request);
 
       // Adding the first exception information into the response header
 
@@ -272,7 +279,7 @@ void Plugin::requestHandler(SmartMet::Spine::Reactor &theReactor,
   }
   catch (...)
   {
-    throw SmartMet::Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Spine::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -310,7 +317,7 @@ int Plugin::getRequiredAPIVersion() const
  */
 // ----------------------------------------------------------------------
 
-bool Plugin::queryIsFast(const SmartMet::Spine::HTTP::Request & /* theRequest */) const
+bool Plugin::queryIsFast(const Spine::HTTP::Request & /* theRequest */) const
 {
   return true;
 }

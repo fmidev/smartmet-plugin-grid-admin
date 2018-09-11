@@ -25,40 +25,36 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
 {
   public:
 
-    Plugin(SmartMet::Spine::Reactor* theReactor, const char* theConfig);
-    virtual ~Plugin();
+                        Plugin(Spine::Reactor* theReactor, const char* theConfig);
+    virtual             ~Plugin();
 
-    const std::string& getPluginName() const;
-    int getRequiredAPIVersion() const;
-    bool queryIsFast(const SmartMet::Spine::HTTP::Request& theRequest) const;
+    const std::string&  getPluginName() const;
+    int                 getRequiredAPIVersion() const;
+    bool                queryIsFast(const Spine::HTTP::Request& theRequest) const;
 
   protected:
 
-    void init();
-    void shutdown();
-    void requestHandler(SmartMet::Spine::Reactor& theReactor,
-                      const SmartMet::Spine::HTTP::Request& theRequest,
-                      SmartMet::Spine::HTTP::Response& theResponse);
+    void                init();
+    void                shutdown();
+    void                requestHandler(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,
+                            Spine::HTTP::Response& theResponse);
 
   private:
 
-    Plugin();
-    bool request(SmartMet::Spine::Reactor& theReactor,
-                      const SmartMet::Spine::HTTP::Request& theRequest,
-                      SmartMet::Spine::HTTP::Response& theResponse);
+                        Plugin();
+    bool                request(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,
+                            Spine::HTTP::Response& theResponse);
 
 
-    SmartMet::ContentServer::HTTP::ServerInterface itsMessageProcessor;
-    SmartMet::ContentServer::RedisImplementation itsRedis;
+    const std::string   itsModuleName;
+    Spine::Reactor*     itsReactor;
+    ConfigurationFile   itsConfigurationFile;
+    std::string         itsRedisAddress;
+    int                 itsRedisPort;
+    std::string         itsRedisTablePrefix;
 
-    const std::string         itsModuleName;
-    SmartMet::Spine::Reactor* itsReactor;
-    ConfigurationFile         itsConfigurationFile;
-    std::string               itsRedisAddress;
-    int                       itsRedisPort;
-    std::string               itsRedisTablePrefix;
-
-
+    ContentServer::HTTP::ServerInterface  itsMessageProcessor;
+    ContentServer::RedisImplementation    itsRedis;
 
 };  // class Plugin
 
