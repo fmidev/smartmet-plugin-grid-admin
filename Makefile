@@ -2,6 +2,10 @@ SUBNAME = grid-admin
 SPEC = smartmet-plugin-$(SUBNAME)
 INCDIR = smartmet/plugins/$(SUBNAME)
 
+# Enabling / disabling CORBA usage.
+
+CORBA = enabled
+
 # Installation directories
 
 processor := $(shell uname -p)
@@ -24,6 +28,14 @@ datadir = $(PREFIX)/share
 plugindir = $(datadir)/smartmet/plugins
 objdir = obj
 
+
+ifeq ($(CORBA), disabled)
+  CORBA_FLAGS = -DCORBA_DISABLED
+else
+  CORBA_INCLUDE = -I/usr/include/smartmet/grid-content/contentServer/corba/stubs
+  CORBA_LIBS = -lomniORB4 -lomnithread  
+endif
+
 # Compiler options
 
 DEFINES = -DUNIX -D_REENTRANT
@@ -41,7 +53,8 @@ ifeq ($(CXX), clang++)
  INCLUDES = \
 	-isystem $(includedir) \
 	-isystem $(includedir)/smartmet \
-	-isystem $(includedir)/mysql
+	-isystem $(includedir)/mysql \
+	$(CORBA_INCLUDE)
 
 else
 
@@ -64,7 +77,8 @@ else
 	-I$(includedir)/smartmet \
 	-I$(includedir)/smartmet/grid-files \
 	-I$(includedir)/smartmet/grid-content \
-	-I$(includedir)/mysql
+	-I$(includedir)/mysql \
+	$(CORBA_INCLUDE)
 
 endif
 
@@ -81,7 +95,8 @@ endif
 
 LIBS = -L$(libdir) \
 	-lsmartmet-spine \
-	-lsmartmet-macgyver
+	-lsmartmet-macgyver \
+	$(CORBA_LIBS)
 
 # What to install
 
