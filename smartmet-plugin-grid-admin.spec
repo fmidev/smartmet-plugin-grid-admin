@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 18.10.24
+Version: 19.1.17
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -14,21 +14,21 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: boost-devel
 BuildRequires: libconfig-devel
-BuildRequires: smartmet-library-spine-devel >= 18.9.29
-BuildRequires: smartmet-library-locus-devel >= 18.8.21
-BuildRequires: smartmet-library-macgyver-devel >= 18.9.29
-BuildRequires: smartmet-library-newbase-devel >= 18.9.29
-BuildRequires: smartmet-library-grid-files-devel >= 18.10.15
-BuildRequires: smartmet-library-grid-content-devel >= 18.10.15
-BuildRequires: smartmet-engine-grid-devel >= 18.10.15
+BuildRequires: smartmet-library-spine-devel >= 18.12.13
+BuildRequires: smartmet-library-locus-devel >= 18.11.16
+BuildRequires: smartmet-library-macgyver-devel >= 18.11.24
+BuildRequires: smartmet-library-newbase-devel >= 18.12.4
+BuildRequires: smartmet-library-grid-files-devel >= 19.1.17
+BuildRequires: smartmet-library-grid-content-devel >= 19.1.17
+BuildRequires: smartmet-engine-grid-devel >= 19.1.17
 BuildRequires: gdal-devel
 Requires: libconfig
-Requires: smartmet-library-locus >= 18.8.21
-Requires: smartmet-library-macgyver >= 18.9.29
-Requires: smartmet-library-newbase >= 18.9.29
-Requires: smartmet-library-spine >= 18.9.29
-Requires: smartmet-engine-grid >= 18.10.15
-Requires: smartmet-server >= 18.9.29
+Requires: smartmet-library-locus >= 18.11.16
+Requires: smartmet-library-macgyver >= 18.11.24
+Requires: smartmet-library-newbase >= 18.12.4
+Requires: smartmet-library-spine >= 18.12.13
+Requires: smartmet-engine-grid >= 19.1.17
+Requires: smartmet-server >= 18.12.14
 #Requires: boost-date-time
 #Requires: boost-filesystem
 #Requires: boost-iostreams
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Thu Jan 17 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.1.17-1.fmi
+- Version update
+
 * Wed Oct 24 2018 Mika Heiskanen <mika.heiskanen@fmi.fi> - 18.10.24-1.fmi
 - Downgraded spine dependency due to a bad rpm version number
 
