@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 19.5.6
+Version: 19.8.9
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -14,21 +14,21 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: boost-devel
 BuildRequires: libconfig-devel
-BuildRequires: smartmet-library-spine-devel >= 19.4.29
+BuildRequires: smartmet-library-spine-devel >= 19.8.7
 BuildRequires: smartmet-library-locus-devel >= 19.3.21
-BuildRequires: smartmet-library-macgyver-devel >= 19.4.23
-BuildRequires: smartmet-library-newbase-devel >= 19.5.6
-BuildRequires: smartmet-library-grid-files-devel >= 19.5.6
-BuildRequires: smartmet-library-grid-content-devel >= 19.5.6
-BuildRequires: smartmet-engine-grid-devel >= 19.5.6
+BuildRequires: smartmet-library-macgyver-devel >= 19.8.2
+BuildRequires: smartmet-library-newbase-devel >= 19.7.29
+BuildRequires: smartmet-library-grid-files-devel >= 19.8.9
+BuildRequires: smartmet-library-grid-content-devel >= 19.8.9
+BuildRequires: smartmet-engine-grid-devel >= 19.8.9
 BuildRequires: gdal-devel
 Requires: libconfig
 Requires: smartmet-library-locus >= 19.3.21
-Requires: smartmet-library-macgyver >= 19.4.23
-Requires: smartmet-library-newbase >= 19.5.6
-Requires: smartmet-library-spine >= 19.4.29
-Requires: smartmet-engine-grid >= 19.5.6
-Requires: smartmet-server >= 19.3.19
+Requires: smartmet-library-macgyver >= 19.8.2
+Requires: smartmet-library-newbase >= 19.7.29
+Requires: smartmet-library-spine >= 19.8.7
+Requires: smartmet-engine-grid >= 19.8.9
+Requires: smartmet-server >= 19.8.9
 #Requires: boost-date-time
 #Requires: boost-filesystem
 #Requires: boost-iostreams
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Fri Aug  9 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.8.9-1.fmi
+- Version update
+
 * Mon May  6 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.5.6-1.fmi
 - Updated dependencies
 
