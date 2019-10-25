@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 19.10.1
+Version: 19.10.25
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -14,21 +14,21 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: boost-devel
 BuildRequires: libconfig-devel
-BuildRequires: smartmet-library-spine-devel >= 19.9.27
+BuildRequires: smartmet-library-spine-devel >= 19.10.8
 BuildRequires: smartmet-library-locus-devel >= 19.9.26
 BuildRequires: smartmet-library-macgyver-devel >= 19.9.26
 BuildRequires: smartmet-library-newbase-devel >= 19.9.26
-BuildRequires: smartmet-library-grid-files-devel >= 19.10.1
-BuildRequires: smartmet-library-grid-content-devel >= 19.10.1
-BuildRequires: smartmet-engine-grid-devel >= 19.10.1
+BuildRequires: smartmet-library-grid-files-devel >= 19.10.25
+BuildRequires: smartmet-library-grid-content-devel >= 19.10.25
+BuildRequires: smartmet-engine-grid-devel >= 19.10.25
 BuildRequires: gdal-devel
 Requires: libconfig
 Requires: smartmet-library-locus >= 19.9.26
 Requires: smartmet-library-macgyver >= 19.9.26
 Requires: smartmet-library-newbase >= 19.9.26
-Requires: smartmet-library-spine >= 19.9.26
-Requires: smartmet-engine-grid >= 19.10.1
-Requires: smartmet-server >= 19.9.26
+Requires: smartmet-library-spine >= 19.10.8
+Requires: smartmet-engine-grid >= 19.10.25
+Requires: smartmet-server >= 19.10.1
 #Requires: boost-date-time
 #Requires: boost-filesystem
 #Requires: boost-iostreams
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Fri Oct 25 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.10.25-1.fmi
+- Full repackaging of the GRIB server components
+
 * Tue Oct  1 2019 Mika Heiskanen <mika.heiskanen@fmi.fi> - 19.10.1-1.fmi
 - Repackaged due to SmartMet library ABI changes
 
