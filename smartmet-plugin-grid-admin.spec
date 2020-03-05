@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 20.2.19
+Version: 20.3.5
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -14,21 +14,21 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: boost-devel
 BuildRequires: libconfig-devel
-BuildRequires: smartmet-library-spine-devel >= 19.11.20
-BuildRequires: smartmet-library-locus-devel >= 19.9.26
-BuildRequires: smartmet-library-macgyver-devel >= 19.9.26
-BuildRequires: smartmet-library-newbase-devel >= 19.11.21
-BuildRequires: smartmet-library-grid-files-devel >= 20.2.19
-BuildRequires: smartmet-library-grid-content-devel >= 20.2.19
-BuildRequires: smartmet-engine-grid-devel >= 20.2.19
+BuildRequires: smartmet-library-spine-devel >= 20.3.5
+BuildRequires: smartmet-library-locus-devel >= 19.12.4
+BuildRequires: smartmet-library-macgyver-devel >= 20.3.5
+BuildRequires: smartmet-library-newbase-devel >= 20.2.13
+BuildRequires: smartmet-library-grid-files-devel >= 20.3.5
+BuildRequires: smartmet-library-grid-content-devel >= 20.3.5
+BuildRequires: smartmet-engine-grid-devel >= 20.3.5
 BuildRequires: gdal-devel
 Requires: libconfig
-Requires: smartmet-library-locus >= 19.9.26
-Requires: smartmet-library-macgyver >= 19.9.26
-Requires: smartmet-library-newbase >= 19.11.21
-Requires: smartmet-library-spine >= 19.11.20
-Requires: smartmet-engine-grid >= 20.2.19
-Requires: smartmet-server >= 19.10.1
+Requires: smartmet-library-locus >= 19.12.4
+Requires: smartmet-library-macgyver >= 20.3.5
+Requires: smartmet-library-newbase >= 20.2.13
+Requires: smartmet-library-spine >= 20.3.5
+Requires: smartmet-engine-grid >= 20.3.5
+Requires: smartmet-server >= 20.2.13
 #Requires: boost-date-time
 #Requires: boost-filesystem
 #Requires: boost-iostreams
@@ -59,6 +59,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Thu Mar  5 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.3.5-1.fmi
+- Repackaged due to library API changes
+
+* Tue Feb 25 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.2.25-1.fmi
+- Repackaged due to library API changes
+
 * Wed Feb 19 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.2.19-1.fmi
 - Repackaged due to library API changes
 
