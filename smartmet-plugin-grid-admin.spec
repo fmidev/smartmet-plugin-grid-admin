@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 20.4.3
+Version: 20.4.18
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -12,29 +12,29 @@ Source0: %{name}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-c++
 BuildRequires: make
-BuildRequires: boost-devel
+BuildRequires: boost169-devel
 BuildRequires: libconfig-devel
-BuildRequires: smartmet-library-spine-devel >= 20.3.9
-BuildRequires: smartmet-library-locus-devel >= 19.12.4
-BuildRequires: smartmet-library-macgyver-devel >= 20.3.5
-BuildRequires: smartmet-library-newbase-devel >= 20.2.13
-BuildRequires: smartmet-library-grid-files-devel >= 20.4.3
-BuildRequires: smartmet-library-grid-content-devel >= 20.4.3
-BuildRequires: smartmet-engine-grid-devel >= 20.4.3
+BuildRequires: smartmet-library-spine-devel >= 20.4.18
+BuildRequires: smartmet-library-locus-devel >= 20.4.18
+BuildRequires: smartmet-library-macgyver-devel >= 20.4.18
+BuildRequires: smartmet-library-newbase-devel >= 20.4.18
+BuildRequires: smartmet-library-grid-files-devel >= 20.4.18
+BuildRequires: smartmet-library-grid-content-devel >= 20.4.18
+BuildRequires: smartmet-engine-grid-devel >= 20.4.18
 BuildRequires: gdal-devel
 Requires: libconfig
-Requires: smartmet-library-locus >= 19.12.4
-Requires: smartmet-library-macgyver >= 20.3.5
-Requires: smartmet-library-newbase >= 20.2.13
-Requires: smartmet-library-spine >= 20.3.9
-Requires: smartmet-engine-grid >= 20.4.3
-Requires: smartmet-server >= 20.2.13
-#Requires: boost-date-time
-#Requires: boost-filesystem
-#Requires: boost-iostreams
-#Requires: boost-regex
-#Requires: boost-system
-#Requires: boost-thread
+Requires: smartmet-library-locus >= 20.4.18
+Requires: smartmet-library-macgyver >= 20.4.18
+Requires: smartmet-library-newbase >= 20.4.18
+Requires: smartmet-library-spine >= 20.4.18
+Requires: smartmet-engine-grid >= 20.4.18
+Requires: smartmet-server >= 20.4.18
+#Requires: boost169-date-time
+#Requires: boost169-filesystem
+#Requires: boost169-iostreams
+#Requires: boost169-regex
+#Requires: boost169-system
+#Requires: boost169-thread
 Provides: %{SPECNAME}
 
 %description
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Sat Apr 18 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.4.18-1.fmi
+- Upgraded to Boost 1.69
+
 * Fri Apr  3 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.4.3-1.fmi
 - Repackaged due to library API changes
 
