@@ -194,7 +194,7 @@ bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theR
       for (auto it = mappi.begin(); it != mappi.end(); ++it)
       {
         requestMessage.addLine(it->first.c_str(),it->second.c_str());
-        std::cout << "[" << it->first << "][" << it->second << "]" << std::endl;
+        // std::cout << "[" << it->first << "][" << it->second << "]" << std::endl;
       }
     }
     else
