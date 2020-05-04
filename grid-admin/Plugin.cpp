@@ -142,6 +142,8 @@ void Plugin::init()
     }
 
     itsMessageProcessor.init(cServer);
+    itsBrowser.init(&itsConfigurationFile,itsContentServer);
+
 /*
     auto engine = itsReactor->getSingleton("grid", nullptr);
     if (!engine)
@@ -180,7 +182,7 @@ void Plugin::shutdown()
 
 
 
-bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
+bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
   try
   {
@@ -257,6 +259,28 @@ bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theR
   }
 }
 
+
+
+
+bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
+{
+  try
+  {
+
+    auto method = theRequest.getParameter("method");
+
+    if (method && *method > " ")
+    {
+      return apiRequest(theReactor,theRequest,theResponse);
+    }
+
+    return itsBrowser.requestHandler(theRequest,theResponse);
+  }
+  catch (...)
+  {
+    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
 
 
 // ----------------------------------------------------------------------

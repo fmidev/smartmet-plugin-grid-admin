@@ -10,14 +10,12 @@
 #include <spine/HTTP.h>
 #include <grid-files/common/ConfigurationFile.h>
 #include <grid-content/contentServer/http/server/ServerInterface.h>
+#include "Browser.h"
 
 
 
 namespace SmartMet
 {
-
-typedef std::shared_ptr<ContentServer::ServiceInterface> ContentServer_sptr;
-
 
 namespace Plugin
 {
@@ -40,14 +38,12 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
 
     void                init();
     void                shutdown();
-    void                requestHandler(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,
-                            Spine::HTTP::Response& theResponse);
+    void                requestHandler(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
   private:
-
                         Plugin();
-    bool                request(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,
-                            Spine::HTTP::Response& theResponse);
+    bool                request(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool                apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse);
 
 
     const std::string   itsModuleName;
@@ -60,6 +56,7 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
     std::string         itsContentServerHttpUrl;
     std::string         itsContentServerCorbaIor;
     ContentServer_sptr  itsContentServer;
+    Browser             itsBrowser;
 
     ContentServer::HTTP::ServerInterface  itsMessageProcessor;
 
