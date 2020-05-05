@@ -4,7 +4,7 @@
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
 Version: 20.5.5
-Release: 1%{?dist}.fmi
+Release: 2%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Tue May  5 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.5.5-2.fmi
+- Added content type header
+
 * Tue May  5 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.5.5-1.fmi
 - Added contentServer browsing functionality
 
