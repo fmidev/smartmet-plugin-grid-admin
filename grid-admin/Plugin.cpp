@@ -271,6 +271,7 @@ bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theR
 
     if (method && *method > " ")
     {
+      theResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
       return apiRequest(theReactor,theRequest,theResponse);
     }
 

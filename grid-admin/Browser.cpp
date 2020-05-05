@@ -160,7 +160,7 @@ bool Browser::page_content(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
     }
     else
     {
-      int result = itsContentServer->getContentListByFileId(0,fileId,contentInfoList);
+      itsContentServer->getContentListByFileId(0,fileId,contentInfoList);
       if (contentInfoList.getLength() > 1000)
       {
         itsCachedContentInfoList = contentInfoList;
@@ -323,6 +323,7 @@ bool Browser::page_content(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
     output << "</HTML>\n";
 
     theResponse.setContent(output.str());
+    theResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
 
     return true;
   }
@@ -412,7 +413,7 @@ bool Browser::page_files(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
     std::string bg = "#FFFFFF";
 
     T::FileInfoList fileInfoList;
-    int result = itsContentServer->getFileInfoListByGenerationId(0,generationId,startFileId,maxRecords,fileInfoList);
+    itsContentServer->getFileInfoListByGenerationId(0,generationId,startFileId,maxRecords,fileInfoList);
 
     uint len = fileInfoList.getLength();
     for (uint t=0; t<len; t++)
@@ -475,6 +476,7 @@ bool Browser::page_files(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
 
 
     theResponse.setContent(output.str());
+    theResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
 
     return true;
   }
@@ -547,7 +549,7 @@ bool Browser::page_generations(const Spine::HTTP::Request& theRequest,Spine::HTT
     std::string bg = "#FFFFFF";
 
     T::GenerationInfoList generationInfoList;
-    int result = itsContentServer->getGenerationInfoListByProducerId(0,producerId,generationInfoList);
+    itsContentServer->getGenerationInfoListByProducerId(0,producerId,generationInfoList);
 
     uint len = generationInfoList.getLength();
     for (uint t=0; t<len; t++)
@@ -587,6 +589,7 @@ bool Browser::page_generations(const Spine::HTTP::Request& theRequest,Spine::HTT
 
 
     theResponse.setContent(output.str());
+    theResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
 
     return true;
   }
@@ -641,7 +644,7 @@ bool Browser::page_producers(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     std::string bg = "#FFFFFF";
 
     T::ProducerInfoList producerInfoList;
-    int result = itsContentServer->getProducerInfoList(0,producerInfoList);
+    itsContentServer->getProducerInfoList(0,producerInfoList);
 
     uint len = producerInfoList.getLength();
     for (uint t=0; t<len; t++)
@@ -678,6 +681,7 @@ bool Browser::page_producers(const Spine::HTTP::Request& theRequest,Spine::HTTP:
 
 
     theResponse.setContent(output.str());
+    theResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
 
     return true;
   }
@@ -719,6 +723,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
 
 
     theResponse.setContent(output.str());
+    theResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
 
     return true;
   }
