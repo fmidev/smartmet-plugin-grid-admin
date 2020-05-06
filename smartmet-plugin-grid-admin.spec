@@ -3,8 +3,8 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 20.5.5
-Release: 2%{?dist}.fmi
+Version: 20.5.6
+Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -59,6 +59,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Wed May  6 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.5.6-1.fmi
+- Fixed content type to be text/plain for method calls
+
 * Tue May  5 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.5.5-2.fmi
 - Added content type header
 
