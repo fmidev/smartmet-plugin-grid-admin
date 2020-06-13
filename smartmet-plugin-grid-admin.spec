@@ -14,6 +14,7 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: boost169-devel
 BuildRequires: libconfig-devel
+BuildRequires: omniORB-devel
 BuildRequires: smartmet-library-spine-devel >= 20.5.27
 BuildRequires: smartmet-library-locus-devel >= 20.5.20
 BuildRequires: smartmet-library-macgyver-devel >= 20.4.18
