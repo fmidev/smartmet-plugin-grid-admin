@@ -43,31 +43,13 @@ DEFINES = -DUNIX -D_REENTRANT
 # Boost 1.69
 
 ifneq "$(wildcard /usr/include/boost169)" ""
-  INCLUDES += -I/usr/include/boost169
+  INCLUDES += -isystem /usr/include/boost169
   LIBS += -L/usr/lib64/boost169
 endif
 
-ifeq ($(CXX), clang++)
+FLAGS = -std=c++11 -fPIC -MD -Wall -W -Wno-unused-parameter -fno-omit-frame-pointer -fdiagnostics-color=always
 
- FLAGS = \
-	-std=c++11 -fPIC -MD \
-	-Weverything \
-	-Wno-c++98-compat \
-	-Wno-float-equal \
-	-Wno-padded \
-	-Wno-missing-prototypes
-
- INCLUDES += \
-	-isystem $(includedir) \
-	-isystem $(includedir)/smartmet \
-	-isystem $(includedir)/mysql \
-	$(CORBA_INCLUDE)
-
-else
-
- FLAGS = -std=c++11 -fPIC -MD -Wall -W -Wno-unused-parameter -fno-omit-frame-pointer -fdiagnostics-color=always
-
- FLAGS_DEBUG = \
+FLAGS_DEBUG = \
 	-Wcast-align \
 	-Wcast-qual \
 	-Winline \
@@ -75,17 +57,14 @@ else
 	-Wno-pmf-conversions \
 	-Wpointer-arith
 
- FLAGS_RELEASE = -Wuninitialized
+FLAGS_RELEASE = -Wuninitialized
 
- INCLUDES += \
-	-I$(includedir) \
+INCLUDES += \
 	-I$(includedir)/smartmet \
 	-I$(includedir)/smartmet/grid-files \
 	-I$(includedir)/smartmet/grid-content \
-	-I$(includedir)/mysql \
+	-isystem $(includedir)/mysql \
 	$(CORBA_INCLUDE)
-
-endif
 
 # Compile options in detault, debug and profile modes
 
