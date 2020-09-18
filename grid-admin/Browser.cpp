@@ -201,7 +201,7 @@ bool Browser::page_content(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
         //output << "<TD>"<< content->mGenerationId << "</TD>";
         output << "<TD>"<< content->mForecastTime << "</TD>";
         output << "<TD>"<< content->mFmiParameterId << "</TD>";
-        output << "<TD>"<< content->mFmiParameterName << "</TD>";
+        output << "<TD>"<< content->getFmiParameterName() << "</TD>";
         output << "<TD>"<< content->mGribParameterId << "</TD>";
         output << "<TD>"<< content->mNewbaseParameterId << "</TD>";
         output << "<TD>"<< content->mNewbaseParameterName << "</TD>";
