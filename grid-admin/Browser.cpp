@@ -18,7 +18,7 @@ Browser::Browser()
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -43,7 +43,7 @@ void Browser::init(ConfigurationFile *theConfigurationFile,ContentServer_sptr th
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -201,7 +201,7 @@ bool Browser::page_content(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
         //output << "<TD>"<< content->mGenerationId << "</TD>";
         output << "<TD>"<< content->mForecastTime << "</TD>";
         output << "<TD>"<< content->mFmiParameterId << "</TD>";
-        output << "<TD>"<< content->mFmiParameterName << "</TD>";
+        output << "<TD>"<< content->getFmiParameterName() << "</TD>";
         output << "<TD>"<< content->mGribParameterId << "</TD>";
         output << "<TD>"<< content->mNewbaseParameterId << "</TD>";
         output << "<TD>"<< content->mNewbaseParameterName << "</TD>";
@@ -329,7 +329,7 @@ bool Browser::page_content(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -482,7 +482,7 @@ bool Browser::page_files(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -595,7 +595,7 @@ bool Browser::page_generations(const Spine::HTTP::Request& theRequest,Spine::HTT
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -687,7 +687,7 @@ bool Browser::page_producers(const Spine::HTTP::Request& theRequest,Spine::HTTP:
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -729,7 +729,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 

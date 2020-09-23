@@ -51,11 +51,11 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerCorbaIor = "";
 
     if (theReactor->getRequiredAPIVersion() != SMARTMET_API_VERSION)
-      throw Spine::Exception(BCP, "GridContent plugin and Server API version mismatch");
+      throw Fmi::Exception(BCP, "GridContent plugin and Server API version mismatch");
 
     // Register the handler
     if (!theReactor->addContentHandler(this, "/grid-admin", boost::bind(&Plugin::callRequestHandler, this, _1, _2, _3)))
-      throw Spine::Exception(BCP, "Failed to register GridContent request handler");
+      throw Fmi::Exception(BCP, "Failed to register GridContent request handler");
 
     itsConfigurationFile.readFile(theConfig);
 
@@ -64,7 +64,7 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     {
       if (!itsConfigurationFile.findAttribute(configAttribute[t]))
       {
-        Spine::Exception exception(BCP, "Missing configuration attribute!");
+        Fmi::Exception exception(BCP, "Missing configuration attribute!");
         exception.addParameter("File",theConfig);
         exception.addParameter("Attribute",configAttribute[t]);
       }
@@ -80,7 +80,7 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -137,7 +137,7 @@ void Plugin::init()
     }
     else
     {
-      SmartMet::Spine::Exception exception(BCP, "Unknow content server type!");
+      Fmi::Exception exception(BCP, "Unknow content server type!");
       exception.addParameter("Content server type",itsContentServerType);
     }
 
@@ -147,12 +147,12 @@ void Plugin::init()
 /*
     auto engine = itsReactor->getSingleton("grid", nullptr);
     if (!engine)
-      throw Spine::Exception(BCP, "The 'grid-engine' unavailable!");
+      throw Fmi::Exception(BCP, "The 'grid-engine' unavailable!");
 */
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -174,7 +174,7 @@ void Plugin::shutdown()
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -255,7 +255,7 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -279,7 +279,7 @@ bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theR
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -330,7 +330,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
     {
       // Catching all exceptions
 
-      Spine::Exception exception(BCP, "Request processing exception!", nullptr);
+      Fmi::Exception exception(BCP, "Request processing exception!", nullptr);
       exception.addParameter("URI", theRequest.getURI());
       exception.printError();
 
@@ -346,7 +346,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
   }
   catch (...)
   {
-    throw Spine::Exception(BCP, "Operation failed!", nullptr);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
