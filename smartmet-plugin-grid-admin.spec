@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 20.10.1
+Version: 20.10.7
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -15,20 +15,20 @@ BuildRequires: make
 BuildRequires: boost169-devel
 BuildRequires: libconfig-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 20.9.23
+BuildRequires: smartmet-library-spine-devel >= 20.10.7
 BuildRequires: smartmet-library-locus-devel >= 20.8.21
-BuildRequires: smartmet-library-macgyver-devel >= 20.9.29
-BuildRequires: smartmet-library-newbase-devel >= 20.9.29
+BuildRequires: smartmet-library-macgyver-devel >= 20.10.7
+BuildRequires: smartmet-library-newbase-devel >= 20.10.7
 BuildRequires: smartmet-library-grid-files-devel >= 20.10.1
-BuildRequires: smartmet-library-grid-content-devel >= 20.10.1
-BuildRequires: smartmet-engine-grid-devel >= 20.10.1
+BuildRequires: smartmet-library-grid-content-devel >= 20.10.6
+BuildRequires: smartmet-engine-grid-devel >= 20.10.7
 BuildRequires: gdal-devel
 Requires: libconfig
 Requires: smartmet-library-locus >= 20.8.21
-Requires: smartmet-library-macgyver >= 20.9.29
-Requires: smartmet-library-newbase >= 20.9.29
-Requires: smartmet-library-spine >= 20.9.23
-Requires: smartmet-engine-grid >= 20.10.1
+Requires: smartmet-library-macgyver >= 20.10.7
+Requires: smartmet-library-newbase >= 20.10.7
+Requires: smartmet-library-spine >= 20.10.7
+Requires: smartmet-engine-grid >= 20.10.7
 Requires: smartmet-server >= 20.9.23
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Wed Oct  7 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.10.7-1.fmi
+- Repackaged due to library ABI changes
+
 * Thu Oct  1 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.10.1-1.fmi
 - Repackaged due to library ABI changes
 
