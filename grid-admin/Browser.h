@@ -53,7 +53,6 @@ class Browser
     bool                  page_generations(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool                  page_files(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool                  page_contentList(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
-    bool                  page_content(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
     bool                  includeFile(std::ostringstream& output,const char *filename);
 

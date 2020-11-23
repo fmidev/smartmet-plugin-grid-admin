@@ -2304,9 +2304,6 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (*page == "contentList")
       return page_contentList(theRequest,theResponse);
 
-    if (*page == "content")
-      return page_content(theRequest,theResponse);
-
     std::ostringstream output;
 
     output << "<HTML>\n";
