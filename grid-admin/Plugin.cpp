@@ -142,7 +142,7 @@ void Plugin::init()
     }
 
     itsMessageProcessor.init(cServer);
-    itsBrowser.init(&itsConfigurationFile,itsContentServer,itsReactor);
+    itsBrowser.init(itsReactor);
 
 /*
     auto engine = itsReactor->getSingleton("grid", nullptr);
