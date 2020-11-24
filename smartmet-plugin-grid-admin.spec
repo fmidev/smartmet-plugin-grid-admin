@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 20.10.22
+Version: 20.11.24
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -15,21 +15,21 @@ BuildRequires: make
 BuildRequires: boost169-devel
 BuildRequires: libconfig-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 20.10.20
+BuildRequires: smartmet-library-spine-devel >= 20.11.23
 BuildRequires: smartmet-library-locus-devel >= 20.10.7
-BuildRequires: smartmet-library-macgyver-devel >= 20.10.9
-BuildRequires: smartmet-library-newbase-devel >= 20.10.16
-BuildRequires: smartmet-library-grid-files-devel >= 20.10.22
-BuildRequires: smartmet-library-grid-content-devel >= 20.10.22
-BuildRequires: smartmet-engine-grid-devel >= 20.10.22
+BuildRequires: smartmet-library-macgyver-devel >= 20.10.28
+BuildRequires: smartmet-library-newbase-devel >= 20.10.28
+BuildRequires: smartmet-library-grid-files-devel >= 20.11.24
+BuildRequires: smartmet-library-grid-content-devel >= 20.11.24
+BuildRequires: smartmet-engine-grid-devel >= 20.11.24
 BuildRequires: gdal-devel
 Requires: libconfig
 Requires: smartmet-library-locus >= 20.10.7
-Requires: smartmet-library-macgyver >= 20.10.9
-Requires: smartmet-library-newbase >= 20.10.16
-Requires: smartmet-library-spine >= 20.10.20
-Requires: smartmet-engine-grid >= 20.10.22
-Requires: smartmet-server >= 20.10.21
+Requires: smartmet-library-macgyver >= 20.10.28
+Requires: smartmet-library-newbase >= 20.10.28
+Requires: smartmet-library-spine >= 20.11.23
+Requires: smartmet-engine-grid >= 20.11.24
+Requires: smartmet-server >= 20.10.28
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
 #Requires: boost169-iostreams
@@ -60,6 +60,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Tue Nov 24 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.11.24-1.fmi
+- Moved grid-engine browsing into the grid engine module
+- Improved data and configuration browsing
+
 * Thu Oct 22 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.10.22-1.fmi
 - Repackaged due to library ABI changes
 
