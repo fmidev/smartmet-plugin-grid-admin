@@ -53,6 +53,9 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
     std::string         itsContentServerRedisAddress;
     int                 itsContentServerRedisPort;
     std::string         itsContentServerRedisTablePrefix;
+    std::string         itsContentServerRedisSecondaryAddress;
+    int                 itsContentServerRedisSecondaryPort;
+    bool                itsContentServerRedisLockEnabled;
     std::string         itsContentServerHttpUrl;
     std::string         itsContentServerCorbaIor;
     ContentServer_sptr  itsContentServer;

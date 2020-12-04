@@ -47,6 +47,9 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerRedisAddress = "127.0.0.1";
     itsContentServerRedisPort = 6379;
     itsContentServerRedisTablePrefix = "";
+    itsContentServerRedisSecondaryAddress = "127.0.0.1";
+    itsContentServerRedisSecondaryPort = 0;
+    itsContentServerRedisLockEnabled = false;
     itsContentServerHttpUrl = "";
     itsContentServerCorbaIor = "";
 
@@ -75,6 +78,9 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.address", itsContentServerRedisAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.port", itsContentServerRedisPort);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.tablePrefix", itsContentServerRedisTablePrefix);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondartAddress", itsContentServerRedisSecondaryAddress);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryPort", itsContentServerRedisSecondaryPort);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.lockEnabled", itsContentServerRedisLockEnabled);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.http.url", itsContentServerHttpUrl);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.corba.ior", itsContentServerCorbaIor);
   }
@@ -115,7 +121,7 @@ void Plugin::init()
     if (itsContentServerType == "redis")
     {
       ContentServer::RedisImplementation *redis = new ContentServer::RedisImplementation();
-      redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str());
+      redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false);
       itsContentServer.reset(redis);
       cServer = redis;
     }
