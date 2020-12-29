@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 20.12.3
+Version: 20.12.29
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -15,20 +15,20 @@ BuildRequires: make
 BuildRequires: boost169-devel
 BuildRequires: libconfig-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 20.11.23
-BuildRequires: smartmet-library-locus-devel >= 20.12.3
-BuildRequires: smartmet-library-macgyver-devel >= 20.11.24
-BuildRequires: smartmet-library-newbase-devel >= 20.11.30
-BuildRequires: smartmet-library-grid-files-devel >= 20.12.3
-BuildRequires: smartmet-library-grid-content-devel >= 20.12.3
-BuildRequires: smartmet-engine-grid-devel >= 20.12.3
-BuildRequires: gdal-devel
+BuildRequires: smartmet-library-spine-devel >= 20.12.15
+BuildRequires: smartmet-library-locus-devel >= 20.12.15
+BuildRequires: smartmet-library-macgyver-devel >= 20.12.15
+BuildRequires: smartmet-library-newbase-devel >= 20.12.15
+BuildRequires: smartmet-library-grid-files-devel >= 20.12.28
+BuildRequires: smartmet-library-grid-content-devel >= 20.12.28
+BuildRequires: smartmet-engine-grid-devel >= 20.12.28
+BuildRequires: gdal32-devel
 Requires: libconfig
-Requires: smartmet-library-locus >= 20.12.3
-Requires: smartmet-library-macgyver >= 20.11.24
-Requires: smartmet-library-newbase >= 20.11.30
-Requires: smartmet-library-spine >= 20.11.23
-Requires: smartmet-engine-grid >= 20.12.3
+Requires: smartmet-library-locus >= 20.12.15
+Requires: smartmet-library-macgyver >= 20.12.15
+Requires: smartmet-library-newbase >= 20.12.15
+Requires: smartmet-library-spine >= 20.12.15
+Requires: smartmet-engine-grid >= 20.12.28
 Requires: smartmet-server >= 20.10.28
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Tue Dec 29 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.12.29-1.fmi
+- GDAL upgrade
+
 * Thu Dec  3 2020 Mika Heiskanen <mika.heiskanen@fmi.fi> - 20.12.3-1.fmi
 - Repackaged since RedisImplementation ABI changed
 

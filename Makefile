@@ -2,32 +2,13 @@ SUBNAME = grid-admin
 SPEC = smartmet-plugin-$(SUBNAME)
 INCDIR = smartmet/plugins/$(SUBNAME)
 
+REQUIRES = gdal
+
+include $(shell echo $${PREFIX-/usr})/share/smartmet/devel/makefile.inc
+
 # Enabling / disabling CORBA usage.
 
 CORBA = enabled
-
-# Installation directories
-
-processor := $(shell uname -p)
-
-ifeq ($(origin PREFIX), undefined)
-  PREFIX = /usr
-else
-  PREFIX = $(PREFIX)
-endif
-
-ifeq ($(processor), x86_64)
-  libdir = $(PREFIX)/lib64
-else
-  libdir = $(PREFIX)/lib
-endif
-
-bindir = $(PREFIX)/bin
-includedir = $(PREFIX)/include
-datadir = $(PREFIX)/share
-plugindir = $(datadir)/smartmet/plugins
-objdir = obj
-
 
 ifeq ($(CORBA), disabled)
   CORBA_FLAGS = -DCORBA_DISABLED
@@ -38,26 +19,9 @@ endif
 
 # Compiler options
 
+CFLAGS += -Wno-maybe-uninitialized $(CORBA_FLAGS)
+
 DEFINES = -DUNIX -D_REENTRANT
-
-# Boost 1.69
-
-ifneq "$(wildcard /usr/include/boost169)" ""
-  INCLUDES += -isystem /usr/include/boost169
-  LIBS += -L/usr/lib64/boost169
-endif
-
-FLAGS = -std=c++11 -fPIC -MD -Wall -W -Wno-unused-parameter -fno-omit-frame-pointer -fdiagnostics-color=always
-
-FLAGS_DEBUG = \
-	-Wcast-align \
-	-Wcast-qual \
-	-Winline \
-	-Wno-multichar \
-	-Wno-pmf-conversions \
-	-Wpointer-arith
-
-FLAGS_RELEASE = -Wuninitialized
 
 INCLUDES += \
 	-I$(includedir)/smartmet \
@@ -66,30 +30,18 @@ INCLUDES += \
 	-isystem $(includedir)/mysql \
 	$(CORBA_INCLUDE)
 
-# Compile options in detault, debug and profile modes
-
-CFLAGS_RELEASE = $(DEFINES) $(FLAGS) $(FLAGS_RELEASE) -DNDEBUG -O2 -g
-CFLAGS_DEBUG   = $(DEFINES) $(FLAGS) $(FLAGS_DEBUG)   -Werror  -O0 -g
-
-ifneq (,$(findstring debug,$(MAKECMDGOALS)))
-  override CFLAGS += $(CFLAGS_DEBUG)
-else
-  override CFLAGS += $(CFLAGS_RELEASE)
-endif
 
 LIBS += -L$(libdir) \
+	$(REQUIRED_LIBS) \
+	$(CORBA_LIBS) \
+	-lsmartmet-grid-files \
+	-lsmartmet-grid-content \
 	-lsmartmet-spine \
 	-lsmartmet-macgyver \
-	$(CORBA_LIBS)
 
 # What to install
 
 LIBFILE = $(SUBNAME).so
-
-# How to install
-
-INSTALL_PROG = install -p -m 775
-INSTALL_DATA = install -p -m 664
 
 # Compilation directories
 
@@ -102,7 +54,7 @@ SRCS = $(wildcard $(SUBNAME)/*.cpp)
 HDRS = $(wildcard $(SUBNAME)/*.h)
 OBJS = $(patsubst %.cpp, obj/%.o, $(notdir $(SRCS)))
 
-INCLUDES := -Iinclude $(INCLUDES)
+INCLUDES := -I$(SUBNAME) $(INCLUDES)
 
 .PHONY: test rpm
 
@@ -117,14 +69,19 @@ configtest:
 	@if [ -x "$$(command -v cfgvalidate)" ]; then cfgvalidate -v cnf/crid-admin.conf.sample; fi
 
 $(LIBFILE): $(OBJS)
-	$(CC) $(LDFLAGS) -shared -rdynamic -o $(LIBFILE) $(OBJS) $(LIBS)
+	$(CXX) $(LDFLAGS) -shared -rdynamic -o $(LIBFILE) $(OBJS) $(LIBS)
+	@echo Checking $(LIBFILE) for unresolved references
+	@if ldd -r $(LIBFILE) 2>&1 | c++filt | grep ^undefined\ symbol | grep -v SmartMet::Engine:: ; \
+		then rm -v $(LIBFILE); \
+		exit 1; \
+	fi
 
 clean:
 	rm -f $(LIBFILE) *~ $(SUBNAME)/*~
 	rm -rf obj
 
 format:
-	clang-format -i -style=file $(SUBNAME)/*.h $(SUBNAME)/*.cpp
+	clang-format -i -style=file $(SUBNAME)/*.h $(SUBNAME)/*.cpp test/*.cpp
 
 install:
 	@mkdir -p $(plugindir)
@@ -136,15 +93,11 @@ test:
 objdir:
 	@mkdir -p $(objdir)
 
-rpm: clean
-	@if [ -e $(SPEC).spec ]; \
-	then \
-	  tar -czvf $(SPEC).tar.gz --transform "s,^,$(SPEC)/," * ; \
-	  rpmbuild -tb $(SPEC).tar.gz ; \
-	  rm -f $(SPEC).tar.gz ; \
-	else \
-	  echo $(SPEC).spec; \
-	fi;
+rpm: clean $(SPEC).spec
+	rm -f $(SPEC).tar.gz # Clean a possible leftover from previous attempt
+	tar -czvf $(SPEC).tar.gz --exclude test --exclude-vcs --transform "s,^,$(SPEC)/," *
+	rpmbuild -tb $(SPEC).tar.gz
+	rm -f $(SPEC).tar.gz
 
 .SUFFIXES: $(SUFFIXES) .cpp
 
