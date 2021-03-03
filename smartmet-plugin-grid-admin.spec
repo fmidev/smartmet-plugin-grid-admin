@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 21.2.3
+Version: 21.3.3
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -15,20 +15,20 @@ BuildRequires: make
 BuildRequires: boost169-devel
 BuildRequires: libconfig-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 21.1.29
-BuildRequires: smartmet-library-locus-devel >= 21.2.2
-BuildRequires: smartmet-library-macgyver-devel >= 21.1.25
-BuildRequires: smartmet-library-newbase-devel >= 21.1.22
-BuildRequires: smartmet-library-grid-files-devel >= 21.2.3
-BuildRequires: smartmet-library-grid-content-devel >= 21.2.3
-BuildRequires: smartmet-engine-grid-devel >= 21.2.3
+BuildRequires: smartmet-library-spine-devel >= 21.3.1
+BuildRequires: smartmet-library-locus-devel >= 21.2.18
+BuildRequires: smartmet-library-macgyver-devel >= 21.2.25
+BuildRequires: smartmet-library-newbase-devel >= 21.3.2
+BuildRequires: smartmet-library-grid-files-devel >= 21.2.25
+BuildRequires: smartmet-library-grid-content-devel >= 21.3.3
+BuildRequires: smartmet-engine-grid-devel >= 21.3.3
 BuildRequires: gdal32-devel
 Requires: libconfig
-Requires: smartmet-library-locus >= 21.2.2
-Requires: smartmet-library-macgyver >= 21.1.25
-Requires: smartmet-library-newbase >= 21.1.22
-Requires: smartmet-library-spine >= 21.1.29
-Requires: smartmet-engine-grid >= 21.2.3
+Requires: smartmet-library-locus >= 21.2.18
+Requires: smartmet-library-macgyver >= 21.2.25
+Requires: smartmet-library-newbase >= 21.3.2
+Requires: smartmet-library-spine >= 21.3.1
+Requires: smartmet-engine-grid >= 21.3.3
 Requires: smartmet-server >= 21.1.14
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Wed Mar  3 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.3.3-1.fmi
+- Repackaged due to grid-files API changes
+
 * Wed Feb  3 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.2.3-1.fmi
 - Repackaged due to base library API changes
 
