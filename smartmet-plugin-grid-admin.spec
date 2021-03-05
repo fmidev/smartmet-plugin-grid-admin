@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 21.3.3
+Version: 21.3.5
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -19,8 +19,8 @@ BuildRequires: smartmet-library-spine-devel >= 21.3.1
 BuildRequires: smartmet-library-locus-devel >= 21.2.18
 BuildRequires: smartmet-library-macgyver-devel >= 21.2.25
 BuildRequires: smartmet-library-newbase-devel >= 21.3.2
-BuildRequires: smartmet-library-grid-files-devel >= 21.2.25
-BuildRequires: smartmet-library-grid-content-devel >= 21.3.3
+BuildRequires: smartmet-library-grid-files-devel >= 21.3.4
+BuildRequires: smartmet-library-grid-content-devel >= 21.3.4
 BuildRequires: smartmet-engine-grid-devel >= 21.3.3
 BuildRequires: gdal32-devel
 Requires: libconfig
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Fri Mar  5 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.3.5-1.fmi
+- Detect if the grid-engine is disabled
+
 * Wed Mar  3 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.3.3-1.fmi
 - Repackaged due to grid-files API changes
 
