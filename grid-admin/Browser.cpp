@@ -71,7 +71,7 @@ bool Browser::page_engines(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
     output << "<HR>\n";
     output << "    <OL>\n";
 
-    if (itsGridEngine)
+    if (itsGridEngine && itsGridEngine->isEnabled())
     {
       output << "      <LI>";
       output << "        <H4><A href=\"/grid-admin?target=grid-engine&page=start\">Grid Engine</A></H4>";
@@ -159,7 +159,7 @@ bool Browser::page_start(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
     output << "    <H4><A href=\"/grid-admin?&page=engines\">Engines</A></H4>";
     output << "    <OL>\n";
 
-    if (itsGridEngine)
+    if (itsGridEngine && itsGridEngine->isEnabled())
     {
       output << "      <LI>";
       output << "        <H4><A href=\"/grid-admin?&target=grid-engine&page=start\">Grid Engine</A></H4>";
