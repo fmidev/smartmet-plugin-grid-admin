@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 21.6.1
+Version: 21.6.8
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -18,18 +18,18 @@ BuildRequires: omniORB-devel
 BuildRequires: smartmet-library-spine-devel >= 21.5.31
 BuildRequires: smartmet-library-locus-devel >= 21.5.20
 BuildRequires: smartmet-library-macgyver-devel >= 21.5.31
-BuildRequires: smartmet-library-newbase-devel >= 21.5.6
-BuildRequires: smartmet-library-grid-files-devel >= 21.6.1
-BuildRequires: smartmet-library-grid-content-devel >= 21.6.1
-BuildRequires: smartmet-engine-grid-devel >= 21.6.1
+BuildRequires: smartmet-library-newbase-devel >= 21.6.7
+BuildRequires: smartmet-library-grid-files-devel >= 21.6.8
+BuildRequires: smartmet-library-grid-content-devel >= 21.6.8
+BuildRequires: smartmet-engine-grid-devel >= 21.6.8
 BuildRequires: gdal32-devel
 Requires: libconfig
 Requires: smartmet-library-locus >= 21.5.20
 Requires: smartmet-library-macgyver >= 21.5.31
-Requires: smartmet-library-newbase >= 21.5.6
+Requires: smartmet-library-newbase >= 21.6.7
 Requires: smartmet-library-spine >= 21.5.31
-Requires: smartmet-engine-grid >= 21.6.1
-Requires: smartmet-server >= 21.1.14
+Requires: smartmet-engine-grid >= 21.6.8
+Requires: smartmet-server >= 21.6.3
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
 #Requires: boost169-iostreams
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Tue Jun  8 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.6.8-1.fmi
+- Repackaged due to memory saving ABI changes in base libraries
+
 * Tue Jun  1 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.6.1-1.fmi
 - Repackaged due to ABI changes in grid files
 
