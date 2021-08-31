@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 21.8.17
+Version: 21.8.31
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -15,20 +15,20 @@ BuildRequires: make
 BuildRequires: boost169-devel
 BuildRequires: libconfig-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 21.8.17
+BuildRequires: smartmet-library-spine-devel >= 21.8.30
 BuildRequires: smartmet-library-locus-devel >= 21.8.11
-BuildRequires: smartmet-library-macgyver-devel >= 21.8.5
+BuildRequires: smartmet-library-macgyver-devel >= 21.8.30
 BuildRequires: smartmet-library-newbase-devel >= 21.6.16
 BuildRequires: smartmet-library-grid-files-devel >= 21.6.8
-BuildRequires: smartmet-library-grid-content-devel >= 21.8.2
-BuildRequires: smartmet-engine-grid-devel >= 21.8.17
+BuildRequires: smartmet-library-grid-content-devel >= 21.8.18
+BuildRequires: smartmet-engine-grid-devel >= 21.8.31
 BuildRequires: gdal32-devel
 Requires: libconfig
 Requires: smartmet-library-locus >= 21.8.11
-Requires: smartmet-library-macgyver >= 21.8.5
+Requires: smartmet-library-macgyver >= 21.8.30
 Requires: smartmet-library-newbase >= 21.6.16
-Requires: smartmet-library-spine >= 21.8.17
-Requires: smartmet-engine-grid >= 21.8.17
+Requires: smartmet-library-spine >= 21.8.30
+Requires: smartmet-engine-grid >= 21.8.31
 Requires: smartmet-server >= 21.6.3
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Tue Aug 31 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.8.31-1.fmi
+- Repackaged due to Spine ABI changes
+
 * Tue Aug 17 2021 Mika Heiskanen <mika.heiskanen@fmi.fi> - 21.8.17-1.fmi
 - Use the new shutdown API
 
