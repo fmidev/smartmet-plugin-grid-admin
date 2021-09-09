@@ -13,7 +13,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: boost169-devel
-BuildRequires: libconfig-devel
+BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel
 BuildRequires: smartmet-library-spine-devel >= 21.8.30
 BuildRequires: smartmet-library-locus-devel >= 21.8.11
@@ -23,7 +23,7 @@ BuildRequires: smartmet-library-grid-files-devel >= 21.6.8
 BuildRequires: smartmet-library-grid-content-devel >= 21.8.18
 BuildRequires: smartmet-engine-grid-devel >= 21.8.31
 BuildRequires: gdal32-devel
-Requires: libconfig
+Requires: libconfig17
 Requires: smartmet-library-locus >= 21.8.11
 Requires: smartmet-library-macgyver >= 21.8.30
 Requires: smartmet-library-newbase >= 21.6.16
