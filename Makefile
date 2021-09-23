@@ -2,7 +2,7 @@ SUBNAME = grid-admin
 SPEC = smartmet-plugin-$(SUBNAME)
 INCDIR = smartmet/plugins/$(SUBNAME)
 
-REQUIRES = gdal
+REQUIRES = gdal configpp
 
 include $(shell echo $${PREFIX-/usr})/share/smartmet/devel/makefile.inc
 
@@ -32,12 +32,12 @@ INCLUDES += \
 
 
 LIBS += -L$(libdir) \
-	$(REQUIRED_LIBS) \
 	$(CORBA_LIBS) \
 	-lsmartmet-grid-files \
 	-lsmartmet-grid-content \
 	-lsmartmet-spine \
 	-lsmartmet-macgyver \
+	$(REQUIRED_LIBS)
 
 # What to install
 
