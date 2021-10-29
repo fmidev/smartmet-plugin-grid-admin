@@ -19,16 +19,16 @@ BuildRequires: smartmet-library-spine-devel >= 21.10.18
 BuildRequires: smartmet-library-locus-devel >= 21.8.11
 BuildRequires: smartmet-library-macgyver-devel >= 21.10.4
 BuildRequires: smartmet-library-newbase-devel >= 21.10.13
-BuildRequires: smartmet-library-grid-files-devel >= 21.10.19
-BuildRequires: smartmet-library-grid-content-devel >= 21.10.19
-BuildRequires: smartmet-engine-grid-devel >= 21.10.19
+BuildRequires: smartmet-library-grid-files-devel >= 21.10.29
+BuildRequires: smartmet-library-grid-content-devel >= 21.10.29
+BuildRequires: smartmet-engine-grid-devel >= 21.10.29
 BuildRequires: gdal32-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 21.8.11
 Requires: smartmet-library-macgyver >= 21.10.4
 Requires: smartmet-library-newbase >= 21.10.13
 Requires: smartmet-library-spine >= 21.10.18
-Requires: smartmet-engine-grid >= 21.10.19
+Requires: smartmet-engine-grid >= 21.10.29
 Requires: smartmet-server >= 21.9.7
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
