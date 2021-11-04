@@ -63,7 +63,7 @@ bool Browser::page_engines(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
     std::ostringstream output;
 
     output << "<HTML>\n";
-    output << "<BODY>\n";
+    output << "<BODY style=\"font-size:12;\">\n";
     output << "<HR>\n";
     output << "<A href=\"grid-admin\">SmartMet Server</A> / ";
     output << "<HR>\n";
@@ -106,7 +106,7 @@ bool Browser::page_plugins(const Spine::HTTP::Request& theRequest,Spine::HTTP::R
     std::ostringstream output;
 
     output << "<HTML>\n";
-    output << "<BODY>\n";
+    output << "<BODY style=\"font-size:12;\">\n";
     output << "<HR>\n";
     output << "<A href=\"grid-admin\">SmartMet Server</A> / ";
     output << "<HR>\n";
@@ -150,7 +150,7 @@ bool Browser::page_start(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
     std::ostringstream output;
 
     output << "<HTML>\n";
-    output << "<BODY>\n";
+    output << "<BODY style=\"font-size:12;\">\n";
     output << "<HR>\n";
     output << "<H2>SmartMet Server</H2>\n";
     output << "<HR>\n";
@@ -228,7 +228,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     std::ostringstream output;
 
     output << "<HTML>\n";
-    output << "<BODY>\n";
+    output << "<BODY style=\"font-size:12;\">\n";
 
     output << "Unknown page : " << *page << "\n";
     output << "</BODY>\n";
