@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 22.1.25
+Version: 22.2.9
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -16,19 +16,19 @@ BuildRequires: boost169-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel
 BuildRequires: smartmet-library-spine-devel >= 22.1.21
-BuildRequires: smartmet-library-locus-devel >= 21.12.7
+BuildRequires: smartmet-library-locus-devel >= 22.1.31
 BuildRequires: smartmet-library-macgyver-devel >= 22.1.21
 BuildRequires: smartmet-library-newbase-devel >= 22.1.21
-BuildRequires: smartmet-library-grid-files-devel >= 22.1.25
-BuildRequires: smartmet-library-grid-content-devel >= 22.1.25
-BuildRequires: smartmet-engine-grid-devel >= 22.1.25
+BuildRequires: smartmet-library-grid-files-devel >= 22.2.9
+BuildRequires: smartmet-library-grid-content-devel >= 22.2.9
+BuildRequires: smartmet-engine-grid-devel >= 22.2.9
 BuildRequires: gdal34-devel
 Requires: libconfig17
-Requires: smartmet-library-locus >= 21.12.7
+Requires: smartmet-library-locus >= 22.1.31
 Requires: smartmet-library-macgyver >= 22.1.21
 Requires: smartmet-library-newbase >= 22.1.21
 Requires: smartmet-library-spine >= 22.1.21
-Requires: smartmet-engine-grid >= 22.1.25
+Requires: smartmet-engine-grid >= 22.2.9
 Requires: smartmet-server >= 21.11.25
 #Requires: boost169-date-time
 #Requires: boost169-filesystem
@@ -60,6 +60,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Wed Feb  9 2022 Mika Heiskanen <mika.heiskanen@fmi.fi> - 22.2.9-1.fmi
+- Repackaged due to ABI changes in grid libraries
+
 * Tue Jan 25 2022 Mika Heiskanen <mika.heiskanen@fmi.fi> - 22.1.25-1.fmi
 - Repackaged due to ABI changes in libraries/engine
 
