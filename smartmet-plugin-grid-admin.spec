@@ -15,7 +15,7 @@ BuildRequires: make
 BuildRequires: boost169-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 22.3.18
+BuildRequires: smartmet-library-spine-devel >= 22.4.26
 BuildRequires: smartmet-library-locus-devel >= 22.3.28
 BuildRequires: smartmet-library-macgyver-devel >= 22.3.28
 BuildRequires: smartmet-library-newbase-devel >= 22.3.22
@@ -27,7 +27,7 @@ Requires: libconfig17
 Requires: smartmet-library-locus >= 22.3.28
 Requires: smartmet-library-macgyver >= 22.3.28
 Requires: smartmet-library-newbase >= 22.3.22
-Requires: smartmet-library-spine >= 22.3.18
+Requires: smartmet-library-spine >= 22.4.26
 Requires: smartmet-engine-grid >= 22.3.28
 Requires: smartmet-server >= 21.11.25
 #Requires: boost169-date-time
