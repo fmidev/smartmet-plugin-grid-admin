@@ -59,6 +59,8 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
     std::string         itsContentServerHttpUrl;
     std::string         itsContentServerCorbaIor;
     ContentServer_sptr  itsContentServer;
+    bool                itsAuthenticationRequired;
+    std::string         itsUsersFile;
     Browser             itsBrowser;
 
     ContentServer::HTTP::ServerInterface  itsMessageProcessor;

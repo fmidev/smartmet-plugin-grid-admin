@@ -25,21 +25,27 @@ class Browser
 {
   public:
 
-                          Browser();
-    virtual               ~Browser();
+              Browser();
+    virtual   ~Browser();
 
-    void                  init(Spine::Reactor* theReactor);
-    bool                  requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    void      init(Spine::Reactor* theReactor,bool authenticationRequired,std::string& usersFile);
+    bool      requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
   private:
 
-    bool                  page_start(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
-    bool                  page_engines(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
-    bool                  page_plugins(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    void      readUsers();
+    bool      page_login(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool      page_start(std::string& sessionId,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool      page_engines(std::string& sessionId,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool      page_plugins(std::string& sessionId,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
 
-    Spine::Reactor*       itsReactor;
-    Engine::Grid::Engine* itsGridEngine;
+    Spine::Reactor*                   itsReactor;
+    Engine::Grid::Engine*             itsGridEngine;
+    std::map<std::string,time_t>      itsValidSessions;
+    std::string                       itsUsersFile;
+    std::map<std::string,std::string> itsUsers;
+    bool                              itsAuthenticationRequired;
 };
 
 }  // namespace GridAdmin

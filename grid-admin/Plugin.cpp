@@ -52,6 +52,8 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerRedisLockEnabled = false;
     itsContentServerHttpUrl = "";
     itsContentServerCorbaIor = "";
+    itsAuthenticationRequired = false;
+    itsUsersFile = "";
 
     if (theReactor->getRequiredAPIVersion() != SMARTMET_API_VERSION)
       throw Fmi::Exception(BCP, "GridContent plugin and Server API version mismatch");
@@ -74,6 +76,8 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
       t++;
     }
 
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.authenticationRequired", itsAuthenticationRequired);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.usersFile", itsUsersFile);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.type", itsContentServerType);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.address", itsContentServerRedisAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.port", itsContentServerRedisPort);
@@ -148,7 +152,7 @@ void Plugin::init()
     }
 
     itsMessageProcessor.init(cServer);
-    itsBrowser.init(itsReactor);
+    itsBrowser.init(itsReactor,itsAuthenticationRequired,itsUsersFile);
 
 /*
     auto engine = itsReactor->getSingleton("grid", nullptr);

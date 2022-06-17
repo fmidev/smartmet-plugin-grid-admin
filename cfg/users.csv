@@ -1,0 +1,10 @@
+# This file contains usernames and passwords. You should locate it
+# into a secure place and make sure that it has correct read/write permissions.
+#
+# FIELDS:
+# 1 Username
+# 2 Password
+# 3 Description
+#
+admin;adminpw;Administrative user
+demo;demopw;Demo user
