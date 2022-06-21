@@ -12,6 +12,9 @@
 #include <spine/SmartMet.h>
 #include <macgyver/TimeFormatter.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/bind/bind.hpp>
+
+namespace ph = boost::placeholders;
 
 namespace SmartMet
 {
@@ -59,7 +62,9 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
       throw Fmi::Exception(BCP, "GridContent plugin and Server API version mismatch");
 
     // Register the handler
-    if (!theReactor->addPrivateContentHandler(this, "/grid-admin", boost::bind(&Plugin::callRequestHandler, this, _1, _2, _3)))
+    if (!theReactor->addPrivateContentHandler(this, "/grid-admin",
+					      boost::bind(&Plugin::callRequestHandler,
+							  this, ph::_1, ph::_2, ph::_3)))
       throw Fmi::Exception(BCP, "Failed to register GridContent request handler");
 
     itsConfigurationFile.readFile(theConfig);
