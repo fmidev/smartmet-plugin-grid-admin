@@ -23,11 +23,14 @@ namespace GridAdmin
 {
 
 
-class Plugin : public SmartMetPlugin, private boost::noncopyable
+class Plugin : public SmartMetPlugin
 {
   public:
 
+                        Plugin() = delete;
                         Plugin(Spine::Reactor* theReactor, const char* theConfig);
+                        Plugin(const Plugin& other) = delete;
+    Plugin&             operator=(const Plugin& other) = delete;
     virtual             ~Plugin();
 
     const std::string&  getPluginName() const;
@@ -41,7 +44,6 @@ class Plugin : public SmartMetPlugin, private boost::noncopyable
     void                requestHandler(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
   private:
-                        Plugin();
     bool                request(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool                apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse);
 
