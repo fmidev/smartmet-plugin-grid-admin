@@ -311,6 +311,12 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
   {
     try
     {
+      // Check request method (support GET, OPTIONS)
+      if (checkRequest(theRequest, theResponse, false))
+      {
+        return;
+      }
+
       // We return JSON, hence we should enable CORS
       theResponse.setHeader("Access-Control-Allow-Origin", "*");
 
