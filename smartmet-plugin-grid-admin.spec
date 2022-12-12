@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 22.12.5
+Version: 22.12.12
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -27,18 +27,18 @@ BuildRequires: omniORB-devel
 BuildRequires: smartmet-library-spine-devel >= 22.12.2
 BuildRequires: smartmet-library-locus-devel >= 22.6.17
 BuildRequires: smartmet-library-macgyver-devel >= 22.10.20
-BuildRequires: smartmet-library-newbase-devel >= 22.8.29
-BuildRequires: smartmet-library-grid-files-devel >= 22.11.8
-BuildRequires: smartmet-library-grid-content-devel >= 22.11.8
-BuildRequires: smartmet-engine-grid-devel >= 22.11.8
+BuildRequires: smartmet-library-newbase-devel >= 22.11.14
+BuildRequires: smartmet-library-grid-files-devel >= 22.12.12
+BuildRequires: smartmet-library-grid-content-devel >= 22.12.12
+BuildRequires: smartmet-engine-grid-devel >= 22.12.12
 BuildRequires: gdal34-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 22.6.17
 Requires: smartmet-library-macgyver >= 22.10.20
-Requires: smartmet-library-newbase >= 22.8.29
+Requires: smartmet-library-newbase >= 22.11.14
 Requires: smartmet-library-spine >= 22.12.2
-Requires: smartmet-engine-grid >= 22.11.8
-Requires: smartmet-server >= 22.11.7
+Requires: smartmet-engine-grid >= 22.12.12
+Requires: smartmet-server >= 22.12.5
 #Requires: %{smartmet_boost}-date-time
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Mon Dec 12 2022 Mika Heiskanen <mika.heiskanen@fmi.fi> - 22.12.12-1.fmi
+- Repackaged due to ABI changes
+
 * Mon Dec  5 2022 Andris Pavēnis <andris.pavenis@fmi.fi> 22.12.5-1.fmi
 - Check HTTP request type and handle only POST and OPTIONS requests
 
