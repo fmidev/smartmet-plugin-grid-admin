@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 22.12.12
+Version: 23.1.19
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -24,21 +24,21 @@ BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 22.12.2
-BuildRequires: smartmet-library-locus-devel >= 22.6.17
-BuildRequires: smartmet-library-macgyver-devel >= 22.10.20
+BuildRequires: smartmet-library-spine-devel >= 23.1.16
+BuildRequires: smartmet-library-locus-devel >= 22.12.16
+BuildRequires: smartmet-library-macgyver-devel >= 22.12.16
 BuildRequires: smartmet-library-newbase-devel >= 22.11.14
-BuildRequires: smartmet-library-grid-files-devel >= 22.12.12
-BuildRequires: smartmet-library-grid-content-devel >= 22.12.12
-BuildRequires: smartmet-engine-grid-devel >= 22.12.12
+BuildRequires: smartmet-library-grid-files-devel >= 23.1.19
+BuildRequires: smartmet-library-grid-content-devel >= 23.1.19
+BuildRequires: smartmet-engine-grid-devel >= 23.1.19
 BuildRequires: gdal34-devel
 Requires: libconfig17
-Requires: smartmet-library-locus >= 22.6.17
-Requires: smartmet-library-macgyver >= 22.10.20
+Requires: smartmet-library-locus >= 22.12.16
+Requires: smartmet-library-macgyver >= 22.12.16
 Requires: smartmet-library-newbase >= 22.11.14
-Requires: smartmet-library-spine >= 22.12.2
-Requires: smartmet-engine-grid >= 22.12.12
-Requires: smartmet-server >= 22.12.5
+Requires: smartmet-library-spine >= 23.1.16
+Requires: smartmet-engine-grid >= 23.1.19
+Requires: smartmet-server >= 23.1.10
 #Requires: %{smartmet_boost}-date-time
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Thu Jan 19 2023 Mika Heiskanen <mika.heiskanen@fmi.fi> - 23.1.19-1.fmi
+- Repackaged due to ABI changes
+
 * Mon Dec 12 2022 Mika Heiskanen <mika.heiskanen@fmi.fi> - 22.12.12-1.fmi
 - Repackaged due to ABI changes
 
