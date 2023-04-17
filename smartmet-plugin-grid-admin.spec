@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 23.1.19
+Version: 23.4.17
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -24,21 +24,21 @@ BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel
-BuildRequires: smartmet-library-spine-devel >= 23.1.16
-BuildRequires: smartmet-library-locus-devel >= 22.12.16
-BuildRequires: smartmet-library-macgyver-devel >= 22.12.16
-BuildRequires: smartmet-library-newbase-devel >= 22.11.14
-BuildRequires: smartmet-library-grid-files-devel >= 23.1.19
-BuildRequires: smartmet-library-grid-content-devel >= 23.1.19
-BuildRequires: smartmet-engine-grid-devel >= 23.1.19
+BuildRequires: smartmet-library-spine-devel >= 23.3.14
+BuildRequires: smartmet-library-locus-devel >= 23.3.7
+BuildRequires: smartmet-library-macgyver-devel >= 23.3.3
+BuildRequires: smartmet-library-newbase-devel >= 23.2.9
+BuildRequires: smartmet-library-grid-files-devel >= 23.3.9
+BuildRequires: smartmet-library-grid-content-devel >= 23.4.17
+BuildRequires: smartmet-engine-grid-devel >= 23.4.17
 BuildRequires: gdal34-devel
 Requires: libconfig17
-Requires: smartmet-library-locus >= 22.12.16
-Requires: smartmet-library-macgyver >= 22.12.16
-Requires: smartmet-library-newbase >= 22.11.14
-Requires: smartmet-library-spine >= 23.1.16
-Requires: smartmet-engine-grid >= 23.1.19
-Requires: smartmet-server >= 23.1.10
+Requires: smartmet-library-locus >= 23.3.7
+Requires: smartmet-library-macgyver >= 23.3.3
+Requires: smartmet-library-newbase >= 23.2.9
+Requires: smartmet-library-spine >= 23.3.14
+Requires: smartmet-engine-grid >= 23.4.17
+Requires: smartmet-server >= 23.3.21
 #Requires: %{smartmet_boost}-date-time
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Mon Apr 17 2023 Mika Heiskanen <mika.heiskanen@fmi.fi> - 23.4.17-1.fmi
+- Repackaged due to ABI changes
+
 * Thu Jan 19 2023 Mika Heiskanen <mika.heiskanen@fmi.fi> - 23.1.19-1.fmi
 - Repackaged due to ABI changes
 
