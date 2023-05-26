@@ -23,7 +23,7 @@ BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
-BuildRequires: omniORB-devel
+BuildRequires: omniORB-devel >= 4.3.0
 BuildRequires: smartmet-library-spine-devel >= 23.3.14
 BuildRequires: smartmet-library-locus-devel >= 23.3.7
 BuildRequires: smartmet-library-macgyver-devel >= 23.3.3
