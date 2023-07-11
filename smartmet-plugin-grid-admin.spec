@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 23.5.26
+Version: 23.6.6
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -26,7 +26,7 @@ BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
 BuildRequires: smartmet-library-spine-devel >= 23.7.10
 BuildRequires: smartmet-library-locus-devel >= 23.7.10
-BuildRequires: smartmet-library-macgyver-devel >= 23.3.3
+BuildRequires: smartmet-library-macgyver-devel >= 23.6.2
 BuildRequires: smartmet-library-newbase-devel >= 23.7.10
 BuildRequires: smartmet-library-grid-files-devel >= 23.7.10
 BuildRequires: smartmet-library-grid-content-devel >= 23.7.10
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Tue Jun  6 2023 Mika Heiskanen <mika.heiskanen@fmi.fi> - 23.6.6-1.fmi
+- Repackaged due to GRID ABI changes
+
 * Fri May 26 2023 Andris Pavēnis <andris.pavenis@fmi.fi> 23.5.26-1.fmi
 - Require omniORB >= 4.3.0
 
