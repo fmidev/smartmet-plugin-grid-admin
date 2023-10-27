@@ -57,6 +57,7 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerCorbaIor = "";
     itsAuthenticationRequired = false;
     itsUsersFile = "";
+    itsGroupsFile = "";
 
     if (theReactor->getRequiredAPIVersion() != SMARTMET_API_VERSION)
       throw Fmi::Exception(BCP, "GridContent plugin and Server API version mismatch");
@@ -83,6 +84,7 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
 
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.authenticationRequired", itsAuthenticationRequired);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.usersFile", itsUsersFile);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.groupsFile", itsGroupsFile);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.type", itsContentServerType);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.address", itsContentServerRedisAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.port", itsContentServerRedisPort);
@@ -157,13 +159,7 @@ void Plugin::init()
     }
 
     itsMessageProcessor.init(cServer);
-    itsBrowser.init(itsReactor,itsAuthenticationRequired,itsUsersFile);
-
-/*
-    auto engine = itsReactor->getSingleton("grid", nullptr);
-    if (!engine)
-      throw Fmi::Exception(BCP, "The 'grid-engine' unavailable!");
-*/
+    itsBrowser.init(itsReactor,itsAuthenticationRequired,itsGroupsFile,itsUsersFile);
   }
   catch (...)
   {
@@ -283,7 +279,6 @@ bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theR
   {
 
     auto method = theRequest.getParameter("method");
-
     if (method && *method > " ")
     {
       theResponse.setHeader("Content-Type", "text/plain; charset=UTF-8");
@@ -312,7 +307,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
     try
     {
       // Check request method (support GET, OPTIONS)
-      if (checkRequest(theRequest, theResponse, false))
+      if (checkRequest(theRequest, theResponse, true))
       {
         return;
       }

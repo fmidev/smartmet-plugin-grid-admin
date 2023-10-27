@@ -1,10 +1,20 @@
-# This file contains usernames and passwords. You should locate it
+# -----------------------------------------------------------------------------------------
+# This file contains usernames,passwords and users' groups. You should locate it
 # into a secure place and make sure that it has correct read/write permissions.
 #
-# FIELDS:
-# 1 Username
-# 2 Password
-# 3 Description
+# Notice that you can check users authorization on two levels. Sometimes it enough that
+# user belongs to a certain group in order to give him/her to enough rights to do something.
+# If you need more detailed authorization, then you can check permission belonging to
+# that group (see the "groups" file). 
 #
-admin;adminpw;Administrative user
-demo;demopw;Demo user
+# FIELDS:
+# 1 UserId
+# 2 Username
+# 3 Password
+# 4 Description
+# 5 Group[,group,...,group]
+#
+# -----------------------------------------------------------------------------------------
+
+1;admin;adminpw;Administrative user;grid-admin
+1000;demo;demopw;Demo user;grid-user
