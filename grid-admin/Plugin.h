@@ -63,6 +63,7 @@ class Plugin : public SmartMetPlugin
     ContentServer_sptr  itsContentServer;
     bool                itsAuthenticationRequired;
     std::string         itsUsersFile;
+    std::string         itsGroupsFile;
     Browser             itsBrowser;
 
     ContentServer::HTTP::ServerInterface  itsMessageProcessor;

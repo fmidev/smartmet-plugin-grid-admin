@@ -1,6 +1,7 @@
 #include "Browser.h"
 #include <macgyver/TimeFormatter.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <grid-content/userManagement/implementation/ServiceImplementation.h>
 
 namespace SmartMet
 {
@@ -18,6 +19,7 @@ Browser::Browser()
     itsGridEngine = nullptr;
     itsReactor = nullptr;
     itsAuthenticationRequired = false;
+    itsBroswerSessionId = 0;
   }
   catch (...)
   {
@@ -36,88 +38,13 @@ Browser::~Browser()
 
 
 
-
-void Browser::readUsers()
-{
-  try
-  {
-    if (itsUsersFile.empty())
-      return;
-
-    FILE *file = fopen(itsUsersFile.c_str(),"re");
-    if (file == nullptr)
-    {
-      Fmi::Exception exception(BCP,"Cannot open the users file!");
-      exception.addParameter("Filename",itsUsersFile);
-      throw exception;
-    }
-
-    char st[1000];
-
-    while (!feof(file))
-    {
-      if (fgets(st,1000,file) != nullptr  &&  st[0] != '#')
-      {
-        bool ind = false;
-        char *field[100];
-        uint c = 1;
-        field[0] = st;
-        char *p = st;
-        while (*p != '\0'  &&  c < 100)
-        {
-          if (*p == '"')
-            ind = !ind;
-
-          if ((*p == ';'  || *p == '\n') && !ind)
-          {
-            *p = '\0';
-            p++;
-            field[c] = p;
-            c++;
-          }
-          else
-          {
-            p++;
-          }
-        }
-
-        if (c > 2)
-        {
-          std::string username;
-          std::string password;
-          std::string description;
-
-          if (field[0][0] != '\0')
-            username = field[0];
-
-          if (field[1][0] != '\0')
-            password = field[1];
-
-          if (field[2][0] != '\0')
-            description = field[2];
-
-          itsUsers.insert(std::pair<std::string,std::string>(username,password));
-        }
-      }
-    }
-    fclose(file);
-  }
-  catch (...)
-  {
-    throw Fmi::Exception(BCP,"Operation failed!",nullptr);
-  }
-}
-
-
-
-
-
-void Browser::init(Spine::Reactor* theReactor,bool authenticationRequired,std::string& usersFile)
+void Browser::init(Spine::Reactor* theReactor,bool authenticationRequired,std::string& groupsFile,std::string& usersFile)
 {
   try
   {
     itsReactor = theReactor;
     itsAuthenticationRequired = authenticationRequired;
+    itsGroupsFile = groupsFile;
     itsUsersFile = usersFile;
 
     auto  engine = itsReactor->getSingleton("grid", NULL);
@@ -125,7 +52,9 @@ void Browser::init(Spine::Reactor* theReactor,bool authenticationRequired,std::s
     {
       itsGridEngine = reinterpret_cast<Engine::Grid::Engine*>(engine);
     }
-    readUsers();
+
+    if (itsAuthenticationRequired)
+      UserManagement::localUserManagement.init(groupsFile.c_str(),usersFile.c_str());
   }
   catch (...)
   {
@@ -137,7 +66,7 @@ void Browser::init(Spine::Reactor* theReactor,bool authenticationRequired,std::s
 
 
 
-bool Browser::page_engines(std::string& sessionId,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -152,11 +81,11 @@ bool Browser::page_engines(std::string& sessionId,const Spine::HTTP::Request& th
     output << "<HR>\n";
     output << "    <OL>\n";
 
-    if (itsGridEngine && itsGridEngine->isEnabled())
+    if (itsGridEngine && itsGridEngine->isEnabled() && (session.mUserInfo.getUserId() == 0 || session.mUserInfo.hasPermission("grid-content-view")))
     {
       output << "      <LI>";
       output << "        <H4><A href=\"/grid-admin?target=grid-engine&page=start\">Grid Engine</A></H4>";
-      itsGridEngine->browserContent(output);
+      itsGridEngine->browserContent(session,output);
       output << "      </LI>";
     }
 
@@ -180,7 +109,7 @@ bool Browser::page_engines(std::string& sessionId,const Spine::HTTP::Request& th
 
 
 
-bool Browser::page_plugins(std::string& sessionId,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_plugins(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -225,14 +154,57 @@ bool Browser::page_plugins(std::string& sessionId,const Spine::HTTP::Request& th
 
 
 
+void Browser::countHash(const char *key,const char *password,char *hash)
+{
+  uint klen = strlen(key);
+  uint plen = strlen(password);
 
-bool Browser::page_login(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+  if (klen == 0 || plen == 0)
+  {
+    hash[0] = '\0';
+    return;
+  }
+
+  char *p = hash;
+
+  for (uint i = 0; i < plen; i++)
+  {
+    uint c1 = password[i];
+    uint c2 = key[i % klen];
+    uint val = (c1 * c2) % 256;
+    p += sprintf(p,"%02x",val);
+  }
+}
+
+
+
+
+
+bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
   try
   {
     std::ostringstream output;
     auto target = theRequest.getParameter("target");
     auto page = theRequest.getParameter("page");
+
+    char key[100];
+    char *p = key;
+    UInt64 k = getTime();
+    uint t=0;
+    while (t<20)
+    {
+      UInt64 v = k * rand();
+      char ch = (char)(32 + (v % 96));
+      if (isalnum(ch))
+      {
+        p += sprintf(p,"%c",ch);
+        t++;
+      }
+    }
+
+    session.setKey(key);
+
 
     if (!page || *page == "logout")
       page = "start";
@@ -242,6 +214,22 @@ bool Browser::page_login(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
 
     output << "<HTML>\n";
     output << "<SCRIPT>\n";
+    output << "function hash(s)\n";
+    output << "{\n";
+    output << "  var key = '" << key << "';\n";
+    output << "  var len = key.length;\n";
+    output << "  var text = '';\n";
+    output << "  for (let i = 0; i < s.length; i++) {\n";
+    output << "    var c1 = s.charCodeAt(i);\n";
+    output << "    var c2 = key.charCodeAt(i % len);\n";
+    output << "    var val = (c1 * c2) % 256;\n";
+    output << "    var hexValue = val.toString(16);\n";
+    output << "    if (val < 16) text += '0';\n";
+    output << "    text += hexValue;\n";
+    output << "  } \n";
+
+    output << "  return text;\n";
+    output << "}\n";
 
     output << "function getPage(obj,frm,url)\n";
     output << "{\n";
@@ -264,7 +252,7 @@ bool Browser::page_login(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
     output << "  };\n";
     output << "  var user = document.getElementById('username').value;\n";
     output << "  var pw = document.getElementById('password').value;\n";
-    output << "  var data = user + \":\" + pw;\n";
+    output << "  var data = user + \":\" + hash(pw+pw+pw);\n";
     output << "  xhr.send(data);";
     output << "}\n";
 
@@ -276,7 +264,7 @@ bool Browser::page_login(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
     output << "<H2>Login</H2>\n";
     output << "<TABLE border=\"1\" width=\"400\" style=\"font-size:12;\">\n";
     output << "<TR><TD width=\"140\" bgColor=\"#D0D0D0\">Username</TD><TD><INPUT style=\"width:100%;\"  type=\"text\" id=\"username\" value=\"\"></TD></TR>\n";
-    output << "<TR><TD width=\"140\" bgColor=\"#D0D0D0\">Password</TD><TD><INPUT style=\"width:100%;\"  type=\"password\" id=\"password\" value=\"\"></TD></TR>\n";
+    output << "<TR><TD width=\"140\" bgColor=\"#D0D0D0\">Password</TD><TD><INPUT style=\"width:100%;\"  type=\"password\" id=\"password\" value=\"\" onkeydown=\"if (event.key == 'Enter'){login(this,parent,'/grid-admin?page="+ *page + "&target=" + *target + "');}else{}\"></TD></TR>\n";
     output << "</TABLE>\n";
 
     std::string bg = "#C0C0C0";
@@ -304,7 +292,7 @@ bool Browser::page_login(const Spine::HTTP::Request& theRequest,Spine::HTTP::Res
 
 
 
-bool Browser::page_start(std::string& sessionId,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -330,11 +318,11 @@ bool Browser::page_start(std::string& sessionId,const Spine::HTTP::Request& theR
     output << "    <H4><A href=\"/grid-admin?&page=engines\">Engines</A></H4>";
     output << "    <OL>\n";
 
-    if (itsGridEngine && itsGridEngine->isEnabled())
+    if (itsGridEngine && itsGridEngine->isEnabled() && (session.mUserInfo.getUserId() == 0 || session.mUserInfo.hasPermission("grid-content-view")))
     {
       output << "      <LI>";
       output << "        <H4><A href=\"/grid-admin?&target=grid-engine&page=start\">Grid Engine</A></H4>";
-      itsGridEngine->browserContent(output);
+      itsGridEngine->browserContent(session,output);
       output << "      </LI>";
     }
 
@@ -383,82 +371,92 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
 {
   try
   {
-    std::string sessionId = "";
+    SessionManagement::SessionInfo sessionInfo;
+    sessionInfo.setSessionId(0);
+    T::SessionId sessionId = 0;
 
-    if (itsAuthenticationRequired)
+    // Fetching the cookien that contains session information.
+    auto cookie = theRequest.getHeader("Cookie");
+
+    if (cookie)
     {
-      // Fetching the cookien that contains session information.
-      auto cookie = theRequest.getHeader("Cookie");
-
-      if (cookie)
+      // Parsing the session id.
+      std::vector<std::string> list;
+      splitString(*cookie,';',list);
+      if (list.size() > 0)
       {
-        // Parsing the session id.
-        std::vector<std::string> list;
-        splitString(*cookie,';',list);
-        if (list.size() > 0)
+        for (auto it = list.begin(); it != list.end(); ++it)
         {
-          for (auto it = list.begin(); it != list.end(); ++it)
-          {
-            std::vector<std::string> p;
-            splitString(*it,'=',p);
-            if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
-            {
-              sessionId = p[1];
-            }
-          }
-        }
-        else
-          sessionId = "";
-
-        auto it = itsValidSessions.find(sessionId);
-        if (it != itsValidSessions.end())
-        {
-          auto t = time(0);
-          if ((t - it->second) > 600)
-          {
-            // The session is old. Removing the session.
-            itsValidSessions.erase(it);
-            sessionId = "";
-          }
-          else
-          {
-            // The session is valid. Updating the last access time.
-            it->second = time(0);
-          }
-        }
-        else
-        {
-          // Unknown session id.
-          sessionId = "";
+          std::vector<std::string> p;
+          splitString(*it,'=',p);
+          if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
+            sessionId = toUInt64(p[1]);
         }
       }
+    }
 
 
-      if (sessionId == "")
+    if (sessionId != 0)
+    {
+      // Fetching session information according to the sessionId.
+
+      time_t currentTime = time(nullptr);
+      if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) == 0)
       {
-        // Parsing the usename and password
-        std::vector<std::string> list;
-        splitString(theRequest.getContent(),':',list);
-        if (list.size() == 2)
+        if (theRequest.getClientIP() != sessionInfo.getAddress())
+          sessionId = 0;
+        else
+        if (currentTime > sessionInfo.getExpirationTime())
         {
-          // Searching user according to the username.
-          auto user = itsUsers.find(list[0]);
-          if (user != itsUsers.end())
-          {
-            // Checking the password
-            if (user->second == list[1])
-            {
-              // Creation a new session.
-              sessionId = std::to_string(time(0) * rand());
-              itsValidSessions.insert(std::pair<std::string,time_t>(sessionId,time(0)));
+          // The session is old. Removing the session.
+          SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
+          sessionId = 0;
+        }
+        else
+        {
+          // The session is valid. Updating the last access time.
+          SessionManagement::localSessionManagement.updateSessionAccessTime(itsBroswerSessionId,sessionId);
+        }
+      }
+      else
+      {
+        // Unknown session id.
+        sessionId = 0;
+      }
+    }
 
-              // The session information is send to the client as "a cookie".
-              boost::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
-              boost::posix_time::ptime t_now = boost::posix_time::second_clock::universal_time();
-              boost::posix_time::ptime t_expires = t_now + boost::posix_time::seconds(3600);
-              std::string expiration = tformat->format(t_expires);
-              theResponse.setHeader("Set-Cookie","sessionId=" + sessionId + "; expires=" + expiration);
-            }
+    if (sessionId == 0)
+    {
+      // Creating new session
+      SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+      sessionInfo.setAddress(theRequest.getClientIP().c_str());
+      sessionId = sessionInfo.getSessionId();
+    }
+
+    // sessionInfo.print(std::cout,0,0);
+
+    if (itsAuthenticationRequired && sessionInfo.mUserInfo.getUserId() == 0)
+    {
+      // Parsing the usename and password
+      std::vector<std::string> list;
+      splitString(theRequest.getContent(),':',list);
+      if (list.size() == 2)
+      {
+        // Searching user according to the username.
+        UserManagement::UserInfo user;
+        if (UserManagement::localUserManagement.getUserInfoByUsername(itsBroswerSessionId,list[0].c_str(),user) == 0)
+        {
+          // Checking the password
+
+          char hash[200];
+          char pw[200];
+          sprintf(pw,"%s%s%s",user.getPassword(),user.getPassword(),user.getPassword());
+          countHash(sessionInfo.getKey(),pw,hash);
+
+          if (strcmp(hash,list[1].c_str()) == 0)
+          {
+            sessionInfo.mUserInfo = user;
+            SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
           }
         }
       }
@@ -468,30 +466,76 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
 
     if (itsAuthenticationRequired && page && *page == "logout")
     {
-      auto it = itsValidSessions.find(sessionId);
-      if (it != itsValidSessions.end())
+      if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) == 0)
       {
-        itsValidSessions.erase(it);
-        sessionId = "";
+        SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
+        SessionManagement::SessionInfo newSessionInfo;
+        sessionInfo = newSessionInfo;
+        sessionInfo.setAddress(theRequest.getClientIP().c_str());
+        SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+        sessionId = sessionInfo.getSessionId();
       }
     }
 
-    if (itsAuthenticationRequired && sessionId == "")
-      return page_login(theRequest,theResponse);
+    if (sessionId > 0)
+    {
+      // The session information is send to the client as "a cookie".
+      boost::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
+      boost::posix_time::ptime t_now = boost::posix_time::second_clock::universal_time();
+      boost::posix_time::ptime t_expires = t_now + boost::posix_time::seconds(3600);
+      std::string expiration = tformat->format(t_expires);
+      theResponse.setHeader("Set-Cookie","sessionId=" + std::to_string(sessionId) + "; expires=" + expiration);
+    }
 
-    auto target = theRequest.getParameter("target");
-    if (target && *target == "grid-engine" && itsGridEngine)
-      return itsGridEngine->browserRequest(theRequest,theResponse);
+    bool res = false;
+    if (itsAuthenticationRequired && sessionInfo.mUserInfo.getUserId() == 0)
+    {
+      res = page_login(sessionInfo,theRequest,theResponse);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      return res;
+    }
+
+
+    auto v = theRequest.getParameter("target");
+    if (v)
+      sessionInfo.setAttribute("grid-admin","target",v->c_str());
+
+    v = theRequest.getParameter("page");
+    if (v)
+      sessionInfo.setAttribute("grid-admin","page",v->c_str());
+
+    std::string target = "grid-engine";
+    sessionInfo.getAttribute("grid-admin","target",target);
+
+
+    if (target == "grid-engine" && itsGridEngine  &&  (sessionInfo.mUserInfo.getUserId() == 0 || sessionInfo.mUserInfo.hasPermission("grid-content-view")))
+    {
+      res = itsGridEngine->browserRequest(sessionInfo,theRequest,theResponse);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      return res;
+    }
 
 
     if (!page || *page == "start")
-      return page_start(sessionId,theRequest,theResponse);
+    {
+      res = page_start(sessionInfo,theRequest,theResponse);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      return res;
+    }
 
     if (*page == "engines")
-      return page_engines(sessionId,theRequest,theResponse);
+    {
+      res = page_engines(sessionInfo,theRequest,theResponse);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      return res;
+    }
 
     if (*page == "plugins")
-      return page_plugins(sessionId,theRequest,theResponse);
+    {
+      res = page_plugins(sessionInfo,theRequest,theResponse);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      return res;
+    }
 
     std::ostringstream output;
 

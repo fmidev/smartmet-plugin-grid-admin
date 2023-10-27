@@ -1,0 +1,18 @@
+# -----------------------------------------------------------------------------------------
+# This file contains group permissions. You should locate this file into a secure place 
+# and make sure that it has correct read/write permissions.
+#
+# It depends on the application if it wants to use detailed permissions. Sometimes it is 
+# enough to check that the user belongs to a certain group. For example, if the user is 
+# a member of "admin" group, then there is no need to check indivual permissions. Notice
+# that all permission must have a unique name. So make sure, that different applications
+# use different permission names.
+#
+# FIELDS:
+# 1 Group name
+# 2 [permission,permission,...,permission]
+# -----------------------------------------------------------------------------------------
+
+grid-admin;grid-content-view,grid-content-add,grid-content-delete,grid-content-modify
+grid-user;grid-content-view
+

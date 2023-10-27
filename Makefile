@@ -14,7 +14,7 @@ ifeq ($(CORBA), disabled)
   CORBA_FLAGS = -DCORBA_DISABLED
 else
   CORBA_INCLUDE = -I/usr/include/smartmet/grid-content/contentServer/corba/stubs
-  CORBA_LIBS = -lomniORB4 -lomnithread  
+  CORBA_LIBS = -lomniORB4 -lomnithread
 endif
 
 # Compiler options
