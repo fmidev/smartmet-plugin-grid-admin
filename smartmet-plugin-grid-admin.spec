@@ -26,7 +26,7 @@ BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
 BuildRequires: smartmet-library-spine-devel >= 23.10.20
 BuildRequires: smartmet-library-locus-devel >= 23.7.28
-BuildRequires: smartmet-library-macgyver-devel >= 23.10.10
+BuildRequires: smartmet-library-macgyver-devel >= 23.11.8
 BuildRequires: smartmet-library-newbase-devel >= 23.10.11
 BuildRequires: smartmet-library-grid-files-devel >= 23.10.30
 BuildRequires: smartmet-library-grid-content-devel >= 23.10.30
@@ -34,7 +34,7 @@ BuildRequires: smartmet-engine-grid-devel >= 23.10.30
 BuildRequires: gdal35-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 23.7.28
-Requires: smartmet-library-macgyver >= 23.10.10
+Requires: smartmet-library-macgyver >= 23.11.8
 Requires: smartmet-library-newbase >= 23.10.11
 Requires: smartmet-library-spine >= 23.10.20
 Requires: smartmet-engine-grid >= 23.10.30

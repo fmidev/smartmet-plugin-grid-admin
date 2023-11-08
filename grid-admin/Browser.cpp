@@ -1,6 +1,6 @@
 #include "Browser.h"
 #include <macgyver/TimeFormatter.h>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <macgyver/DateTime.h>
 #include <grid-content/userManagement/implementation/ServiceImplementation.h>
 
 namespace SmartMet
@@ -481,8 +481,8 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     {
       // The session information is send to the client as "a cookie".
       boost::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
-      boost::posix_time::ptime t_now = boost::posix_time::second_clock::universal_time();
-      boost::posix_time::ptime t_expires = t_now + boost::posix_time::seconds(3600);
+      Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
+      Fmi::DateTime t_expires = t_now + Fmi::Seconds(3600);
       std::string expiration = tformat->format(t_expires);
       theResponse.setHeader("Set-Cookie","sessionId=" + std::to_string(sessionId) + "; expires=" + expiration);
     }

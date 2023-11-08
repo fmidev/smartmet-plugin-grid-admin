@@ -11,7 +11,7 @@
 #include <grid-content/contentServer/redis/RedisImplementation.h>
 #include <spine/SmartMet.h>
 #include <macgyver/TimeFormatter.h>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <macgyver/DateTime.h>
 #include <boost/bind/bind.hpp>
 
 namespace ph = boost::placeholders;
@@ -316,7 +316,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
       theResponse.setHeader("Access-Control-Allow-Origin", "*");
 
       const int expires_seconds = 1;
-      boost::posix_time::ptime t_now = boost::posix_time::second_clock::universal_time();
+      Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
 
       bool response = request(theReactor, theRequest, theResponse);
 
@@ -331,7 +331,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
 
       // Adding response headers
 
-      boost::posix_time::ptime t_expires = t_now + boost::posix_time::seconds(expires_seconds);
+      Fmi::DateTime t_expires = t_now + Fmi::Seconds(expires_seconds);
       boost::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
       std::string cachecontrol =
           "public, max-age=" + std::to_string(expires_seconds);
