@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 23.10.30
+Version: 23.11.10
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -28,16 +28,16 @@ BuildRequires: smartmet-library-spine-devel >= 23.10.20
 BuildRequires: smartmet-library-locus-devel >= 23.7.28
 BuildRequires: smartmet-library-macgyver-devel >= 23.11.8
 BuildRequires: smartmet-library-newbase-devel >= 23.10.11
-BuildRequires: smartmet-library-grid-files-devel >= 23.10.30
-BuildRequires: smartmet-library-grid-content-devel >= 23.10.30
-BuildRequires: smartmet-engine-grid-devel >= 23.10.30
+BuildRequires: smartmet-library-grid-files-devel >= 23.11.6
+BuildRequires: smartmet-library-grid-content-devel >= 23.11.10
+BuildRequires: smartmet-engine-grid-devel >= 23.11.10
 BuildRequires: gdal35-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 23.7.28
 Requires: smartmet-library-macgyver >= 23.11.8
 Requires: smartmet-library-newbase >= 23.10.11
 Requires: smartmet-library-spine >= 23.10.20
-Requires: smartmet-engine-grid >= 23.10.30
+Requires: smartmet-engine-grid >= 23.11.10
 Requires: smartmet-server >= 23.8.30
 #Requires: %{smartmet_boost}-date-time
 #Requires: %{smartmet_boost}-filesystem
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Fri Nov 10 2023 Mika Heiskanen <mika.heiskanen@fmi.fi> - 23.11.10-1.fmi
+- Repackaged due to API changes in grid-content
+
 * Mon Oct 30 2023 Mika Heiskanen <mika.heiskanen@fmi.fi> - 23.10.30-1.fmi
 - Added support for sessions, authentication and authorization
 
