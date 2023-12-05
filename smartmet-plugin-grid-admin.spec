@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 23.11.17
+Version: 23.12.5
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -24,21 +24,21 @@ BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
-BuildRequires: smartmet-library-spine-devel >= 23.10.20
+BuildRequires: smartmet-library-spine-devel >= 23.12.5
 BuildRequires: smartmet-library-locus-devel >= 23.7.28
-BuildRequires: smartmet-library-macgyver-devel >= 23.11.8
-BuildRequires: smartmet-library-newbase-devel >= 23.10.11
-BuildRequires: smartmet-library-grid-files-devel >= 23.11.6
-BuildRequires: smartmet-library-grid-content-devel >= 23.11.10
-BuildRequires: smartmet-engine-grid-devel >= 23.11.10
+BuildRequires: smartmet-library-macgyver-devel >= 23.11.21
+BuildRequires: smartmet-library-newbase-devel >= 23.11.21
+BuildRequires: smartmet-library-grid-files-devel >= 23.12.4
+BuildRequires: smartmet-library-grid-content-devel >= 23.11.27
+BuildRequires: smartmet-engine-grid-devel >= 23.11.17
 BuildRequires: gdal35-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 23.7.28
-Requires: smartmet-library-macgyver >= 23.11.8
-Requires: smartmet-library-newbase >= 23.10.11
-Requires: smartmet-library-spine >= 23.10.20
-Requires: smartmet-engine-grid >= 23.11.10
-Requires: smartmet-server >= 23.8.30
+Requires: smartmet-library-macgyver >= 23.11.21
+Requires: smartmet-library-newbase >= 23.11.21
+Requires: smartmet-library-spine >= 23.12.5
+Requires: smartmet-engine-grid >= 23.11.17
+Requires: smartmet-server >= 23.12.5
 #Requires: %{smartmet_boost}-date-time
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Tue Dec  5 2023 Mika Heiskanen <mika.heiskanen@fmi.fi> - 23.12.5-1.fmi
+- Indicate being an admin plugin to the server
+
 * Fri Nov 17 2023 Pertti Kinnia <pertti.kinnia@fmi.fi> - 23.11.17-1.fmi
 - Repackaged due to API changes in grid-files and grid-content
 
