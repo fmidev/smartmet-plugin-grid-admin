@@ -39,7 +39,6 @@ Requires: smartmet-library-newbase >= 24.4.24
 Requires: smartmet-library-spine >= 24.4.23
 Requires: smartmet-engine-grid >= 24.5.3
 Requires: smartmet-server >= 24.2.22
-#Requires: %{smartmet_boost}-date-time
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
 #Requires: %{smartmet_boost}-regex
