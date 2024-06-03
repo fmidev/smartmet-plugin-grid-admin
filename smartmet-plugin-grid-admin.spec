@@ -4,7 +4,7 @@
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
 Version: 24.6.3
-Release: 1%{?dist}.fmi
+Release: 2%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -29,7 +29,7 @@ BuildRequires: smartmet-library-locus-devel >= 23.7.28
 BuildRequires: smartmet-library-macgyver-devel >= 24.5.30
 BuildRequires: smartmet-library-newbase-devel >= 24.5.17
 BuildRequires: smartmet-library-grid-files-devel >= 24.5.30
-BuildRequires: smartmet-library-grid-content-devel >= 24.5.29
+BuildRequires: smartmet-library-grid-content-devel >= 24.6.3
 BuildRequires: smartmet-engine-grid-devel >= 24.6.3
 BuildRequires: gdal35-devel
 Requires: libconfig17
@@ -68,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Mon Jun  3 2024 Mika Heiskanen <mika.heiskanen@fmi.fi> - 24.6.3-2.fmi
+- Updated grid-content requirement
+
 * Mon Jun  3 2024 Mika Heiskanen <mika.heiskanen@fmi.fi> - 24.6.3-1.fmi
 - Repackaged due to ABI changes
 
