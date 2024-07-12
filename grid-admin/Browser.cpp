@@ -480,7 +480,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (sessionId > 0)
     {
       // The session information is send to the client as "a cookie".
-      boost::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
+      std::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
       Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
       Fmi::DateTime t_expires = t_now + Fmi::Seconds(3600);
       std::string expiration = tformat->format(t_expires);

@@ -332,7 +332,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
       // Adding response headers
 
       Fmi::DateTime t_expires = t_now + Fmi::Seconds(expires_seconds);
-      boost::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
+      std::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
       std::string cachecontrol =
           "public, max-age=" + std::to_string(expires_seconds);
       std::string expiration = tformat->format(t_expires);
