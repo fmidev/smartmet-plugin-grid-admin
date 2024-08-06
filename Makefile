@@ -27,11 +27,10 @@ INCLUDES += \
 	-I$(includedir)/smartmet \
 	-I$(includedir)/smartmet/grid-files \
 	-I$(includedir)/smartmet/grid-content \
-	-isystem $(includedir)/mysql \
 	$(CORBA_INCLUDE)
 
 
-LIBS += -L$(libdir) \
+LIBS += $(PREFIX_LDFLAGS) \
 	$(CORBA_LIBS) \
 	-lsmartmet-grid-files \
 	-lsmartmet-grid-content \
