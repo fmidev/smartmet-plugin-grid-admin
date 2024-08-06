@@ -16,9 +16,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %define smartmet_boost boost
 %endif
 
-%define smartmet_fmt_min 8.1.1
-%define smartmet_fmt_max 8.2.0
-
 BuildRequires: gcc-c++
 BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
