@@ -28,7 +28,7 @@ BuildRequires: smartmet-library-newbase-devel >= 24.10.15
 BuildRequires: smartmet-library-grid-files-devel >= 24.10.23
 BuildRequires: smartmet-library-grid-content-devel >= 24.10.23
 BuildRequires: smartmet-engine-grid-devel >= 24.11.8
-BuildRequires: gdal38-devel
+BuildRequires: gdal310-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 24.9.28
 Requires: smartmet-library-macgyver >= 24.10.28
