@@ -8,6 +8,7 @@
 
 #include <grid-content/contentServer/corba/client/ClientImplementation.h>
 #include <grid-content/contentServer/http/client/ClientImplementation.h>
+#include "grid-content/contentServer/postgresql/PostgresqlImplementation.h"
 #include <grid-content/contentServer/redis/RedisImplementation.h>
 #include <spine/SmartMet.h>
 #include <macgyver/TimeFormatter.h>
@@ -94,6 +95,9 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.lockEnabled", itsContentServerRedisLockEnabled);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.http.url", itsContentServerHttpUrl);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.corba.ior", itsContentServerCorbaIor);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.postgresql.primaryConnectionString", itsPrimaryConnectionString);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.postgresql.secondaryConnectionString", itsSecondaryConnectionString);
+
   }
   catch (...)
   {
@@ -135,6 +139,14 @@ void Plugin::init()
       redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false);
       itsContentServer.reset(redis);
       cServer = redis;
+    }
+    else
+    if (itsContentServerType == "postgresql")
+    {
+      ContentServer::PostgresqlImplementation* postgres = new ContentServer::PostgresqlImplementation();
+      postgres->init(itsPrimaryConnectionString.c_str(),itsSecondaryConnectionString.c_str(),false);
+      itsContentServer.reset(postgres);
+      cServer = postgres;
     }
     else
     if (itsContentServerType == "corba")
