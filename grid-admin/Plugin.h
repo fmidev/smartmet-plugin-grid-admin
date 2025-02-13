@@ -60,6 +60,8 @@ class Plugin : public SmartMetPlugin
     bool                itsContentServerRedisLockEnabled;
     std::string         itsContentServerHttpUrl;
     std::string         itsContentServerCorbaIor;
+    std::string         itsPrimaryConnectionString;
+    std::string         itsSecondaryConnectionString;
     ContentServer_sptr  itsContentServer;
     bool                itsAuthenticationRequired;
     std::string         itsUsersFile;
