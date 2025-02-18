@@ -68,7 +68,9 @@ class Plugin : public SmartMetPlugin
     std::string         itsGroupsFile;
     Browser             itsBrowser;
 
-    ContentServer::HTTP::ServerInterface  itsMessageProcessor;
+    Engine::Grid::Engine*                 itsGridEngine;
+    ContentServer::HTTP::ServerInterface  itsMessageProcessor1;
+    ContentServer::HTTP::ServerInterface  itsMessageProcessor2;
 
 };  // class Plugin
 

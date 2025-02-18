@@ -170,8 +170,16 @@ void Plugin::init()
       exception.addParameter("Content server type",itsContentServerType);
     }
 
-    itsMessageProcessor.init(cServer);
-    itsBrowser.init(itsReactor,itsAuthenticationRequired,itsGroupsFile,itsUsersFile);
+    auto  engine = itsReactor->getSingleton("grid", NULL);
+    if (engine)
+    {
+      itsGridEngine = reinterpret_cast<Engine::Grid::Engine*>(engine);
+    }
+
+    itsMessageProcessor1.init(cServer);
+    itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get());
+
+    itsBrowser.init(itsGridEngine,itsAuthenticationRequired,itsGroupsFile,itsUsersFile);
   }
   catch (...)
   {
@@ -255,7 +263,12 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
 
     //requestMessage.print(std::cout,0,0);
 
-    itsMessageProcessor.processRequest(requestMessage,responseMessage);
+    auto s = theRequest.getParameter("source");
+
+    if (s && *s == "engine")
+      itsMessageProcessor2.processRequest(requestMessage,responseMessage);  // Calling grid engine (=> Cache)
+    else
+      itsMessageProcessor1.processRequest(requestMessage,responseMessage);  // Calling data storage (=> Redis)
     //responseMessage.print(std::cout,0,0);
 
     uint lineCount = responseMessage.getLineCount();
