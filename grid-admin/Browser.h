@@ -30,7 +30,7 @@ class Browser
               Browser();
     virtual   ~Browser();
 
-    void      init(Spine::Reactor* theReactor,bool authenticationRequired,std::string& groupsFile,std::string& usersFile);
+    void      init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,std::string& groupsFile,std::string& usersFile);
     bool      requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
   private:
@@ -41,14 +41,14 @@ class Browser
     bool      page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_plugins(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool      page_software(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
 
-    Spine::Reactor*                   itsReactor;
-    Engine::Grid::Engine*             itsGridEngine;
-    T::SessionId                      itsBroswerSessionId;
-    std::string                       itsGroupsFile;
-    std::string                       itsUsersFile;
-    bool                              itsAuthenticationRequired;
+    Engine::Grid::Engine*   itsGridEngine;
+    T::SessionId            itsBroswerSessionId;
+    std::string             itsGroupsFile;
+    std::string             itsUsersFile;
+    bool                    itsAuthenticationRequired;
 };
 
 }  // namespace GridAdmin

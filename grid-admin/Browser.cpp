@@ -17,7 +17,6 @@ Browser::Browser()
   try
   {
     itsGridEngine = nullptr;
-    itsReactor = nullptr;
     itsAuthenticationRequired = false;
     itsBroswerSessionId = 0;
   }
@@ -38,20 +37,15 @@ Browser::~Browser()
 
 
 
-void Browser::init(Spine::Reactor* theReactor,bool authenticationRequired,std::string& groupsFile,std::string& usersFile)
+void Browser::init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,std::string& groupsFile,std::string& usersFile)
 {
   try
   {
-    itsReactor = theReactor;
     itsAuthenticationRequired = authenticationRequired;
     itsGroupsFile = groupsFile;
     itsUsersFile = usersFile;
 
-    auto  engine = itsReactor->getSingleton("grid", NULL);
-    if (engine)
-    {
-      itsGridEngine = reinterpret_cast<Engine::Grid::Engine*>(engine);
-    }
+    itsGridEngine = theGridEngine;
 
     if (itsAuthenticationRequired)
       UserManagement::localUserManagement.init(groupsFile.c_str(),usersFile.c_str());
@@ -132,6 +126,111 @@ bool Browser::page_plugins(SessionManagement::SessionInfo& session,const Spine::
     output << "        <H4>Grid GUI</H4>";
     //output << "        <H4><A href=\"/grid-admin?&target=grid-gui-plugin&page=start\">Grid GUI</A></H4>";
     //itsGridEngine->browserContent(output);
+    output << "      </LI>";
+    output << "    </OL>\n";
+    output << "<HR>\n";
+
+
+    output << "</BODY>\n";
+    output << "</HTML>\n";
+
+
+    theResponse.setContent(output.str());
+    theResponse.setHeader("Content-Type", "text/html; charset=UTF-8");
+
+    return true;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+{
+  try
+  {
+    std::set<std::string> dirList;
+
+    std::vector<std::pair<std::string,std::string>> fileList1;
+    std::vector<std::string> filePatterns1;
+    filePatterns1.push_back("libsmartmet*");
+    getFileList("/usr/lib64",filePatterns1,false,dirList,fileList1);
+
+    std::vector<std::pair<std::string,std::string>> fileList2;
+    std::vector<std::string> filePatterns2;
+    filePatterns2.push_back("*.so");
+    getFileList("/usr/share/smartmet/engines",filePatterns2,false,dirList,fileList2);
+
+    std::vector<std::pair<std::string,std::string>> fileList3;
+    getFileList("/usr/share/smartmet/plugins",filePatterns2,false,dirList,fileList3);
+
+    char fname[1000];
+    char tmb[200];
+
+
+    std::ostringstream output;
+
+    output << "<HTML>\n";
+    output << "<BODY style=\"font-size:12;\">\n";
+    output << "<HR>\n";
+    output << "<A href=\"grid-admin\">SmartMet Server</A> / \n";
+    output << "<HR>\n";
+    output << "<H2>Software</H2>\n";
+    output << "<HR>\n";
+    output << "    <OL>\n";
+    output << "      <LI>";
+    output << "        <H4>Libraries</H4>";
+
+    output << "        <TABLE style=\"font-size:12;\">";
+    for (auto it = fileList1.begin(); it != fileList1.end(); ++it)
+    {
+      sprintf(fname,"%s/%s",it->first.c_str(),it->second.c_str());
+      time_t modTime= getFileModificationTime(fname);
+      long long sz= getFileSize(fname);
+
+      struct tm tt;
+      localtime_tz(modTime, &tt, nullptr);
+      sprintf(tmb,"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
+      output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
+    }
+    output << "        </TABLE>";
+
+    output << "      </LI>";
+    output << "      <LI>";
+    output << "        <H4>Engines</H4>";
+    output << "        <TABLE style=\"font-size:12;\">";
+    for (auto it = fileList2.begin(); it != fileList2.end(); ++it)
+    {
+      sprintf(fname,"%s/%s",it->first.c_str(),it->second.c_str());
+      time_t modTime= getFileModificationTime(fname);
+      long long sz= getFileSize(fname);
+
+      struct tm tt;
+      localtime_tz(modTime, &tt, nullptr);
+      sprintf(tmb,"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
+      output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
+    }
+    output << "        </TABLE>";
+    output << "      </LI>";
+    output << "      <LI>";
+    output << "        <H4>Plugins</H4>";
+    output << "        <TABLE style=\"font-size:12;\">";
+    for (auto it = fileList3.begin(); it != fileList3.end(); ++it)
+    {
+      sprintf(fname,"%s/%s",it->first.c_str(),it->second.c_str());
+      time_t modTime= getFileModificationTime(fname);
+      long long sz= getFileSize(fname);
+
+      struct tm tt;
+      localtime_tz(modTime, &tt, nullptr);
+      sprintf(tmb,"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
+      output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
+    }
+    output << "        </TABLE>";
     output << "      </LI>";
     output << "    </OL>\n";
     output << "<HR>\n";
@@ -343,6 +442,10 @@ bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HT
     output << "      </LI>";
     output << "    </OL>\n";
     output << "  </LI>";
+
+    output << "  <LI>";
+    output << "    <H4><A href=\"/grid-admin?&page=software\">Software</A></H4>";
+    output << "  </LI>";
     output << "</OL>\n";
     output << "<HR>\n";
 
@@ -504,7 +607,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (v)
       sessionInfo.setAttribute("grid-admin","page",v->c_str());
 
-    std::string target = "grid-engine";
+    std::string target = "";
     sessionInfo.getAttribute("grid-admin","target",target);
 
 
@@ -533,6 +636,13 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (*page == "plugins")
     {
       res = page_plugins(sessionInfo,theRequest,theResponse);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      return res;
+    }
+
+    if (*page == "software")
+    {
+      res = page_software(sessionInfo,theRequest,theResponse);
       SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
       return res;
     }
