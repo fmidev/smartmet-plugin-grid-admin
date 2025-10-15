@@ -3,8 +3,8 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 25.9.1
-Release: 2%{?dist}.fmi
+Version: 25.10.15
+Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -25,21 +25,21 @@ BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
-BuildRequires: smartmet-library-spine-devel >= 25.9.1
-BuildRequires: smartmet-library-locus-devel >= 25.2.18
-BuildRequires: smartmet-library-macgyver-devel >= 25.2.18
+BuildRequires: smartmet-library-spine-devel >= 25.9.16
+BuildRequires: smartmet-library-locus-devel >= 25.9.29
+BuildRequires: smartmet-library-macgyver-devel >= 25.9.30
 BuildRequires: smartmet-library-newbase-devel >= 25.3.20
-BuildRequires: smartmet-library-grid-files-devel >= 25.8.25
-BuildRequires: smartmet-library-grid-content-devel >= 25.8.25
-BuildRequires: smartmet-engine-grid-devel >= 25.8.25
+BuildRequires: smartmet-library-grid-files-devel >= 25.10.15
+BuildRequires: smartmet-library-grid-content-devel >= 25.10.15
+BuildRequires: smartmet-engine-grid-devel >= 25.10.15
 BuildRequires: gdal310-devel
 Requires: libconfig17
-Requires: smartmet-library-locus >= 25.2.18
-Requires: smartmet-library-macgyver >= 25.2.18
+Requires: smartmet-library-locus >= 25.9.29
+Requires: smartmet-library-macgyver >= 25.9.30
 Requires: smartmet-library-newbase >= 25.3.20
-Requires: smartmet-library-spine >= 25.9.1
-Requires: smartmet-engine-grid >= 25.8.25
-Requires: smartmet-server >= 25.2.18
+Requires: smartmet-library-spine >= 25.9.16
+Requires: smartmet-engine-grid >= 25.10.15
+Requires: smartmet-server >= 25.9.9
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
 #Requires: %{smartmet_boost}-regex
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Wed Oct 15 2025 Mika Heiskanen <mika.heiskanen@fmi.fi> - 25.10.15-1.fmi
+- Repackaged due to grid-files API changes
+
 * Mon Sep  1 2025 Andris Pavēnis <andris.pavenis@fmi.fi> 25.9.1-2.fmi
 - Update according to smartmet-library-spine ABI changes
 
