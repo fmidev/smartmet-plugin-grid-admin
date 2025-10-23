@@ -90,7 +90,7 @@ install:
 	$(INSTALL_PROG) $(LIBFILE) $(plugindir)/$(LIBFILE)
 
 test:
-	cd test && make test
+	if test -f test/Makefile; then cd test && make test; fi
 
 objdir:
 	@mkdir -p $(objdir)
