@@ -170,11 +170,7 @@ void Plugin::init()
       exception.addParameter("Content server type",itsContentServerType);
     }
 
-    auto  engine = itsReactor->getSingleton("grid", NULL);
-    if (engine)
-    {
-      itsGridEngine = reinterpret_cast<Engine::Grid::Engine*>(engine);
-    }
+    itsGridEngine = itsReactor->getEngine<Engine::Grid::Engine>("grid", nullptr);
 
     itsMessageProcessor1.init(cServer);
     itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get());
