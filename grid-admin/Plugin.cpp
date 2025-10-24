@@ -175,7 +175,7 @@ void Plugin::init()
     itsMessageProcessor1.init(cServer);
     itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get());
 
-    itsBrowser.init(itsGridEngine,itsAuthenticationRequired,itsGroupsFile,itsUsersFile);
+    itsBrowser.init(itsGridEngine.get(),itsAuthenticationRequired,itsGroupsFile,itsUsersFile);
   }
   catch (...)
   {
