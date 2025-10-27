@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 25.10.23
+Version: 25.10.27
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Mon Oct 27 2025 Andris Pavēnis <andris.pavenis@fmi.fi> 25.10.27-1.fmi
+- Update due to smartmet-library-spine ABI changes
+
 * Thu Oct 23 2025 Andris Pavēnis <andris.pavenis@fmi.fi> 25.10.23-1.fmi
 - Fix getting pointer to grid engine
 
