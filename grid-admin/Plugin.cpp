@@ -132,37 +132,32 @@ void Plugin::init()
 {
   try
   {
-    ContentServer::ServiceInterface *cServer = nullptr;
     if (itsContentServerType == "redis")
     {
       ContentServer::RedisImplementation *redis = new ContentServer::RedisImplementation();
-      redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false);
       itsContentServer.reset(redis);
-      cServer = redis;
+      redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false);
     }
     else
     if (itsContentServerType == "postgresql")
     {
       ContentServer::PostgresqlImplementation* postgres = new ContentServer::PostgresqlImplementation();
-      postgres->init(itsPrimaryConnectionString.c_str(),itsSecondaryConnectionString.c_str(),false);
       itsContentServer.reset(postgres);
-      cServer = postgres;
+      postgres->init(itsPrimaryConnectionString.c_str(),itsSecondaryConnectionString.c_str(),false);
     }
     else
     if (itsContentServerType == "corba")
     {
       ContentServer::Corba::ClientImplementation *client = new ContentServer::Corba::ClientImplementation();
-      client->init(itsContentServerCorbaIor.c_str());
       itsContentServer.reset(client);
-      cServer = client;
+      client->init(itsContentServerCorbaIor.c_str());
     }
     else
     if (itsContentServerType == "http")
     {
       ContentServer::HTTP::ClientImplementation *client = new ContentServer::HTTP::ClientImplementation();
-      client->init(itsContentServerHttpUrl.c_str());
       itsContentServer.reset(client);
-      cServer = client;
+      client->init(itsContentServerHttpUrl.c_str());
     }
     else
     {
@@ -172,7 +167,7 @@ void Plugin::init()
 
     itsGridEngine = itsReactor->getEngine<Engine::Grid::Engine>("grid", nullptr);
 
-    itsMessageProcessor1.init(cServer);
+    itsMessageProcessor1.init(itsContentServer.get());
     itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get());
 
     itsBrowser.init(itsGridEngine.get(),itsAuthenticationRequired,itsGroupsFile,itsUsersFile);
@@ -198,6 +193,8 @@ void Plugin::shutdown()
   try
   {
     std::cout << "  -- Shutdown requested (grid-content)\n";
+    if (itsContentServer)
+      itsContentServer->shutdown();
   }
   catch (...)
   {
