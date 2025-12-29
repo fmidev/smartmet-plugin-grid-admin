@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 25.10.27
+Version: 25.12.29
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -25,21 +25,21 @@ BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
-BuildRequires: smartmet-library-spine-devel >= 25.10.27
+BuildRequires: smartmet-library-spine-devel >= 25.12.12
 BuildRequires: smartmet-library-locus-devel >= 25.9.29
-BuildRequires: smartmet-library-macgyver-devel >= 25.9.30
+BuildRequires: smartmet-library-macgyver-devel >= 25.12.2
 BuildRequires: smartmet-library-newbase-devel >= 25.3.20
-BuildRequires: smartmet-library-grid-files-devel >= 25.10.15
-BuildRequires: smartmet-library-grid-content-devel >= 25.10.15
-BuildRequires: smartmet-engine-grid-devel >= 25.10.15
+BuildRequires: smartmet-library-grid-files-devel >= 25.12.29
+BuildRequires: smartmet-library-grid-content-devel >= 25.12.29
+BuildRequires: smartmet-engine-grid-devel >= 25.12.29
 BuildRequires: gdal310-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 25.9.29
-Requires: smartmet-library-macgyver >= 25.9.30
+Requires: smartmet-library-macgyver >= 25.12.2
 Requires: smartmet-library-newbase >= 25.3.20
-Requires: smartmet-library-spine >= 25.10.27
-Requires: smartmet-engine-grid >= 25.10.15
-Requires: smartmet-server >= 25.10.27
+Requires: smartmet-library-spine >= 25.12.12
+Requires: smartmet-engine-grid >= 25.12.29
+Requires: smartmet-server >= 25.12.2
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
 #Requires: %{smartmet_boost}-regex
@@ -69,6 +69,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Mon Dec 29 2025 Mika Heiskanen <mika.heiskanen@fmi.fi> 25.12.29-1-fmi
+- Repackaged due to API changes
+
 * Mon Oct 27 2025 Andris Pavēnis <andris.pavenis@fmi.fi> 25.10.27-1.fmi
 - Update due to smartmet-library-spine ABI changes
 
