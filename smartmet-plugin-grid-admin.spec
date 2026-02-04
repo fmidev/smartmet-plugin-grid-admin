@@ -25,21 +25,21 @@ BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
-BuildRequires: smartmet-library-spine-devel >= 25.12.12
-BuildRequires: smartmet-library-locus-devel >= 25.9.29
-BuildRequires: smartmet-library-macgyver-devel >= 25.12.2
-BuildRequires: smartmet-library-newbase-devel >= 25.3.20
-BuildRequires: smartmet-library-grid-files-devel >= 25.12.29
-BuildRequires: smartmet-library-grid-content-devel >= 25.12.29
-BuildRequires: smartmet-engine-grid-devel >= 25.12.29
+BuildRequires: smartmet-library-spine-devel >= 26.2.4
+BuildRequires: smartmet-library-locus-devel >= 26.2.4
+BuildRequires: smartmet-library-macgyver-devel >= 26.2.4
+BuildRequires: smartmet-library-newbase-devel >= 26.2.4
+BuildRequires: smartmet-library-grid-files-devel >= 26.2.4
+BuildRequires: smartmet-library-grid-content-devel >= 26.2.4
+BuildRequires: smartmet-engine-grid-devel >= 26.2.4
 BuildRequires: gdal312-devel
 Requires: libconfig17
-Requires: smartmet-library-locus >= 25.9.29
-Requires: smartmet-library-macgyver >= 25.12.2
-Requires: smartmet-library-newbase >= 25.3.20
-Requires: smartmet-library-spine >= 25.12.12
-Requires: smartmet-engine-grid >= 25.12.29
-Requires: smartmet-server >= 25.12.2
+Requires: smartmet-library-locus >= 26.2.4
+Requires: smartmet-library-macgyver >= 26.2.4
+Requires: smartmet-library-newbase >= 26.2.4
+Requires: smartmet-library-spine >= 26.2.4
+Requires: smartmet-engine-grid >= 26.2.4
+Requires: smartmet-server >= 26.2.4
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
 #Requires: %{smartmet_boost}-regex
