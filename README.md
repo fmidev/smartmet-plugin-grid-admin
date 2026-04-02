@@ -1,5 +1,7 @@
-Grid-Admin Plugin
-=================
+# smartmet-plugin-grid-admin
+
+Part of [SmartMet Server](https://github.com/fmidev/smartmet-server). See the [SmartMet Server documentation](https://github.com/fmidev/smartmet-server) for a full overview of the ecosystem.
+
 ## Introduction
 
 The Grid-Admin Plugin is a simple plugin that offers an HTTP interface to the Content Information Storage. So, technically other system (for example, feeding systems) can use this interface for updating  and fetching content information from the Content Information Stroage
@@ -29,6 +31,3 @@ You may contact us from following channels:
 Other resources which may be useful:  
 * Presentation about the server: http://www.slideshare.net/tervo/smartmet-server-providing-metocean-data  
 * Our public web pages (in Finnish): http://ilmatieteenlaitos.fi/avoin-lahdekoodi   
-
-
-
