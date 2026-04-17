@@ -2,6 +2,9 @@
 #include <macgyver/TimeFormatter.h>
 #include <macgyver/DateTime.h>
 #include <grid-content/userManagement/implementation/ServiceImplementation.h>
+#include <openssl/sha.h>
+#include <random>
+#include <cstdint>
 
 namespace SmartMet
 {
@@ -253,25 +256,39 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
 
 
 
-void Browser::countHash(const char *key,const char *password,char *hash)
+
+void to_hex_string(uint8_t hash[20], char output[41])
 {
-  uint klen = strlen(key);
-  uint plen = strlen(password);
+  for (int i = 0; i < 20; i++)
+    sprintf(output + i*2, "%02x", hash[i]);
+  output[40] = '\0';
+}
 
-  if (klen == 0 || plen == 0)
+
+
+void Browser::countHash(const char *key,const char *password,char *hex)
+{
+  try
   {
-    hash[0] = '\0';
-    return;
+    uint klen = strlen(key);
+    uint plen = strlen(password);
+
+    char data[plen+klen+5];
+    memcpy(data,password,plen);
+    memcpy(data+plen,key,klen);
+
+    uint8_t hash[20];
+
+    SHA_CTX ctx;
+    SHA1_Init(&ctx);
+    SHA1_Update(&ctx, data,klen+plen);
+    SHA1_Final(hash, &ctx);
+
+    to_hex_string(hash, hex);
   }
-
-  char *p = hash;
-
-  for (uint i = 0; i < plen; i++)
+  catch (...)
   {
-    uint c1 = password[i];
-    uint c2 = key[i % klen];
-    uint val = (c1 * c2) % 256;
-    p += sprintf(p,"%02x",val);
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
   }
 }
 
@@ -287,19 +304,25 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     auto target = theRequest.getParameter("target");
     auto page = theRequest.getParameter("page");
 
+    std::random_device rd;
+    std::mt19937_64 gen(rd());
+    std::uniform_int_distribution<uint64_t> dist;
+
+    uint64_t kk[3];
+    for (uint t=0; t<3; t++)
+      kk[t] = dist(gen);
+
+    uchar *k = (uchar*)kk;
     char key[100];
     char *p = key;
-    UInt64 k = getTime();
     uint t=0;
     while (t<20)
     {
-      UInt64 v = k * rand();
-      char ch = (char)(32 + (v % 96));
+      char ch = (char)(32 + (k[t] % 96));
       if (isalnum(ch))
-      {
         p += sprintf(p,"%c",ch);
-        t++;
-      }
+
+      t++;
     }
 
     session.setKey(key);
@@ -313,7 +336,7 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
 
     output << "<HTML>\n";
     output << "<SCRIPT>\n";
-    output << "function hash(s)\n";
+    output << "function hash2(s)\n";
     output << "{\n";
     output << "  var key = '" << key << "';\n";
     output << "  var len = key.length;\n";
@@ -326,9 +349,82 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     output << "    if (val < 16) text += '0';\n";
     output << "    text += hexValue;\n";
     output << "  } \n";
-
     output << "  return text;\n";
     output << "}\n";
+
+
+    output << "function hash(str) {\n";
+    output << "      key = \"" << key << "\";\n";
+    output << "      st = str + key;\n";
+    output << "      const msg = new TextEncoder().encode(st);\n";
+
+    output << "      const H = [\n";
+    output << "        0x67452301,\n";
+    output << "        0xefcdab89,\n";
+    output << "        0x98badcfe,\n";
+    output << "        0x10325476,\n";
+    output << "        0xc3d2e1f0\n";
+    output << "      ];\n";
+
+    output << "      const padded = new Uint8Array(((msg.length + 9 + 63) >> 6) << 6);\n";
+    output << "      padded.set(msg);\n";
+    output << "      padded[msg.length] = 0x80;\n";
+
+    output << "      const bitLen = msg.length * 8;\n";
+    output << "      const dv = new DataView(padded.buffer);\n";
+
+    output << "      dv.setUint32(padded.length - 4, bitLen, false);\n";
+
+    output << "      for (let i = 0; i < padded.length; i += 64) {\n";
+    output << "        const w = new Uint32Array(80);\n";
+
+    output << "        for (let j = 0; j < 16; j++) {\n";
+    output << "          w[j] = dv.getUint32(i + j * 4, false);\n";
+    output << "        }\n";
+
+    output << "        for (let j = 16; j < 80; j++) {\n";
+    output << "          w[j] = ((w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) << 1 | (w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16]) >>> 31) >>> 0;\n";
+    output << "        }\n";
+
+    output << "        let [a,b,c,d,e] = H;\n";
+
+    output << "        for (let j = 0; j < 80; j++) {\n";
+    output << "          let f, k;\n";
+
+    output << "          if (j < 20) {\n";
+    output << "            f = (b & c) | (~b & d);\n";
+    output << "            k = 0x5a827999;\n";
+    output << "          } else if (j < 40) {\n";
+    output << "            f = b ^ c ^ d;\n";
+    output << "            k = 0x6ed9eba1;\n";
+    output << "          } else if (j < 60) {\n";
+    output << "            f = (b & c) | (b & d) | (c & d);\n";
+    output << "            k = 0x8f1bbcdc;\n";
+    output << "          } else {\n";
+    output << "            f = b ^ c ^ d;\n";
+    output << "            k = 0xca62c1d6;\n";
+    output << "          }\n";
+
+    output << "          const temp = (((a << 5) | (a >>> 27)) + f + e + k + w[j]) >>> 0;\n";
+    output << "          e = d;\n";
+    output << "          d = c;\n";
+    output << "          c = ((b << 30) | (b >>> 2)) >>> 0;\n";
+    output << "          b = a;\n";
+    output << "          a = temp;\n";
+    output << "        }\n";
+
+    output << "        H[0] = (H[0] + a) >>> 0;\n";
+    output << "        H[1] = (H[1] + b) >>> 0;\n";
+    output << "        H[2] = (H[2] + c) >>> 0;\n";
+    output << "        H[3] = (H[3] + d) >>> 0;\n";
+    output << "        H[4] = (H[4] + e) >>> 0;\n";
+    output << "      }\n";
+
+    output << "      return H.map(x => x.toString(16).padStart(8, \"0\")).join(\"\");\n";
+    output << "    }\n";
+
+
+
 
     output << "function getPage(obj,frm,url)\n";
     output << "{\n";
@@ -339,19 +435,23 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     output << "{\n";
     output << "  var xhr = new XMLHttpRequest();\n";
     output << "  xhr.open(\"POST\", url);\n";
-    output << "  xhr.setRequestHeader(\"Authorization\", \"Bearer test\");\n";
-    output << "  xhr.setRequestHeader(\"Content-Type\", \"text/ascii\");\n";
+    output << "  xhr.setRequestHeader(\"Authorization\", \"Grid-Admin\");\n";
+    output << "  xhr.setRequestHeader(\"Content-Type\", \"application/x-www-form-urlencoded\");\n";
 
     output << "  xhr.onreadystatechange = function ()\n";
     output << "  {\n";
     output << "    if (xhr.readyState === 4)\n";
     output << "    {\n";
-    output << "       getPage(obj,frm,url);\n";
+    output << "      console.log(xhr.status, xhr.responseText);\n";
+    output << "      if (xhr.status === 200) {;\n";
+    output << "         getPage(obj,frm,url);\n";
+    output << "      }\n";
     output << "    }\n";
     output << "  };\n";
     output << "  var user = document.getElementById('username').value;\n";
     output << "  var pw = document.getElementById('password').value;\n";
     output << "  var data = user + \":\" + hash(pw+pw+pw);\n";
+    output << "  console.log(\"Sending:\", data);\n";
     output << "  xhr.send(data);";
     output << "}\n";
 
@@ -536,7 +636,8 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
       sessionId = sessionInfo.getSessionId();
     }
 
-    // sessionInfo.print(std::cout,0,0);
+     //sessionInfo.print(std::cout,0,0);
+     //std::cout << theRequest.getContent() << "\n";
 
     if (itsAuthenticationRequired && sessionInfo.mUserInfo.getUserId() == 0)
     {
@@ -555,6 +656,8 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
           char pw[200];
           sprintf(pw,"%s%s%s",user.getPassword(),user.getPassword(),user.getPassword());
           countHash(sessionInfo.getKey(),pw,hash);
+
+          //printf("HASH [%s][%s]][%s][%s]\n",hash,list[1].c_str(),sessionInfo.getKey(),pw);
 
           if (strcmp(hash,list[1].c_str()) == 0)
           {

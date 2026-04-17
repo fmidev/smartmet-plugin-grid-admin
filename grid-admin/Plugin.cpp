@@ -232,7 +232,7 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
       for (size_t t=0; t<sz; t++)
       {
         char ch = cont[t];
-        if (ch == '\r'  || ch == '\n')
+        if (ch == '\r'  || ch == '\n' || c == 9999)
         {
           line[c] = '\0';
           if (c > 0)
