@@ -25,6 +25,7 @@ BuildRequires: make
 BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
+BuildRequires: openssl-devel
 BuildRequires: smartmet-library-spine-devel >= 26.4.13
 BuildRequires: smartmet-library-locus-devel >= 26.4.13
 BuildRequires: smartmet-library-macgyver-devel >= 26.4.13
@@ -45,6 +46,7 @@ Requires: smartmet-server >= 26.4.13
 #Requires: %{smartmet_boost}-regex
 #Requires: %{smartmet_boost}-system
 #Requires: %{smartmet_boost}-threadk
+Requires: openssl
 Provides: %{SPECNAME}
 
 %description
