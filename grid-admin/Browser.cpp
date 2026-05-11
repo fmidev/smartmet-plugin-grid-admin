@@ -5,6 +5,7 @@
 #include <openssl/sha.h>
 #include <random>
 #include <cstdint>
+#include <vector>
 
 namespace SmartMet
 {
@@ -171,8 +172,8 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     std::vector<std::pair<std::string,std::string>> fileList3;
     getFileList("/usr/share/smartmet/plugins",filePatterns2,false,dirList,fileList3);
 
-    char fname[1000];
-    char tmb[200];
+    std::string fname;
+    char tmb[25];
 
 
     std::ostringstream output;
@@ -191,9 +192,9 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "        <TABLE style=\"font-size:12;\">";
     for (auto it = fileList1.begin(); it != fileList1.end(); ++it)
     {
-      sprintf(fname,"%s/%s",it->first.c_str(),it->second.c_str());
-      time_t modTime= getFileModificationTime(fname);
-      long long sz= getFileSize(fname);
+      fname = it->first + "/" + it->second;
+      time_t modTime= getFileModificationTime(fname.c_str());
+      long long sz= getFileSize(fname.c_str());
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
@@ -208,9 +209,9 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "        <TABLE style=\"font-size:12;\">";
     for (auto it = fileList2.begin(); it != fileList2.end(); ++it)
     {
-      sprintf(fname,"%s/%s",it->first.c_str(),it->second.c_str());
-      time_t modTime= getFileModificationTime(fname);
-      long long sz= getFileSize(fname);
+      fname = it->first + "/" + it->second;
+      time_t modTime= getFileModificationTime(fname.c_str());
+      long long sz= getFileSize(fname.c_str());
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
@@ -224,9 +225,9 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "        <TABLE style=\"font-size:12;\">";
     for (auto it = fileList3.begin(); it != fileList3.end(); ++it)
     {
-      sprintf(fname,"%s/%s",it->first.c_str(),it->second.c_str());
-      time_t modTime= getFileModificationTime(fname);
-      long long sz= getFileSize(fname);
+      fname = it->first + "/" + it->second;
+      time_t modTime= getFileModificationTime(fname.c_str());
+      long long sz= getFileSize(fname.c_str());
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
@@ -273,15 +274,15 @@ void Browser::countHash(const char *key,const char *password,char *hex)
     uint klen = strlen(key);
     uint plen = strlen(password);
 
-    char data[plen+klen+5];
-    memcpy(data,password,plen);
-    memcpy(data+plen,key,klen);
+    std::vector<char> data(plen+klen+5);
+    memcpy(data.data(),password,plen);
+    memcpy(data.data()+plen,key,klen);
 
     uint8_t hash[20];
 
     SHA_CTX ctx;
     SHA1_Init(&ctx);
-    SHA1_Update(&ctx, data,klen+plen);
+    SHA1_Update(&ctx, data.data(),klen+plen);
     SHA1_Final(hash, &ctx);
 
     to_hex_string(hash, hex);
@@ -652,10 +653,9 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
         {
           // Checking the password
 
-          char hash[200];
-          char pw[200];
-          sprintf(pw,"%s%s%s",user.getPassword(),user.getPassword(),user.getPassword());
-          countHash(sessionInfo.getKey(),pw,hash);
+          char hash[41];
+          std::string pwStr = std::string(user.getPassword()) + user.getPassword() + user.getPassword();
+          countHash(sessionInfo.getKey(),pwStr.c_str(),hash);
 
           //printf("HASH [%s][%s]][%s][%s]\n",hash,list[1].c_str(),sessionInfo.getKey(),pw);
 

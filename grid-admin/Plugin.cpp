@@ -14,6 +14,7 @@
 #include <macgyver/TimeFormatter.h>
 #include <macgyver/DateTime.h>
 #include <boost/bind/bind.hpp>
+#include <sstream>
 
 namespace ph = boost::placeholders;
 
@@ -265,20 +266,11 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
     //responseMessage.print(std::cout,0,0);
 
     uint lineCount = responseMessage.getLineCount();
-    uint size = responseMessage.getContentSize();
-    char *content = new char[size+100];
-    char *p = content;
-
-    std::unique_ptr<char[]> pContent(content); // This should automatically release the allocated space
-
+    std::ostringstream oss;
     for (uint t=0; t<lineCount; t++)
-    {
-      std::string s = responseMessage.getLineByIndex(t);
-      p += sprintf(p,"%s\n",s.c_str());
-    }
+      oss << responseMessage.getLineByIndex(t) << "\n";
 
-
-    theResponse.setContent(std::string(content));
+    theResponse.setContent(oss.str());
 
     return true;
   }
