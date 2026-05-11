@@ -227,32 +227,25 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
     else
     {
       std::string content = theRequest.getContent();
-      const char *cont = content.c_str();
-      char line[10000];
-      uint c = 0;
-      for (size_t t=0; t<sz; t++)
+      std::string line;
+      for (char ch : content)
       {
-        char ch = cont[t];
-        if (ch == '\r'  || ch == '\n' || c == 9999)
+        if (ch == '\r'  || ch == '\n')
         {
-          line[c] = '\0';
-          if (c > 0)
-           requestMessage.addLine(line);
-
-          c = 0;
+          if (!line.empty())
+          {
+            requestMessage.addLine(line.c_str());
+            line.clear();
+          }
         }
         else
         {
-          line[c] = ch;
-          c++;
+          line += ch;
         }
       }
 
-      if (c > 0)
-      {
-        line[c] = '\0';
-        requestMessage.addLine(line);
-      }
+      if (!line.empty())
+        requestMessage.addLine(line.c_str());
     }
 
     //requestMessage.print(std::cout,0,0);
