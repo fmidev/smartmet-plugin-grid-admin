@@ -314,19 +314,15 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
       kk[t] = dist(gen);
 
     uchar *k = (uchar*)kk;
-    char key[100];
-    char *p = key;
-    uint t=0;
-    while (t<20)
+    std::string key;
+    for (uint t=0; t<20; t++)
     {
       char ch = (char)(32 + (k[t] % 96));
       if (isalnum(ch))
-        p += sprintf(p,"%c",ch);
-
-      t++;
+        key += ch;
     }
 
-    session.setKey(key);
+    session.setKey(key.c_str());
 
 
     if (!page || *page == "logout")
