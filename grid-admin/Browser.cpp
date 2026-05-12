@@ -173,7 +173,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     getFileList("/usr/share/smartmet/plugins",filePatterns2,false,dirList,fileList3);
 
     std::string fname;
-    char tmb[25];
+    char tmb[100];
 
 
     std::ostringstream output;
