@@ -198,7 +198,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
-      sprintf(tmb,"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
+      snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
       output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
@@ -215,7 +215,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
-      sprintf(tmb,"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
+      snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
       output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
@@ -231,7 +231,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
-      sprintf(tmb,"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
+      snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
       output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
