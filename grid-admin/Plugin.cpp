@@ -32,6 +32,8 @@ namespace GridAdmin
  */
 // ----------------------------------------------------------------------
 
+/*! \brief GridAdmin: Constructor. */
+
 Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     : SmartMetPlugin(), itsModuleName("GridAdmin")
 {
@@ -116,6 +118,8 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
  */
 // ----------------------------------------------------------------------
 
+/*! \brief GridAdmin: Destructor. */
+
 Plugin::~Plugin()
 {
 }
@@ -128,6 +132,8 @@ Plugin::~Plugin()
  * \brief Initializator, in this case trivial
  */
 // ----------------------------------------------------------------------
+
+/*! \brief GridAdmin: Init. */
 
 void Plugin::init()
 {
@@ -189,6 +195,8 @@ void Plugin::init()
  */
 // ----------------------------------------------------------------------
 
+/*! \brief GridAdmin: Shutdown. */
+
 void Plugin::shutdown()
 {
   try
@@ -206,6 +214,8 @@ void Plugin::shutdown()
 
 
 
+
+/*! \brief GridAdmin: Api request. */
 
 bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
@@ -276,6 +286,8 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
 
 
 
+/*! \brief GridAdmin: Request. */
+
 bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
   try
@@ -302,6 +314,8 @@ bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theR
  * \brief Main request handler
  */
 // ----------------------------------------------------------------------
+
+/*! \brief GridAdmin: Request handler. */
 
 void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
@@ -383,6 +397,8 @@ const std::string &Plugin::getPluginName() const
  */
 // ----------------------------------------------------------------------
 
+/*! \brief GridAdmin: Get required api version. */
+
 int Plugin::getRequiredAPIVersion() const
 {
   return SMARTMET_API_VERSION;
@@ -394,6 +410,8 @@ int Plugin::getRequiredAPIVersion() const
  * \brief This is an admin plugin
  */
 // ----------------------------------------------------------------------
+
+/*! \brief GridAdmin: Is admin query. */
 
 bool Plugin::isAdminQuery(const Spine::HTTP::Request & /* theRequest */) const
 {

@@ -16,6 +16,8 @@ namespace GridAdmin
 {
 
 
+/*! \brief GridAdmin: Constructor. */
+
 Browser::Browser()
 {
   try
@@ -34,12 +36,16 @@ Browser::Browser()
 
 
 
+/*! \brief GridAdmin: Destructor. */
+
 Browser::~Browser()
 {
 }
 
 
 
+
+/*! \brief GridAdmin: Init. */
 
 void Browser::init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,std::string& groupsFile,std::string& usersFile)
 {
@@ -63,6 +69,8 @@ void Browser::init(Engine::Grid::Engine* theGridEngine,bool authenticationRequir
 
 
 
+
+/*! \brief GridAdmin: Page engines. */
 
 bool Browser::page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
@@ -106,6 +114,8 @@ bool Browser::page_engines(SessionManagement::SessionInfo& session,const Spine::
 
 
 
+
+/*! \brief GridAdmin: Page plugins. */
 
 bool Browser::page_plugins(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
@@ -152,6 +162,8 @@ bool Browser::page_plugins(SessionManagement::SessionInfo& session,const Spine::
 
 
 
+
+/*! \brief GridAdmin: Page software. */
 
 bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
@@ -267,6 +279,8 @@ void to_hex_string(uint8_t hash[20], char output[41])
 
 
 
+/*! \brief GridAdmin: Count hash. */
+
 void Browser::countHash(const char *key,const char *password,char *hex)
 {
   try
@@ -296,6 +310,8 @@ void Browser::countHash(const char *key,const char *password,char *hex)
 
 
 
+
+/*! \brief GridAdmin: Page login. */
 
 bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
@@ -488,6 +504,8 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
 
 
 
+/*! \brief GridAdmin: Page start. */
+
 bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
   try
@@ -566,6 +584,8 @@ bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HT
 
 
 
+
+/*! \brief GridAdmin: Request handler. */
 
 bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
