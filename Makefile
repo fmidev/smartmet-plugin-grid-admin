@@ -55,7 +55,7 @@ OBJS = $(patsubst %.cpp, obj/%.o, $(notdir $(SRCS)))
 
 INCLUDES := -I$(SUBNAME) $(INCLUDES)
 
-.PHONY: test rpm
+.PHONY: test rpm doc
 
 # The rules
 
@@ -75,9 +75,13 @@ $(LIBFILE): $(OBJS)
 		exit 1; \
 	fi
 
+doc:
+	doxygen Doxyfile
+
 clean:
 	rm -f $(LIBFILE) *~ $(SUBNAME)/*~
 	rm -rf obj
+	rm -rf doc/html
 
 clean-install:
 	rm -f $(plugindir)/$(LIBFILE)
