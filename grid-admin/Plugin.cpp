@@ -326,6 +326,23 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
       // We return JSON, hence we should enable CORS
       theResponse.setHeader("Access-Control-Allow-Origin", "*");
 
+      // Security: the Content Server API (method=) path performs the full, potentially
+      // destructive Content Server operations (delete/add producer, file and content
+      // registration, ...). When authentication is required it must not be reachable
+      // without a valid, logged-in browser session. Otherwise anyone could wipe the
+      // metadata or register attacker-controlled file paths/URLs via an unauthenticated
+      // GET request. Gate it here (before request()) so the rejection status is not
+      // overwritten by the ok/not_implemented mapping applied to request()'s result.
+      auto method = theRequest.getParameter("method");
+      if (method && *method > " " && itsAuthenticationRequired &&
+          !itsBrowser.isAuthenticated(theRequest))
+      {
+        theResponse.setStatus(Spine::HTTP::Status::forbidden);
+        theResponse.setHeader("Content-Type", "text/plain; charset=UTF-8");
+        theResponse.setContent("Authentication required\n");
+        return;
+      }
+
       const int expires_seconds = 1;
       Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
 

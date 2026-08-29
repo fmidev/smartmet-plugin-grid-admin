@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 26.6.24
+Version: 26.8.29
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Fri Aug 29 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.8.29-1.fmi
+- Security: require authentication for the Content Server API (method=) path when authenticationRequired is set (previously unauthenticated and destructive)
+
 * Wed Jun 24 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.6.24-1.fmi
 - Mass rebuild
 
