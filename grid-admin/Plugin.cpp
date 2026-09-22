@@ -334,7 +334,6 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
       Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
 
       bool response = request(theReactor, theRequest, theResponse);
-
       if (response)
       {
         theResponse.setStatus(Spine::HTTP::Status::ok);
@@ -348,8 +347,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
 
       Fmi::DateTime t_expires = t_now + Fmi::Seconds(expires_seconds);
       std::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
-      std::string cachecontrol =
-          "public, max-age=" + std::to_string(expires_seconds);
+      std::string cachecontrol = "no-cache";
       std::string expiration = tformat->format(t_expires);
       std::string modification = tformat->format(t_now);
 
