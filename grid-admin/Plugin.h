@@ -66,6 +66,7 @@ class Plugin : public SmartMetPlugin
     std::string         itsContentServerRedisSecondaryAddress; //!< Redis secondary (replica) host address.
     int                 itsContentServerRedisSecondaryPort; //!< Redis secondary port (0 = disabled).
     bool                itsContentServerRedisLockEnabled;   //!< Whether Redis distributed locking is enabled.
+    std::string         itsContentServerRedisPassword;      //!< Redis password for default user.
     std::string         itsContentServerHttpUrl;            //!< Base URL when type is "http".
     std::string         itsContentServerCorbaIor;           //!< CORBA IOR when type is "corba".
     std::string         itsPrimaryConnectionString;         //!< Primary PostgreSQL connection string when type is "postgresql".
@@ -75,6 +76,8 @@ class Plugin : public SmartMetPlugin
     std::string         itsUsersFile;                       //!< Path to the users CSV file for authentication.
     std::string         itsGroupsFile;                      //!< Path to the groups CSV file for authorisation.
     Browser             itsBrowser;                         //!< HTML browser UI instance.
+    bool                itsReadMethodsEnabled;              //!< Read methods enabled.
+    bool                itsWriteMethodsEnabled;             //!< Write methods enabled.
 
     std::shared_ptr<Engine::Grid::Engine> itsGridEngine;    //!< Grid Engine reference used by the browser for grid-specific pages.
     ContentServer::HTTP::ServerInterface  itsMessageProcessor1;  //!< HTTP API processor backed by the direct content server.

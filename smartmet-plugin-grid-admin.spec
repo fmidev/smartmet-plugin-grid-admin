@@ -3,8 +3,8 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 26.8.29
-Release: 1%{?dist}.fmi
+Version: 26.9.24
+Release: 2%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -26,21 +26,21 @@ BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
 BuildRequires: openssl-devel
-BuildRequires: smartmet-library-spine-devel >= 26.6.24
+BuildRequires: smartmet-library-spine-devel >= 26.9.23
 BuildRequires: smartmet-library-locus-devel >= 26.4.13
-BuildRequires: smartmet-library-macgyver-devel >= 26.6.15
-BuildRequires: smartmet-library-newbase-devel >= 26.6.24
-BuildRequires: smartmet-library-grid-files-devel >= 26.6.24
-BuildRequires: smartmet-library-grid-content-devel >= 26.6.24
-BuildRequires: smartmet-engine-grid-devel >= 26.6.24
+BuildRequires: smartmet-library-macgyver-devel >= 26.9.23
+BuildRequires: smartmet-library-newbase-devel >= 26.9.23
+BuildRequires: smartmet-library-grid-files-devel >= 26.9.23
+BuildRequires: smartmet-library-grid-content-devel >= 26.9.23
+BuildRequires: smartmet-engine-grid-devel >= 26.9.23
 BuildRequires: gdal312-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 26.4.13
-Requires: smartmet-library-macgyver >= 26.6.15
-Requires: smartmet-library-newbase >= 26.6.24
-Requires: smartmet-library-spine >= 26.6.24
-Requires: smartmet-engine-grid >= 26.6.24
-Requires: smartmet-server >= 26.6.24
+Requires: smartmet-library-macgyver >= 26.9.23
+Requires: smartmet-library-newbase >= 26.9.23
+Requires: smartmet-library-spine >= 26.9.23
+Requires: smartmet-engine-grid >= 26.9.23
+Requires: smartmet-server >= 26.9.2
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
 #Requires: %{smartmet_boost}-regex
@@ -71,8 +71,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
-* Fri Aug 29 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.8.29-1.fmi
+* Thu Sep 24 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.8.29-2.fmi
 - Security: require authentication for the Content Server API (method=) path when authenticationRequired is set (previously unauthenticated and destructive)
+
+* Thu Sep 24 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.9.24-1.fmi
+- Repackaged due to base library ABI changes
+* Thu Sep  3 2026 Andris Pavēnis <andris.pavenis@fmi.fi> 26.9.3-2.fmi
+- Repackage due to smartmet-library-grid-content ABI changes
 
 * Wed Jun 24 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.6.24-1.fmi
 - Mass rebuild

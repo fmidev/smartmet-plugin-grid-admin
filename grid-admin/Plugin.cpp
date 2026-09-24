@@ -57,11 +57,14 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerRedisSecondaryAddress = "127.0.0.1";
     itsContentServerRedisSecondaryPort = 0;
     itsContentServerRedisLockEnabled = false;
+    itsContentServerRedisPassword = "";
     itsContentServerHttpUrl = "";
     itsContentServerCorbaIor = "";
     itsAuthenticationRequired = false;
     itsUsersFile = "";
     itsGroupsFile = "";
+    itsReadMethodsEnabled = true;
+    itsWriteMethodsEnabled = false;
 
     if (theReactor->getRequiredAPIVersion() != SMARTMET_API_VERSION)
       throw Fmi::Exception(BCP, "GridContent plugin and Server API version mismatch");
@@ -96,6 +99,7 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondartAddress", itsContentServerRedisSecondaryAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryPort", itsContentServerRedisSecondaryPort);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.lockEnabled", itsContentServerRedisLockEnabled);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.password", itsContentServerRedisPassword);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.http.url", itsContentServerHttpUrl);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.corba.ior", itsContentServerCorbaIor);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.postgresql.primaryConnectionString", itsPrimaryConnectionString);
@@ -143,7 +147,7 @@ void Plugin::init()
     {
       ContentServer::RedisImplementation *redis = new ContentServer::RedisImplementation();
       itsContentServer.reset(redis);
-      redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false);
+      redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false,itsContentServerRedisPassword.c_str());
     }
     else
     if (itsContentServerType == "postgresql")
@@ -174,8 +178,8 @@ void Plugin::init()
 
     itsGridEngine = itsReactor->getEngine<Engine::Grid::Engine>("grid", nullptr);
 
-    itsMessageProcessor1.init(itsContentServer.get());
-    itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get());
+    itsMessageProcessor1.init(itsContentServer.get(),itsReadMethodsEnabled,itsWriteMethodsEnabled);
+    itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get(),itsReadMethodsEnabled,itsWriteMethodsEnabled);
 
     itsBrowser.init(itsGridEngine.get(),itsAuthenticationRequired,itsGroupsFile,itsUsersFile);
   }
@@ -347,7 +351,6 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
       Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
 
       bool response = request(theReactor, theRequest, theResponse);
-
       if (response)
       {
         theResponse.setStatus(Spine::HTTP::Status::ok);
@@ -361,8 +364,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
 
       Fmi::DateTime t_expires = t_now + Fmi::Seconds(expires_seconds);
       std::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
-      std::string cachecontrol =
-          "public, max-age=" + std::to_string(expires_seconds);
+      std::string cachecontrol = "no-cache";
       std::string expiration = tformat->format(t_expires);
       std::string modification = tformat->format(t_now);
 
