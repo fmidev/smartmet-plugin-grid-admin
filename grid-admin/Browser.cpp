@@ -585,6 +585,75 @@ bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HT
 
 
 
+/*! \brief GridAdmin: Check whether the request carries a valid, logged-in session.
+ *
+ *  Mirrors the session validation performed by requestHandler(): the session id is
+ *  taken from the "sessionId" cookie, the session must exist, its client IP must
+ *  match, it must not have expired, and it must carry a logged-in user
+ *  (mUserInfo.getUserId() != 0).  Used to gate the Content Server API (method=)
+ *  path so that it cannot be called without authentication when authentication is
+ *  required.  When authentication is not required this always returns true. */
+
+bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest)
+{
+  try
+  {
+    if (!itsAuthenticationRequired)
+      return true;
+
+    T::SessionId sessionId = 0;
+
+    // Fetching the cookie that contains the session information.
+    auto cookie = theRequest.getHeader("Cookie");
+    if (cookie)
+    {
+      std::vector<std::string> list;
+      splitString(*cookie,';',list);
+      for (auto it = list.begin(); it != list.end(); ++it)
+      {
+        std::vector<std::string> p;
+        splitString(*it,'=',p);
+        if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
+          sessionId = toUInt64(p[1]);
+      }
+    }
+
+    if (sessionId == 0)
+      return false;
+
+    SessionManagement::SessionInfo sessionInfo;
+    if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) != 0)
+      return false;  // Unknown session id.
+
+    // The session must be bound to the same client IP.
+    if (theRequest.getClientIP() != sessionInfo.getAddress())
+      return false;
+
+    // The session must not have expired.
+    time_t currentTime = time(nullptr);
+    if (currentTime > sessionInfo.getExpirationTime())
+    {
+      SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
+      return false;
+    }
+
+    // The session must carry a logged-in user.
+    if (sessionInfo.mUserInfo.getUserId() == 0)
+      return false;
+
+    // Valid, authenticated session. Refreshing the last access time.
+    SessionManagement::localSessionManagement.updateSessionAccessTime(itsBroswerSessionId,sessionId);
+    return true;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
 /*! \brief GridAdmin: Request handler. */
 
 bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)

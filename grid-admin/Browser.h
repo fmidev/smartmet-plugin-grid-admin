@@ -45,6 +45,7 @@ class Browser
 
     void      init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,std::string& groupsFile,std::string& usersFile);
     bool      requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool      isAuthenticated(const Spine::HTTP::Request& theRequest);
 
   private:
 
