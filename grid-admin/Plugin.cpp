@@ -10,8 +10,10 @@
 #include <grid-content/contentServer/http/client/ClientImplementation.h>
 #include "grid-content/contentServer/postgresql/PostgresqlImplementation.h"
 #include <grid-content/contentServer/redis/RedisImplementation.h>
+#include <spine/Convenience.h>
 #include <spine/SmartMet.h>
 #include <macgyver/TimeFormatter.h>
+#include <macgyver/AnsiEscapeCodes.h>
 #include <macgyver/DateTime.h>
 #include <boost/bind/bind.hpp>
 #include <sstream>
@@ -60,7 +62,9 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerRedisPassword = "";
     itsContentServerHttpUrl = "";
     itsContentServerCorbaIor = "";
-    itsAuthenticationRequired = false;
+    // Secure by default: the Content Server API (method=) is only reachable with a
+    // logged-in session unless authentication is explicitly disabled.
+    itsAuthenticationRequired = true;
     itsUsersFile = "";
     itsGroupsFile = "";
     itsReadMethodsEnabled = true;
@@ -85,11 +89,19 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
         Fmi::Exception exception(BCP, "Missing configuration attribute!");
         exception.addParameter("File",theConfig);
         exception.addParameter("Attribute",configAttribute[t]);
+        exception.printError();
       }
       t++;
     }
 
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.authenticationRequired", itsAuthenticationRequired);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.readMethodsEnabled", itsReadMethodsEnabled);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.writeMethodsEnabled", itsWriteMethodsEnabled);
+
+    if (!itsAuthenticationRequired)
+      std::cout << Spine::log_time_str() << ANSI_FG_RED
+                << " WARNING: grid-admin authentication is disabled, the Content Server API is open"
+                << ANSI_FG_DEFAULT << std::endl;
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.usersFile", itsUsersFile);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.groupsFile", itsGroupsFile);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.type", itsContentServerType);
@@ -327,8 +339,8 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
   {
     try
     {
-      // We return JSON, hence we should enable CORS
-      theResponse.setHeader("Access-Control-Allow-Origin", "*");
+      // No CORS header: this is an administrative interface authenticated with a
+      // session cookie, and it must not be scriptable from other origins.
 
       // Security: the Content Server API (method=) path performs the full, potentially
       // destructive Content Server operations (delete/add producer, file and content

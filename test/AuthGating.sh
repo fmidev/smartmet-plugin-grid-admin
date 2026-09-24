@@ -34,12 +34,32 @@ status=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "${PROBE}")
 
 if [ "${status}" = "403" ]; then
   echo "PASS: unauthenticated method=deleteProducerInfoByName rejected with HTTP ${status}"
-  exit 0
+else
+  echo "FAIL: unauthenticated destructive method= request returned HTTP ${status} (expected 403)"
+  echo "      URL: ${PROBE}"
+  echo "      NOTE: a 403 is only expected when the server sets authenticationRequired=true."
+  echo "            If this server is configured with authenticationRequired=false the"
+  echo "            method= path is intentionally open and this test does not apply."
+  exit 1
 fi
 
-echo "FAIL: unauthenticated destructive method= request returned HTTP ${status} (expected 403)"
-echo "      URL: ${PROBE}"
-echo "      NOTE: a 403 is only expected when the server sets authenticationRequired=true."
-echo "            If this server is configured with authenticationRequired=false the"
-echo "            method= path is intentionally open and this test does not apply."
-exit 1
+# The browser session cookie must be HttpOnly and SameSite=Strict, and the
+# interface must not allow cross-origin scripting via CORS.
+headers=$(curl -s -D - -o /dev/null --max-time 10 "${URL}")
+
+if echo "${headers}" | grep -qi '^Access-Control-Allow-Origin:'; then
+  echo "FAIL: grid-admin sends an Access-Control-Allow-Origin header"
+  exit 1
+fi
+echo "PASS: no Access-Control-Allow-Origin header"
+
+cookie=$(echo "${headers}" | grep -i '^Set-Cookie: *sessionId=')
+if [ -n "${cookie}" ]; then
+  if echo "${cookie}" | grep -qi 'HttpOnly' && echo "${cookie}" | grep -qi 'SameSite=Strict'; then
+    echo "PASS: session cookie is HttpOnly and SameSite=Strict"
+  else
+    echo "FAIL: session cookie lacks HttpOnly/SameSite=Strict: ${cookie}"
+    exit 1
+  fi
+fi
+exit 0
