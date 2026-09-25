@@ -108,6 +108,8 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.address", itsContentServerRedisAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.port", itsContentServerRedisPort);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.tablePrefix", itsContentServerRedisTablePrefix);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryAddress", itsContentServerRedisSecondaryAddress);
+    // Older configurations may still use the misspelt key that was read before.
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondartAddress", itsContentServerRedisSecondaryAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryPort", itsContentServerRedisSecondaryPort);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.lockEnabled", itsContentServerRedisLockEnabled);
@@ -184,11 +186,15 @@ void Plugin::init()
     }
     else
     {
-      Fmi::Exception exception(BCP, "Unknow content server type!");
+      Fmi::Exception exception(BCP, "Unknown content server type!");
       exception.addParameter("Content server type",itsContentServerType);
+      exception.addParameter("Expected","redis, postgresql, corba or http");
+      throw exception;
     }
 
     itsGridEngine = itsReactor->getEngine<Engine::Grid::Engine>("grid", nullptr);
+    if (!itsGridEngine)
+      throw Fmi::Exception(BCP, "The grid-admin plugin requires the grid engine");
 
     itsMessageProcessor1.init(itsContentServer.get(),itsReadMethodsEnabled,itsWriteMethodsEnabled);
     itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get(),itsReadMethodsEnabled,itsWriteMethodsEnabled);

@@ -3,8 +3,8 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 26.9.24
-Release: 3%{?dist}.fmi
+Version: 26.9.25
+Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -71,6 +71,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Fri Sep 25 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.9.25-1.fmi
+- Fail at startup on an unknown content-server.type instead of starting without a
+  content server
+- Read content-server.redis.secondaryAddress (the misspelt secondartAddress is still
+  accepted) and fix lockEnable -> lockEnabled in the sample configuration
+- Fail with a clear message when the grid engine is not available
+
 * Thu Sep 24 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.9.24-3.fmi
 - Security: authenticationRequired defaults to true, a missing setting no longer silently opens the Content Server API
 - Security: session cookie is HttpOnly and SameSite=Strict; no Access-Control-Allow-Origin: * header
