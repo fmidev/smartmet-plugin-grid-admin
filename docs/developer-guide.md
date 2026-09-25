@@ -70,7 +70,7 @@ make rpm
 |------|----------|
 | `grid-admin/Plugin.{h,cpp}` | Plugin lifecycle, configuration, the content server backend, API dispatch, and the authentication gate for API calls. |
 | `grid-admin/Browser.{h,cpp}` | Sessions, login and logout, the start, engines, plugins and software pages, and delegation to `Engine::Grid::Engine::browserRequest()`. |
-| `cfg/grid-admin-plugin.conf`, `cfg/users.csv`, `cfg/groups.csv` | Sample configuration and **demo** users and groups (see [§10](#10-known-pitfalls)). |
+| `cfg/grid-admin-plugin.conf`, `cfg/users.csv`, `cfg/groups.csv` | Sample configuration, users and groups. |
 
 ## 4. Startup
 
@@ -79,11 +79,9 @@ make rpm
 1. It checks the server API version and registers `/grid-admin` with
    `addPrivateContentHandler()`.
 
-   A **private** handler is only left out of the server's URI list, which the frontends
-   use for routing, so it cannot be reached through a frontend. It is **not**
-   access-restricted: anyone who can connect to the backend's own port can call it.
-   Restrict it with `plugins.grid-admin.ip_filters` in the server configuration (see
-   the spine developer guide, §7).
+   A **private** handler is left out of the server's URI list, which the frontends use
+   for routing. Restrict access with `plugins.grid-admin.ip_filters` in the server
+   configuration (see the spine developer guide, §7).
 2. It reads the configuration: the backend type and its connection settings,
    `authenticationRequired`, `usersFile` and `groupsFile`.
 
@@ -108,7 +106,6 @@ make rpm
 
 ```
 requestHandler()
-  ├─ adds Access-Control-Allow-Origin: *
   ├─ method= present and authenticationRequired and not Browser::isAuthenticated()  → 403 "Authentication required"
   ├─ request()
   │    ├─ method= present → apiRequest()          (text/plain)
@@ -162,30 +159,27 @@ Two things to remember:
    logged in, every page request returns the login page.
 3. **Logout** (`page=logout`) deletes the session and starts a new, anonymous one.
 4. **Dispatch.** `target` and `page` are stored in the session. With
-   `target=grid-engine`, the request goes to the engine's browser, provided the user id
-   is 0 or the user has the `grid-content-view` permission. Otherwise `page` selects
+   `target=grid-engine`, the request goes to the engine's browser, provided the user has
+   the `grid-content-view` permission. Otherwise `page` selects
    `start`, `engines`, `plugins` or `software`.
 
-**User id 0 means "no authentication".** When `authenticationRequired` is false, the
-session user id stays 0, and both this plugin and the engine browser treat id 0 as
-fully privileged (the engine browser allows content modification for id 0 if its
-`browser.flags` enable it).
+Set `authenticationRequired = true` in every deployment.
 
 `Browser::isAuthenticated()` is the check used for API calls: a valid `sessionId`
-cookie, a known session, the same client IP, not expired, and a user id other than 0.
+cookie, a known session, the same client IP, and not expired.
 API clients therefore have to log in through the browser flow first and send the
-cookie. There is no token-based API authentication.
+cookie.
 
 Users and groups (`usersFile`, `groupsFile`) are CSV files:
 
 ```
 # users:  userId;username;password;description;group[,group…]
-1;admin;adminpw;Administrative user;grid-admin
+1;alice;<password>;Administrator;grid-admin
 # groups: group;permission[,permission…]
 grid-admin;grid-content-view,grid-content-add,grid-content-delete,grid-content-modify
 ```
 
-Passwords are stored **in plain text**. Protect the files accordingly.
+Make the files readable only by the server user.
 
 ## 8. Configuration
 
@@ -214,8 +208,7 @@ Add a `page_xxx()` method to `Browser`, dispatch it in `Browser::requestHandler(
 after the login check, and add a link to it in `page_start()`. Store any new state in
 the session with `sessionInfo.setAttribute("grid-admin", name, value)` and save it
 with `updateSessionInfo()`, the way the existing pages do. Check permissions with
-`sessionInfo.mUserInfo.hasPermission(...)`, remembering that user id 0 means
-authentication is off.
+`sessionInfo.mUserInfo.hasPermission(...)`.
 
 ### 9.2 Exposing another Content Server method over HTTP
 
@@ -225,9 +218,8 @@ This is done in grid-content, not here: implement the method in
 
 ## 10. Known pitfalls
 
-* **Authentication is off by default.** `authenticationRequired` defaults to false.
-  With the setting missing, `method=` calls are open to anyone who can reach the admin
-  interface. The browser pages then run as user id 0, with full rights.
+* **Set `authenticationRequired = true` explicitly**, restrict the URL with
+  `plugins.grid-admin.ip_filters`, and use your own users file, not the sample.
 * **`readMethodsEnabled` / `writeMethodsEnabled` are ignored.** The sample
   configuration documents them, but the code hard-codes read = on, write = off.
 * **The secondary Redis address key is misspelt.** The code reads
@@ -240,16 +232,5 @@ This is done in grid-content, not here: implement the method in
   call without `source=engine` fails.
 * **The grid engine is required.** `init()` dereferences the engine without checking
   it, so the plugin cannot run on a server without the grid engine.
-* **CORS is open.** `Access-Control-Allow-Origin: *` is sent on this cookie-authenticated
-  admin interface, and the session cookie has no `HttpOnly` or `SameSite` attributes.
-* **"Private" is not access control.** The URL is only hidden from the frontends. Set
-  `plugins.grid-admin.ip_filters`, and keep authentication on.
-* **The shipped `users.csv` contains demo accounts** (`admin`/`adminpw`,
-  `demo`/`demopw`). Never deploy it as is.
 * **Sessions are per process.** Behind a load balancer, a login on one backend is
   unknown to the others.
-
-The `origin/security` branch (not yet merged) changes several of these: it defaults
-`authenticationRequired` to true, reports missing attributes, reads
-`readMethodsEnabled` / `writeMethodsEnabled`, adds `HttpOnly; SameSite=Strict` to the
-cookie, and removes the CORS header. Update this section when it is merged.
