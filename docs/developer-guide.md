@@ -27,7 +27,7 @@ describes the engine browser that this plugin hosts.
 
 ## 1. What the plugin does
 
-`grid-admin.so` registers the **private** (admin) URL `/grid-admin` and serves two
+`grid-admin.so` registers the **private** URL `/grid-admin` and serves two
 things from it:
 
 * **The Content Server API over HTTP** (`?method=…`). Feeding systems and tools can
@@ -77,7 +77,13 @@ make rpm
 **Constructor**
 
 1. It checks the server API version and registers `/grid-admin` with
-   `addPrivateContentHandler()`, so the URL is only reachable on the admin interface.
+   `addPrivateContentHandler()`.
+
+   A **private** handler is only left out of the server's URI list, which the frontends
+   use for routing, so it cannot be reached through a frontend. It is **not**
+   access-restricted: anyone who can connect to the backend's own port can call it.
+   Restrict it with `plugins.grid-admin.ip_filters` in the server configuration (see
+   the spine developer guide, §7).
 2. It reads the configuration: the backend type and its connection settings,
    `authenticationRequired`, `usersFile` and `groupsFile`.
 
@@ -236,6 +242,8 @@ This is done in grid-content, not here: implement the method in
   it, so the plugin cannot run on a server without the grid engine.
 * **CORS is open.** `Access-Control-Allow-Origin: *` is sent on this cookie-authenticated
   admin interface, and the session cookie has no `HttpOnly` or `SameSite` attributes.
+* **"Private" is not access control.** The URL is only hidden from the frontends. Set
+  `plugins.grid-admin.ip_filters`, and keep authentication on.
 * **The shipped `users.csv` contains demo accounts** (`admin`/`adminpw`,
   `demo`/`demopw`). Never deploy it as is.
 * **Sessions are per process.** Behind a load balancer, a login on one backend is
