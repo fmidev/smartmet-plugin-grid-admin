@@ -134,7 +134,7 @@ client can talk to this plugin (the `http` content source type).
 
 Two things to remember:
 
-* **Write methods are always disabled** on master (see [§10](#10-known-pitfalls)).
+* **Write methods are disabled.**
   The message processor only dispatches `add…`, `delete…` and `set…` when write
   methods are enabled, so these calls are answered with `result=` `UNKNOWN_METHOD`, even
   for a logged-in user.
@@ -191,8 +191,8 @@ All keys are under `smartmet.plugin.grid-admin`:
 | `usersFile`, `groupsFile` | The CSV files above. |
 | `content-server.type` | `redis`, `postgresql`, `corba` or `http`. |
 | `content-server.redis.address`, `.port`, `.tablePrefix`, `.secondaryPort`, `.password` | Redis connection. |
-| `content-server.redis.secondartAddress` | Secondary Redis address. **Note the spelling**: the code reads this misspelt key (see [§10](#10-known-pitfalls)). |
-| `content-server.redis.lockEnabled` | Redis write lock (the sample file writes `lockEnable`, which is not read). |
+| `content-server.redis.secondartAddress` | Secondary Redis address. |
+| `content-server.redis.lockEnabled` | Redis write lock. |
 | `content-server.postgresql.primaryConnectionString`, `.secondaryConnectionString` | PostgreSQL connection. |
 | `content-server.corba.ior`, `content-server.http.url` | Remote content server. |
 
@@ -220,17 +220,5 @@ This is done in grid-content, not here: implement the method in
 
 * **Set `authenticationRequired = true` explicitly**, restrict the URL with
   `plugins.grid-admin.ip_filters`, and use your own users file, not the sample.
-* **`readMethodsEnabled` / `writeMethodsEnabled` are ignored.** The sample
-  configuration documents them, but the code hard-codes read = on, write = off.
-* **The secondary Redis address key is misspelt.** The code reads
-  `content-server.redis.secondartAddress`, so the documented `secondaryAddress`
-  has no effect and the default `127.0.0.1` is used. Likewise, the sample's `lockEnable`
-  is not the `lockEnabled` the code reads.
-* **Configuration errors are swallowed.** A missing mandatory attribute, or an unknown
-  `content-server.type`, builds an exception object but never throws it. With an
-  unknown type, the plugin starts without a content server, and the first `method=`
-  call without `source=engine` fails.
-* **The grid engine is required.** `init()` dereferences the engine without checking
-  it, so the plugin cannot run on a server without the grid engine.
 * **Sessions are per process.** Behind a load balancer, a login on one backend is
   unknown to the others.
