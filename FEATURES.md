@@ -38,7 +38,7 @@ without going through the grid engine.
   `set*`, `get*` method documented in
   `smartmet-library-grid-content/FEATURES.md` §2.
 - **Case-insensitive method dispatch** (e.g. `method=getProducerInfoList`).
-- **JSON-over-HTTP wire format** as defined by `ServerInterface`.
+- **Line-based `key=value` wire format** (records as CSV) as defined by `ServerInterface`; responses are `text/plain`.
 
 ## 3. Source selection (direct vs. cached)
 
@@ -57,7 +57,7 @@ Selected at startup by `content-server.type` in the plugin config.
 - **Redis** (default) — primary + optional secondary, configurable table
   prefix, optional distributed locking.
 - **PostgreSQL** — primary + optional secondary connection strings.
-- **HTTP** — proxy a remote Content Server over JSON-over-HTTP.
+- **HTTP** — proxy a remote Content Server over the grid-content HTTP transport.
 - **CORBA** — proxy a remote Content Server over CORBA (omniORB).
 - **Endpoints from environment** — `REDIS_CONTENT_SERVER_PRIMARY_ADDRESS`,
   `PG_CONTENT_SERVER_PRIMARY_CONNECTION_STRING`, `CORBA_CONTENT_SERVER_IOR`,

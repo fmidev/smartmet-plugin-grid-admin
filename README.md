@@ -6,7 +6,7 @@ Part of [SmartMet Server](https://github.com/fmidev/smartmet-server). See the [S
 
 The Grid-Admin Plugin is a simple plugin that offers an HTTP interface to the Content Information Storage. So, technically other system (for example, feeding systems) can use this interface for updating  and fetching content information from the Content Information Stroage
 
-The Grid-Admin Plugin does not use the Grid Engine. Instead, it connects directly to the Content Server by using its own configuration information.
+The Grid-Admin Plugin connects directly to the Content Server by using its own configuration information. It also requires the Grid Engine, whose cached content server is available with `source=engine` and whose browser pages it hosts.
 
 ## Licence
 The Grid-Admin Plugin is a part of the SmartMet Server (https://github.com/fmidev/smartmet-server), which is published with MIT-license.
@@ -20,6 +20,8 @@ CLA is required in order to contribute. Please contact us for more information!
 
 ## Documentation
 SmartMet Server Grid support (https://github.com/fmidev/smartmet-tools-grid/raw/master/doc/grid-support.pdf)
+
+Developer guide: [docs/developer-guide.md](docs/developer-guide.md)
 
 
 ## Communication and Resources

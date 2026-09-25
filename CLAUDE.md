@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 The **grid-admin** plugin for SmartMet Server. It provides an HTTP interface to the Content Information Storage, allowing external systems (e.g. feeding systems) to query and update content information. It also serves a simple HTML browser UI for inspecting server state (engines, plugins, installed software).
 
-The plugin connects directly to the Content Server using its own configuration — it does **not** use the Grid Engine for content server access, though it does use the Grid Engine for browser UI features.
+The plugin connects directly to the Content Server using its own configuration. It also requires the Grid Engine: `source=engine` API calls go to the engine's cached content server, and the engine's browser is hosted here.
+
+Full developer documentation: `docs/developer-guide.md`.
 
 ## Build commands
 
