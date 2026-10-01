@@ -80,8 +80,10 @@ make rpm
    `addPrivateContentHandler()`.
 
    A **private** handler is left out of the server's URI list, which the frontends use
-   for routing. Restrict access with `plugins.grid-admin.ip_filters` in the server
-   configuration (see the spine developer guide, §7).
+   for routing. Without `plugins.grid-admin.ip_filters` in the server configuration it
+   accepts only localhost and the private networks 10.0.0.0/8, 172.16.0.0/12 and
+   192.168.0.0/16. Setting `ip_filters` replaces that default (see the spine developer
+   guide, §7).
 2. It reads the configuration: the backend type and its connection settings,
    `authenticationRequired`, `usersFile` and `groupsFile`.
 
