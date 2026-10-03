@@ -8,13 +8,19 @@
 # that group (see the "groups" file). 
 #
 # FIELDS:
-# 1 UserId
+# 1 UserId (must be greater than zero)
 # 2 Username
-# 3 Password
+# 3 Password hash: "sha1:" followed by the hex SHA-1 of "username:password", which
+#   can be generated with
+#
+#      printf '%s' 'username:password' | sha1sum
+#
+#   Plain text passwords are still accepted but deprecated.
 # 4 Description
 # 5 Group[,group,...,group]
 #
+# No accounts are defined by default. Example (user "admin", password "change-me"):
+#
+# 1;admin;sha1:<output of the command above>;Administrative user;grid-admin
+#
 # -----------------------------------------------------------------------------------------
-
-1;admin;adminpw;Administrative user;grid-admin
-1000;demo;demopw;Demo user;grid-user

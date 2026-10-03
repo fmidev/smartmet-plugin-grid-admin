@@ -366,9 +366,7 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     output << "}\n";
 
 
-    output << "function hash(str) {\n";
-    output << "      key = \"" << key << "\";\n";
-    output << "      st = str + key;\n";
+    output << "function sha1(st) {\n";
     output << "      const msg = new TextEncoder().encode(st);\n";
 
     output << "      const H = [\n";
@@ -436,6 +434,12 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     output << "      return H.map(x => x.toString(16).padStart(8, \"0\")).join(\"\");\n";
     output << "    }\n";
 
+    // The challenge response is computed from the password hash, so that the
+    // server does not need to store the password itself
+    output << "function hash(str) {\n";
+    output << "  return sha1(str + \"" << key << "\");\n";
+    output << "}\n";
+
 
 
 
@@ -463,7 +467,8 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     output << "  };\n";
     output << "  var user = document.getElementById('username').value;\n";
     output << "  var pw = document.getElementById('password').value;\n";
-    output << "  var data = user + \":\" + hash(pw+pw+pw);\n";
+    output << "  var p = sha1(user + \":\" + pw);\n";
+    output << "  var data = user + \":\" + hash(p+p+p);\n";
     output << "  console.log(\"Sending:\", data);\n";
     output << "  xhr.send(data);";
     output << "}\n";
@@ -738,8 +743,27 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
         {
           // Checking the password
 
+          // The users file may store the password as "sha1:" followed by the
+          // hex SHA-1 of "username:password", or (deprecated) in plain text.
+          // The browser sends SHA-1(h+h+h+key) where h is that hex hash.
+
+          const std::string stored = user.getPassword();
+          std::string pwHash;
+          if (stored.rfind("sha1:",0) == 0)
+          {
+            pwHash = stored.substr(5);
+            for (auto& ch : pwHash)
+              ch = static_cast<char>(tolower(static_cast<unsigned char>(ch)));
+          }
+          else
+          {
+            char plainHash[41];
+            countHash("",(list[0] + ":" + stored).c_str(),plainHash);
+            pwHash = plainHash;
+          }
+
           char hash[41];
-          std::string pwStr = std::string(user.getPassword()) + user.getPassword() + user.getPassword();
+          std::string pwStr = pwHash + pwHash + pwHash;
           countHash(sessionInfo.getKey(),pwStr.c_str(),hash);
 
           //printf("HASH [%s][%s]][%s][%s]\n",hash,list[1].c_str(),sessionInfo.getKey(),pw);
