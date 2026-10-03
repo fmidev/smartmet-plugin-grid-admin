@@ -775,7 +775,9 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
       Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
       Fmi::DateTime t_expires = t_now + Fmi::Seconds(3600);
       std::string expiration = tformat->format(t_expires);
-      theResponse.setHeader("Set-Cookie","sessionId=" + std::to_string(sessionId) + "; expires=" + expiration);
+      // HttpOnly: not readable by scripts (e.g. via an XSS in another plugin on the same
+      // origin). SameSite=Strict: not sent with cross-site requests (CSRF of API methods).
+      theResponse.setHeader("Set-Cookie","sessionId=" + std::to_string(sessionId) + "; expires=" + expiration + "; HttpOnly; SameSite=Strict");
     }
 
     bool res = false;

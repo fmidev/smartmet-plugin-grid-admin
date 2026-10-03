@@ -10,8 +10,10 @@
 #include <grid-content/contentServer/http/client/ClientImplementation.h>
 #include "grid-content/contentServer/postgresql/PostgresqlImplementation.h"
 #include <grid-content/contentServer/redis/RedisImplementation.h>
+#include <spine/Convenience.h>
 #include <spine/SmartMet.h>
 #include <macgyver/TimeFormatter.h>
+#include <macgyver/AnsiEscapeCodes.h>
 #include <macgyver/DateTime.h>
 #include <boost/bind/bind.hpp>
 #include <sstream>
@@ -60,7 +62,9 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerRedisPassword = "";
     itsContentServerHttpUrl = "";
     itsContentServerCorbaIor = "";
-    itsAuthenticationRequired = false;
+    // Secure by default: the Content Server API (method=) is only reachable with a
+    // logged-in session unless authentication is explicitly disabled.
+    itsAuthenticationRequired = true;
     itsUsersFile = "";
     itsGroupsFile = "";
     itsReadMethodsEnabled = true;
@@ -85,17 +89,27 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
         Fmi::Exception exception(BCP, "Missing configuration attribute!");
         exception.addParameter("File",theConfig);
         exception.addParameter("Attribute",configAttribute[t]);
+        exception.printError();
       }
       t++;
     }
 
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.authenticationRequired", itsAuthenticationRequired);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.readMethodsEnabled", itsReadMethodsEnabled);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.writeMethodsEnabled", itsWriteMethodsEnabled);
+
+    if (!itsAuthenticationRequired)
+      std::cout << Spine::log_time_str() << ANSI_FG_RED
+                << " WARNING: grid-admin authentication is disabled, the Content Server API is open"
+                << ANSI_FG_DEFAULT << std::endl;
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.usersFile", itsUsersFile);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.groupsFile", itsGroupsFile);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.type", itsContentServerType);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.address", itsContentServerRedisAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.port", itsContentServerRedisPort);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.tablePrefix", itsContentServerRedisTablePrefix);
+    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryAddress", itsContentServerRedisSecondaryAddress);
+    // Older configurations may still use the misspelt key that was read before.
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondartAddress", itsContentServerRedisSecondaryAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryPort", itsContentServerRedisSecondaryPort);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.lockEnabled", itsContentServerRedisLockEnabled);
@@ -172,11 +186,15 @@ void Plugin::init()
     }
     else
     {
-      Fmi::Exception exception(BCP, "Unknow content server type!");
+      Fmi::Exception exception(BCP, "Unknown content server type!");
       exception.addParameter("Content server type",itsContentServerType);
+      exception.addParameter("Expected","redis, postgresql, corba or http");
+      throw exception;
     }
 
     itsGridEngine = itsReactor->getEngine<Engine::Grid::Engine>("grid", nullptr);
+    if (!itsGridEngine)
+      throw Fmi::Exception(BCP, "The grid-admin plugin requires the grid engine");
 
     itsMessageProcessor1.init(itsContentServer.get(),itsReadMethodsEnabled,itsWriteMethodsEnabled);
     itsMessageProcessor2.init(itsGridEngine->getContentServer_sptr().get(),itsReadMethodsEnabled,itsWriteMethodsEnabled);
@@ -327,8 +345,8 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
   {
     try
     {
-      // We return JSON, hence we should enable CORS
-      theResponse.setHeader("Access-Control-Allow-Origin", "*");
+      // No CORS header: this is an administrative interface authenticated with a
+      // session cookie, and it must not be scriptable from other origins.
 
       // Security: the Content Server API (method=) path performs the full, potentially
       // destructive Content Server operations (delete/add producer, file and content
