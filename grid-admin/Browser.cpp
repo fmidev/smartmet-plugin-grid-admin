@@ -39,8 +39,7 @@ Browser::Browser()
 /*! \brief GridAdmin: Destructor. */
 
 Browser::~Browser()
-{
-}
+= default;
 
 
 

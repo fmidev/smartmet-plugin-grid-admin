@@ -13,9 +13,9 @@
 namespace SmartMet
 {
 
-typedef std::shared_ptr<ContentServer::ServiceInterface> ContentServer_sptr;  //!< Shared pointer to a ContentServer service interface.
+using ContentServer_sptr = std::shared_ptr<ContentServer::ServiceInterface>;  //!< Shared pointer to a ContentServer service interface.
 
-typedef std::map<std::string,std::string> Filenames;  //!< Map of resource name to file path for statically served browser assets.
+using Filenames = std::map<std::string,std::string>;  //!< Map of resource name to file path for statically served browser assets.
 
 
 namespace Plugin
