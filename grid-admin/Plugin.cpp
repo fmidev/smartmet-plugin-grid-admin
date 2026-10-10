@@ -159,28 +159,28 @@ void Plugin::init()
   {
     if (itsContentServerType == "redis")
     {
-      ContentServer::RedisImplementation *redis = new ContentServer::RedisImplementation();
+      auto *redis = new ContentServer::RedisImplementation();
       itsContentServer.reset(redis);
       redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false,itsContentServerRedisPassword.c_str());
     }
     else
     if (itsContentServerType == "postgresql")
     {
-      ContentServer::PostgresqlImplementation* postgres = new ContentServer::PostgresqlImplementation();
+      auto* postgres = new ContentServer::PostgresqlImplementation();
       itsContentServer.reset(postgres);
       postgres->init(itsPrimaryConnectionString.c_str(),itsSecondaryConnectionString.c_str(),false);
     }
     else
     if (itsContentServerType == "corba")
     {
-      ContentServer::Corba::ClientImplementation *client = new ContentServer::Corba::ClientImplementation();
+      auto *client = new ContentServer::Corba::ClientImplementation();
       itsContentServer.reset(client);
       client->init(itsContentServerCorbaIor.c_str());
     }
     else
     if (itsContentServerType == "http")
     {
-      ContentServer::HTTP::ClientImplementation *client = new ContentServer::HTTP::ClientImplementation();
+      auto *client = new ContentServer::HTTP::ClientImplementation();
       itsContentServer.reset(client);
       client->init(itsContentServerHttpUrl.c_str());
     }

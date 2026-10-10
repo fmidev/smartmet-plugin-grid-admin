@@ -329,7 +329,7 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     for (uint t=0; t<3; t++)
       kk[t] = dist(gen);
 
-    uchar *k = (uchar*)kk;
+    auto *k = (uchar*)kk;
     std::string key;
     for (uint t=0; t<20; t++)
     {
