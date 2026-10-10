@@ -210,7 +210,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
-      output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
+      output << "        <TR><TD width=\"200\">" << it->second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
 
@@ -227,7 +227,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
-      output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
+      output << "        <TR><TD width=\"200\">" << it->second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
     output << "      </LI>";
@@ -243,7 +243,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
-      output << "        <TR><TD width=\"200\">" << it->second << "</TD><TD width=\"120\" align=\"right\">" << sz << "</TD><TD <TD width=\"120\" align=\"right\">" << tmb << "</TD></TR>\n";
+      output << "        <TR><TD width=\"200\">" << it->second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
     output << "      </LI>";
@@ -480,14 +480,14 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     output << "<H2>Login</H2>\n";
     output << "<TABLE border=\"1\" width=\"400\" style=\"font-size:12;\">\n";
     output << "<TR><TD width=\"140\" bgColor=\"#D0D0D0\">Username</TD><TD><INPUT style=\"width:100%;\"  type=\"text\" id=\"username\" value=\"\"></TD></TR>\n";
-    output << "<TR><TD width=\"140\" bgColor=\"#D0D0D0\">Password</TD><TD><INPUT style=\"width:100%;\"  type=\"password\" id=\"password\" value=\"\" onkeydown=\"if (event.key == 'Enter'){login(this,parent,'/grid-admin?page="+ *page + "&target=" + *target + "');}else{}\"></TD></TR>\n";
+    output << R"(<TR><TD width="140" bgColor="#D0D0D0">Password</TD><TD><INPUT style="width:100%;"  type="password" id="password" value="" onkeydown="if (event.key == 'Enter'){login(this,parent,'/grid-admin?page=)"+ *page + "&target=" + *target + "');}else{}\"></TD></TR>\n";
     output << "</TABLE>\n";
 
     std::string bg = "#C0C0C0";
     output << "<HR>\n";
     output << "<TABLE style=\"font-size:12;\">\n";
     output << "<TR>\n";
-    output << "<TD width=\"150\" height=\"25\" align=\"center\" style=\"background:"+bg+";\" onmouseout=\"this.style='background:"+bg+";'\" onmouseover=\"this.style='background:#0000FF; color:#FFFFFF';\" onClick=\"login(this,parent,'/grid-admin?page="+ *page + "&target=" + *target + "');\" >Login</TD>\n";
+    output << R"(<TD width="150" height="25" align="center" style="background:)"+bg+";\" onmouseout=\"this.style='background:"+bg+R"(;'" onmouseover="this.style='background:#0000FF; color:#FFFFFF';" onClick="login(this,parent,'/grid-admin?page=)"+ *page + "&target=" + *target + "');\" >Login</TD>\n";
     output << "</TR>\n";
     output << "</TABLE>\n";
 
