@@ -172,12 +172,12 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
 
     std::vector<std::pair<std::string,std::string>> fileList1;
     std::vector<std::string> filePatterns1;
-    filePatterns1.push_back("libsmartmet*");
+    filePatterns1.emplace_back("libsmartmet*");
     getFileList("/usr/lib64",filePatterns1,false,dirList,fileList1);
 
     std::vector<std::pair<std::string,std::string>> fileList2;
     std::vector<std::string> filePatterns2;
-    filePatterns2.push_back("*.so");
+    filePatterns2.emplace_back("*.so");
     getFileList("/usr/share/smartmet/engines",filePatterns2,false,dirList,fileList2);
 
     std::vector<std::pair<std::string,std::string>> fileList3;
