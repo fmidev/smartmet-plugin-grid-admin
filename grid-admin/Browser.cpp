@@ -201,7 +201,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "        <H4>Libraries</H4>";
 
     output << "        <TABLE style=\"font-size:12;\">";
-    for (auto & it : fileList1)
+    for (auto& it : fileList1)
     {
       fname = it.first + "/" + it.second;
       time_t modTime= getFileModificationTime(fname.c_str());
@@ -218,7 +218,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "      <LI>";
     output << "        <H4>Engines</H4>";
     output << "        <TABLE style=\"font-size:12;\">";
-    for (auto & it : fileList2)
+    for (auto& it : fileList2)
     {
       fname = it.first + "/" + it.second;
       time_t modTime= getFileModificationTime(fname.c_str());
@@ -234,7 +234,7 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "      <LI>";
     output << "        <H4>Plugins</H4>";
     output << "        <TABLE style=\"font-size:12;\">";
-    for (auto & it : fileList3)
+    for (auto& it : fileList3)
     {
       fname = it.first + "/" + it.second;
       time_t modTime= getFileModificationTime(fname.c_str());
@@ -613,7 +613,7 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest)
     {
       std::vector<std::string> list;
       splitString(*cookie,';',list);
-      for (auto & it : list)
+      for (auto& it : list)
       {
         std::vector<std::string> p;
         splitString(it,'=',p);
@@ -678,7 +678,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
       splitString(*cookie,';',list);
       if (list.size() > 0)
       {
-        for (auto & it : list)
+        for (auto& it : list)
         {
           std::vector<std::string> p;
           splitString(it,'=',p);
