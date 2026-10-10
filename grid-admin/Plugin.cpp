@@ -249,9 +249,9 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
     if (sz == 0)
     {
       auto mappi = theRequest.getParameterMap();
-      for (auto it = mappi.begin(); it != mappi.end(); ++it)
+      for (auto & it : mappi)
       {
-        requestMessage.addLine(it->first.c_str(),it->second.c_str());
+        requestMessage.addLine(it.first.c_str(),it.second.c_str());
         // std::cout << "[" << it->first << "][" << it->second << "]" << std::endl;
       }
     }

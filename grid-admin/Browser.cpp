@@ -201,16 +201,16 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "        <H4>Libraries</H4>";
 
     output << "        <TABLE style=\"font-size:12;\">";
-    for (auto it = fileList1.begin(); it != fileList1.end(); ++it)
+    for (auto & it : fileList1)
     {
-      fname = it->first + "/" + it->second;
+      fname = it.first + "/" + it.second;
       time_t modTime= getFileModificationTime(fname.c_str());
       long long sz= getFileSize(fname.c_str());
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
-      output << "        <TR><TD width=\"200\">" << it->second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
+      output << "        <TR><TD width=\"200\">" << it.second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
 
@@ -218,32 +218,32 @@ bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine:
     output << "      <LI>";
     output << "        <H4>Engines</H4>";
     output << "        <TABLE style=\"font-size:12;\">";
-    for (auto it = fileList2.begin(); it != fileList2.end(); ++it)
+    for (auto & it : fileList2)
     {
-      fname = it->first + "/" + it->second;
+      fname = it.first + "/" + it.second;
       time_t modTime= getFileModificationTime(fname.c_str());
       long long sz= getFileSize(fname.c_str());
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
-      output << "        <TR><TD width=\"200\">" << it->second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
+      output << "        <TR><TD width=\"200\">" << it.second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
     output << "      </LI>";
     output << "      <LI>";
     output << "        <H4>Plugins</H4>";
     output << "        <TABLE style=\"font-size:12;\">";
-    for (auto it = fileList3.begin(); it != fileList3.end(); ++it)
+    for (auto & it : fileList3)
     {
-      fname = it->first + "/" + it->second;
+      fname = it.first + "/" + it.second;
       time_t modTime= getFileModificationTime(fname.c_str());
       long long sz= getFileSize(fname.c_str());
 
       struct tm tt;
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
-      output << "        <TR><TD width=\"200\">" << it->second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
+      output << "        <TR><TD width=\"200\">" << it.second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
     }
     output << "        </TABLE>";
     output << "      </LI>";
@@ -325,8 +325,8 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     std::uniform_int_distribution<uint64_t> dist;
 
     uint64_t kk[3];
-    for (uint t=0; t<3; t++)
-      kk[t] = dist(gen);
+    for (unsigned long & t : kk)
+      t = dist(gen);
 
     auto *k = (uchar*)kk;
     std::string key;
@@ -613,10 +613,10 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest)
     {
       std::vector<std::string> list;
       splitString(*cookie,';',list);
-      for (auto it = list.begin(); it != list.end(); ++it)
+      for (auto & it : list)
       {
         std::vector<std::string> p;
-        splitString(*it,'=',p);
+        splitString(it,'=',p);
         if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
           sessionId = toUInt64(p[1]);
       }
@@ -678,10 +678,10 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
       splitString(*cookie,';',list);
       if (list.size() > 0)
       {
-        for (auto it = list.begin(); it != list.end(); ++it)
+        for (auto & it : list)
         {
           std::vector<std::string> p;
-          splitString(*it,'=',p);
+          splitString(it,'=',p);
           if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
             sessionId = toUInt64(p[1]);
         }
