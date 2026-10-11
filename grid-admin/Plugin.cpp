@@ -138,8 +138,7 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
 
 /*! \brief GridAdmin: Destructor. */
 
-Plugin::~Plugin()
-= default;
+Plugin::~Plugin() = default;
 
 
 
