@@ -45,7 +45,7 @@ Browser::~Browser() = default;
 
 /*! \brief GridAdmin: Init. */
 
-void Browser::init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,std::string& groupsFile,std::string& usersFile)
+void Browser::init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,const std::string& groupsFile,const std::string& usersFile)
 {
   try
   {
@@ -115,7 +115,7 @@ bool Browser::page_engines(SessionManagement::SessionInfo& session,const Spine::
 
 /*! \brief GridAdmin: Page plugins. */
 
-bool Browser::page_plugins(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_plugins(const SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -163,7 +163,7 @@ bool Browser::page_plugins(SessionManagement::SessionInfo& session,const Spine::
 
 /*! \brief GridAdmin: Page software. */
 
-bool Browser::page_software(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_software(const SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -597,7 +597,7 @@ bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HT
  *  path so that it cannot be called without authentication when authentication is
  *  required.  When authentication is not required this always returns true. */
 
-bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest)
+bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest) const
 {
   try
   {

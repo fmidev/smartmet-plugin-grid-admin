@@ -43,9 +43,9 @@ class Browser
               Browser();
     virtual   ~Browser();
 
-    void      init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,std::string& groupsFile,std::string& usersFile);
+    void      init(Engine::Grid::Engine* theGridEngine,bool authenticationRequired,const std::string& groupsFile,const std::string& usersFile);
     bool      requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
-    bool      isAuthenticated(const Spine::HTTP::Request& theRequest);
+    bool      isAuthenticated(const Spine::HTTP::Request& theRequest) const;
 
   private:
 
@@ -54,8 +54,8 @@ class Browser
     bool      page_login(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
-    bool      page_plugins(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
-    bool      page_software(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool      page_plugins(const SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool      page_software(const SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
 
 
     Engine::Grid::Engine*   itsGridEngine;             //!< Grid engine used to delegate grid-specific browser pages (not owned).

@@ -237,7 +237,7 @@ void Plugin::shutdown()
 
 /*! \brief GridAdmin: Api request. */
 
-bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
+bool Plugin::apiRequest(const Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
   try
   {
@@ -308,7 +308,7 @@ bool Plugin::apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &t
 
 /*! \brief GridAdmin: Request. */
 
-bool Plugin::request(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
+bool Plugin::request(const Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
   try
   {

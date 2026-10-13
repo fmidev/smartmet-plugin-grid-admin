@@ -52,8 +52,8 @@ class Plugin : public SmartMetPlugin
     void                requestHandler(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse) override;
 
   private:
-    bool                request(Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
-    bool                apiRequest(Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse);
+    bool                request(const Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    bool                apiRequest(const Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse);
 
 
     const std::string   itsModuleName;                      //!< Plugin name returned by getPluginName().
