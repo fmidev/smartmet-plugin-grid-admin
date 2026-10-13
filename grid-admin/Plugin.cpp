@@ -62,9 +62,9 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsContentServerRedisPassword = "";
     itsContentServerHttpUrl = "";
     itsContentServerCorbaIor = "";
-    // Secure by default: the Content Server API (method=) is only reachable with a
-    // logged-in session unless authentication is explicitly disabled.
-    itsAuthenticationRequired = true;
+    // Authentication is off unless enabled in the configuration, so that existing
+    // deployments without users and groups files keep working.
+    itsAuthenticationRequired = false;
     itsUsersFile = "";
     itsGroupsFile = "";
     itsReadMethodsEnabled = true;

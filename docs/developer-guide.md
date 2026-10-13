@@ -189,7 +189,7 @@ All keys are under `smartmet.plugin.grid-admin`:
 
 | Key | Meaning |
 |-----|---------|
-| `authenticationRequired` | Require login for the browser and for `method=` calls. |
+| `authenticationRequired` | Require login for the browser and for `method=` calls (default `false`). |
 | `usersFile`, `groupsFile` | The CSV files above. |
 | `content-server.type` | `redis`, `postgresql`, `corba` or `http`. |
 | `content-server.redis.address`, `.port`, `.tablePrefix`, `.secondaryPort`, `.password` | Redis connection. |
