@@ -37,7 +37,7 @@ namespace GridAdmin
 /*! \brief GridAdmin: Constructor. */
 
 Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
-    : SmartMetPlugin(), itsModuleName("GridAdmin")
+    :  itsModuleName("GridAdmin")
 {
   try
   {
@@ -237,7 +237,7 @@ void Plugin::shutdown()
 
 /*! \brief GridAdmin: Api request. */
 
-bool Plugin::apiRequest(const Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
+bool Plugin::apiRequest(const Spine::Reactor & /*theReactor*/,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse)
 {
   try
   {

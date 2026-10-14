@@ -70,7 +70,7 @@ void Browser::init(Engine::Grid::Engine* theGridEngine,bool authenticationRequir
 
 /*! \brief GridAdmin: Page engines. */
 
-bool Browser::page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& /*theRequest*/,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -115,7 +115,7 @@ bool Browser::page_engines(SessionManagement::SessionInfo& session,const Spine::
 
 /*! \brief GridAdmin: Page plugins. */
 
-bool Browser::page_plugins(const SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_plugins(const SessionManagement::SessionInfo& /*session*/,const Spine::HTTP::Request& /*theRequest*/,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -163,7 +163,7 @@ bool Browser::page_plugins(const SessionManagement::SessionInfo& session,const S
 
 /*! \brief GridAdmin: Page software. */
 
-bool Browser::page_software(const SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_software(const SessionManagement::SessionInfo& /*session*/,const Spine::HTTP::Request& /*theRequest*/,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -268,12 +268,15 @@ bool Browser::page_software(const SessionManagement::SessionInfo& session,const 
 
 
 
+namespace
+{
 void to_hex_string(uint8_t hash[20], char output[41])
 {
   for (int i = 0; i < 20; i++)
     sprintf(output + i*2, "%02x", hash[i]);
   output[40] = '\0';
 }
+}  // namespace
 
 
 
@@ -509,7 +512,7 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
 
 /*! \brief GridAdmin: Page start. */
 
-bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
+bool Browser::page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& /*theRequest*/,Spine::HTTP::Response& theResponse)
 {
   try
   {
@@ -675,7 +678,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
       // Parsing the session id.
       std::vector<std::string> list;
       splitString(*cookie,';',list);
-      if (list.size() > 0)
+      if (!list.empty())
       {
         for (auto& it : list)
         {
@@ -819,7 +822,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (v)
       sessionInfo.setAttribute("grid-admin","page",v->c_str());
 
-    std::string target = "";
+    std::string target;
     sessionInfo.getAttribute("grid-admin","target",target);
 
 
