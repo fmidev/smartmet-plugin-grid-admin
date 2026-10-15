@@ -47,8 +47,6 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
         "smartmet.plugin.grid-admin.content-server.redis.address",
         "smartmet.plugin.grid-admin.content-server.redis.port",
         "smartmet.plugin.grid-admin.content-server.redis.tablePrefix",
-        "smartmet.plugin.grid-admin.content-server.http.url",
-        "smartmet.plugin.grid-admin.content-server.corba.ior",
         nullptr
     };
 
