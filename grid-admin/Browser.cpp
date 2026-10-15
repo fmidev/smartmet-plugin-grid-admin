@@ -206,7 +206,7 @@ bool Browser::page_software(const SessionManagement::SessionInfo& /*session*/,co
       time_t modTime= getFileModificationTime(fname.c_str());
       long long sz= getFileSize(fname.c_str());
 
-      struct tm tt;
+      struct tm tt{};
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
       output << "        <TR><TD width=\"200\">" << it.second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
@@ -223,7 +223,7 @@ bool Browser::page_software(const SessionManagement::SessionInfo& /*session*/,co
       time_t modTime= getFileModificationTime(fname.c_str());
       long long sz= getFileSize(fname.c_str());
 
-      struct tm tt;
+      struct tm tt{};
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
       output << "        <TR><TD width=\"200\">" << it.second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
@@ -239,7 +239,7 @@ bool Browser::page_software(const SessionManagement::SessionInfo& /*session*/,co
       time_t modTime= getFileModificationTime(fname.c_str());
       long long sz= getFileSize(fname.c_str());
 
-      struct tm tt;
+      struct tm tt{};
       localtime_tz(modTime, &tt, nullptr);
       snprintf(tmb,sizeof(tmb),"%04d-%02d-%02d %02d:%02d:%02d",tt.tm_year + 1900,tt.tm_mon + 1,tt.tm_mday,tt.tm_hour,tt.tm_min,tt.tm_sec);
       output << "        <TR><TD width=\"200\">" << it.second << R"(</TD><TD width="120" align="right">)" << sz << R"(</TD><TD <TD width="120" align="right">)" << tmb << "</TD></TR>\n";
@@ -295,10 +295,8 @@ void Browser::countHash(const char *key,const char *password,char *hex)
 
     uint8_t hash[20];
 
-    SHA_CTX ctx;
-    SHA1_Init(&ctx);
-    SHA1_Update(&ctx, data.data(),klen+plen);
-    SHA1_Final(hash, &ctx);
+    // The one-shot SHA1() is not deprecated in OpenSSL 3, unlike SHA1_Init & co
+    SHA1(reinterpret_cast<const unsigned char*>(data.data()),klen+plen,hash);
 
     to_hex_string(hash, hex);
   }

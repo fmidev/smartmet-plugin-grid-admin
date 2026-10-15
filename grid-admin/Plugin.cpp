@@ -161,22 +161,19 @@ void Plugin::init()
       itsContentServer.reset(redis);
       redis->init(itsContentServerRedisAddress.c_str(),itsContentServerRedisPort,itsContentServerRedisTablePrefix.c_str(),itsContentServerRedisSecondaryAddress.c_str(),itsContentServerRedisSecondaryPort,itsContentServerRedisLockEnabled,false,itsContentServerRedisPassword.c_str());
     }
-    else
-    if (itsContentServerType == "postgresql")
+    else if (itsContentServerType == "postgresql")
     {
       auto* postgres = new ContentServer::PostgresqlImplementation();
       itsContentServer.reset(postgres);
       postgres->init(itsPrimaryConnectionString.c_str(),itsSecondaryConnectionString.c_str(),false);
     }
-    else
-    if (itsContentServerType == "corba")
+    else if (itsContentServerType == "corba")
     {
       auto *client = new ContentServer::Corba::ClientImplementation();
       itsContentServer.reset(client);
       client->init(itsContentServerCorbaIor.c_str());
     }
-    else
-    if (itsContentServerType == "http")
+    else if (itsContentServerType == "http")
     {
       auto *client = new ContentServer::HTTP::ClientImplementation();
       itsContentServer.reset(client);
