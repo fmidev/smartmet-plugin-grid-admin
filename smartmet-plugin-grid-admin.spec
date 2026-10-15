@@ -3,8 +3,8 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 26.10.13
-Release: 2%{?dist}.fmi
+Version: 26.10.15
+Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -26,21 +26,21 @@ BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
 BuildRequires: openssl-devel
-BuildRequires: smartmet-library-spine-devel >= 26.10.11
-BuildRequires: smartmet-library-locus-devel >= 26.10.3
-BuildRequires: smartmet-library-macgyver-devel >= 26.10.11
-BuildRequires: smartmet-library-newbase-devel >= 26.10.11
-BuildRequires: smartmet-library-grid-files-devel >= 26.10.11
-BuildRequires: smartmet-library-grid-content-devel >= 26.10.11
-BuildRequires: smartmet-engine-grid-devel >= 26.10.11
+BuildRequires: smartmet-library-spine-devel >= 26.10.15
+BuildRequires: smartmet-library-locus-devel >= 26.10.15
+BuildRequires: smartmet-library-macgyver-devel >= 26.10.15
+BuildRequires: smartmet-library-newbase-devel >= 26.10.15
+BuildRequires: smartmet-library-grid-files-devel >= 26.10.15
+BuildRequires: smartmet-library-grid-content-devel >= 26.10.15
+BuildRequires: smartmet-engine-grid-devel >= 26.10.15
 BuildRequires: gdal312-devel
 Requires: libconfig17
-Requires: smartmet-library-locus >= 26.10.3
-Requires: smartmet-library-macgyver >= 26.10.11
-Requires: smartmet-library-newbase >= 26.10.11
-Requires: smartmet-library-spine >= 26.10.11
-Requires: smartmet-engine-grid >= 26.10.11
-Requires: smartmet-server >= 26.10.11
+Requires: smartmet-library-locus >= 26.10.15
+Requires: smartmet-library-macgyver >= 26.10.15
+Requires: smartmet-library-newbase >= 26.10.15
+Requires: smartmet-library-spine >= 26.10.15
+Requires: smartmet-engine-grid >= 26.10.15
+Requires: smartmet-server >= 26.10.15
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
 #Requires: %{smartmet_boost}-regex
@@ -71,6 +71,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Thu Oct 15 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.15-1.fmi
+- Declare member functions and parameters const where nothing is modified (const correctness), no functional changes
+- Requires 26.10.15 versions of newbase, spine, grid-files, grid-content, engine-grid due to their ABI changes
+- Fixed mechanical clang-tidy findings (internal linkage, unused parameters, initialization, redundant code), no functional changes
+- Fixed clang-tidy correctness findings (member initialization, rule of five, printf formats, dead stores)
+
 * Tue Oct 13 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.13-2.fmi
 - Use auto and return {} where clang-tidy suggests it, no functional changes
 - Mark overriding methods override and use nullptr, no functional changes
