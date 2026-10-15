@@ -169,13 +169,13 @@ void Plugin::init()
     {
       auto *client = new ContentServer::Corba::ClientImplementation();
       itsContentServer.reset(client);
-      client->init(itsContentServerCorbaIor.c_str());
+      client->init(itsContentServerCorbaIor);
     }
     else if (itsContentServerType == "http")
     {
       auto *client = new ContentServer::HTTP::ClientImplementation();
       itsContentServer.reset(client);
-      client->init(itsContentServerHttpUrl.c_str());
+      client->init(itsContentServerHttpUrl);
     }
     else
     {
@@ -379,9 +379,9 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
       std::string expiration = tformat->format(t_expires);
       std::string modification = tformat->format(t_now);
 
-      theResponse.setHeader("Cache-Control", cachecontrol.c_str());
-      theResponse.setHeader("Expires", expiration.c_str());
-      theResponse.setHeader("Last-Modified", modification.c_str());
+      theResponse.setHeader("Cache-Control", cachecontrol);
+      theResponse.setHeader("Expires", expiration);
+      theResponse.setHeader("Last-Modified", modification);
     }
     catch (...)
     {
@@ -398,7 +398,7 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
       std::string firstMessage = exception.what();
       boost::algorithm::replace_all(firstMessage, "\n", " ");
       firstMessage = firstMessage.substr(0, 300);
-      theResponse.setHeader("X-Content-Error", firstMessage.c_str());
+      theResponse.setHeader("X-Content-Error", firstMessage);
     }
   }
   catch (...)
