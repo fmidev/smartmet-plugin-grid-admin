@@ -76,6 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 - Requires 26.10.15 versions of newbase, spine, grid-files, grid-content, engine-grid due to their ABI changes
 - Fixed mechanical clang-tidy findings (internal linkage, unused parameters, initialization, redundant code), no functional changes
 - Fixed clang-tidy correctness findings (member initialization, rule of five, printf formats, dead stores)
+- The content-server.http.url and content-server.corba.ior settings are optional
 
 * Tue Oct 13 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.13-2.fmi
 - Use auto and return {} where clang-tidy suggests it, no functional changes
