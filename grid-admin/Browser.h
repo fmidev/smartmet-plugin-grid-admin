@@ -51,6 +51,8 @@ class Browser
 
     void      countHash(const char *key,const char *password,char *hash);
     void      readUsers();
+    T::SessionId validateSession(const Spine::HTTP::Request& theRequest,T::SessionId sessionId,SessionManagement::SessionInfo& sessionInfo);
+    void      authenticateUser(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& sessionInfo);
     bool      page_login(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);

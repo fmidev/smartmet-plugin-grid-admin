@@ -276,6 +276,26 @@ void to_hex_string(uint8_t hash[20], char output[41])
     sprintf(output + i*2, "%02x", hash[i]);
   output[40] = '\0';
 }
+
+// Parse the session id from the cookie of the request, 0 if there is none
+T::SessionId parse_session_id(const Spine::HTTP::Request& theRequest)
+{
+  T::SessionId sessionId = 0;
+  auto cookie = theRequest.getHeader("Cookie");
+  if (!cookie)
+    return sessionId;
+
+  std::vector<std::string> list;
+  splitString(*cookie,';',list);
+  for (auto& it : list)
+  {
+    std::vector<std::string> p;
+    splitString(it,'=',p);
+    if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
+      sessionId = toUInt64(p[1]);
+  }
+  return sessionId;
+}
 }  // namespace
 
 
@@ -605,22 +625,8 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest) const
     if (!itsAuthenticationRequired)
       return true;
 
-    T::SessionId sessionId = 0;
-
     // Fetching the cookie that contains the session information.
-    auto cookie = theRequest.getHeader("Cookie");
-    if (cookie)
-    {
-      std::vector<std::string> list;
-      splitString(*cookie,';',list);
-      for (auto& it : list)
-      {
-        std::vector<std::string> p;
-        splitString(it,'=',p);
-        if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
-          sessionId = toUInt64(p[1]);
-      }
-    }
+    T::SessionId sessionId = parse_session_id(theRequest);
 
     if (sessionId == 0)
       return false;
@@ -658,6 +664,100 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest) const
 
 
 
+/*! \brief GridAdmin: Validate the session of the request. Returns 0 if the session is not valid. */
+
+T::SessionId Browser::validateSession(const Spine::HTTP::Request& theRequest,T::SessionId sessionId,SessionManagement::SessionInfo& sessionInfo)
+{
+  try
+  {
+    // Fetching session information according to the sessionId.
+
+    time_t currentTime = time(nullptr);
+    if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) != 0)
+      return 0;  // Unknown session id.
+
+    if (theRequest.getClientIP() != sessionInfo.getAddress())
+      return 0;
+
+    if (currentTime > sessionInfo.getExpirationTime())
+    {
+      // The session is old. Removing the session.
+      SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
+      return 0;
+    }
+
+    // The session is valid. Updating the last access time.
+    SessionManagement::localSessionManagement.updateSessionAccessTime(itsBroswerSessionId,sessionId);
+    return sessionId;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: Authenticate the user with the username and password hash in the request content. */
+
+void Browser::authenticateUser(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& sessionInfo)
+{
+  try
+  {
+    // Parsing the usename and password
+    std::vector<std::string> list;
+    splitString(theRequest.getContent(),':',list);
+    if (list.size() != 2)
+      return;
+
+    // Searching user according to the username.
+    UserManagement::UserInfo user;
+    if (UserManagement::localUserManagement.getUserInfoByUsername(itsBroswerSessionId,list[0].c_str(),user) != 0)
+      return;
+
+    // Checking the password
+
+    // The users file may store the password as "sha1:" followed by the
+    // hex SHA-1 of "username:password", or (deprecated) in plain text.
+    // The browser sends SHA-1(h+h+h+key) where h is that hex hash.
+
+    const std::string stored = user.getPassword();
+    std::string pwHash;
+    if (stored.rfind("sha1:",0) == 0)
+    {
+      pwHash = stored.substr(5);
+      for (auto& ch : pwHash)
+        ch = static_cast<char>(tolower(static_cast<unsigned char>(ch)));
+    }
+    else
+    {
+      char plainHash[41];
+      countHash("",(list[0] + ":" + stored).c_str(),plainHash);
+      pwHash = plainHash;
+    }
+
+    char hash[41];
+    std::string pwStr = pwHash + pwHash + pwHash;
+    countHash(sessionInfo.getKey(),pwStr.c_str(),hash);
+
+    //printf("HASH [%s][%s]][%s][%s]\n",hash,list[1].c_str(),sessionInfo.getKey(),pw);
+
+    if (strcmp(hash,list[1].c_str()) == 0)
+    {
+      sessionInfo.mUserInfo = user;
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+    }
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
 /*! \brief GridAdmin: Request handler. */
 
 bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse)
@@ -666,57 +766,12 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
   {
     SessionManagement::SessionInfo sessionInfo;
     sessionInfo.setSessionId(0);
-    T::SessionId sessionId = 0;
 
-    // Fetching the cookien that contains session information.
-    auto cookie = theRequest.getHeader("Cookie");
-
-    if (cookie)
-    {
-      // Parsing the session id.
-      std::vector<std::string> list;
-      splitString(*cookie,';',list);
-      if (!list.empty())
-      {
-        for (auto& it : list)
-        {
-          std::vector<std::string> p;
-          splitString(it,'=',p);
-          if (p.size() == 2  &&  strstr(p[0].c_str(),"sessionId") != nullptr)
-            sessionId = toUInt64(p[1]);
-        }
-      }
-    }
-
+    // Fetching the cookie that contains session information.
+    T::SessionId sessionId = parse_session_id(theRequest);
 
     if (sessionId != 0)
-    {
-      // Fetching session information according to the sessionId.
-
-      time_t currentTime = time(nullptr);
-      if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) == 0)
-      {
-        if (theRequest.getClientIP() != sessionInfo.getAddress())
-          sessionId = 0;
-        else
-        if (currentTime > sessionInfo.getExpirationTime())
-        {
-          // The session is old. Removing the session.
-          SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
-          sessionId = 0;
-        }
-        else
-        {
-          // The session is valid. Updating the last access time.
-          SessionManagement::localSessionManagement.updateSessionAccessTime(itsBroswerSessionId,sessionId);
-        }
-      }
-      else
-      {
-        // Unknown session id.
-        sessionId = 0;
-      }
-    }
+      sessionId = validateSession(theRequest,sessionId,sessionInfo);
 
     if (sessionId == 0)
     {
@@ -730,51 +785,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
      //std::cout << theRequest.getContent() << "\n";
 
     if (itsAuthenticationRequired && sessionInfo.mUserInfo.getUserId() == 0)
-    {
-      // Parsing the usename and password
-      std::vector<std::string> list;
-      splitString(theRequest.getContent(),':',list);
-      if (list.size() == 2)
-      {
-        // Searching user according to the username.
-        UserManagement::UserInfo user;
-        if (UserManagement::localUserManagement.getUserInfoByUsername(itsBroswerSessionId,list[0].c_str(),user) == 0)
-        {
-          // Checking the password
-
-          // The users file may store the password as "sha1:" followed by the
-          // hex SHA-1 of "username:password", or (deprecated) in plain text.
-          // The browser sends SHA-1(h+h+h+key) where h is that hex hash.
-
-          const std::string stored = user.getPassword();
-          std::string pwHash;
-          if (stored.rfind("sha1:",0) == 0)
-          {
-            pwHash = stored.substr(5);
-            for (auto& ch : pwHash)
-              ch = static_cast<char>(tolower(static_cast<unsigned char>(ch)));
-          }
-          else
-          {
-            char plainHash[41];
-            countHash("",(list[0] + ":" + stored).c_str(),plainHash);
-            pwHash = plainHash;
-          }
-
-          char hash[41];
-          std::string pwStr = pwHash + pwHash + pwHash;
-          countHash(sessionInfo.getKey(),pwStr.c_str(),hash);
-
-          //printf("HASH [%s][%s]][%s][%s]\n",hash,list[1].c_str(),sessionInfo.getKey(),pw);
-
-          if (strcmp(hash,list[1].c_str()) == 0)
-          {
-            sessionInfo.mUserInfo = user;
-            SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
-          }
-        }
-      }
-    }
+      authenticateUser(theRequest,sessionInfo);
 
     auto page = theRequest.getParameter("page");
 
