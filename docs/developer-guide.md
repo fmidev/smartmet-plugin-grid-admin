@@ -85,7 +85,8 @@ make rpm
    192.168.0.0/16. Setting `ip_filters` replaces that default (see the spine developer
    guide, §7).
 2. It reads the configuration: the backend type and its connection settings,
-   `authenticationRequired`, `usersFile` and `groupsFile`.
+   `authenticationRequired`, `usersFile`, `groupsFile`, `readMethodsEnabled` and
+   `writeMethodsEnabled`.
 
 **`init()`**
 
@@ -99,7 +100,8 @@ make rpm
    * `itsMessageProcessor1` over the plugin's own backend;
    * `itsMessageProcessor2` over `itsGridEngine->getContentServer_sptr()` (the cache).
 
-   Both are created with read methods **on** and write methods **off**.
+   Both are created with the `readMethodsEnabled` and `writeMethodsEnabled` settings
+   (by default read methods **on** and write methods **off**).
 4. It initialises the `Browser` with the engine and the users and groups files.
 
 **`shutdown()`** shuts down the plugin's own content server connection.
@@ -136,10 +138,11 @@ client can talk to this plugin (the `http` content source type).
 
 Two things to remember:
 
-* **Write methods are disabled.**
-  The message processor only dispatches `add…`, `delete…` and `set…` when write
-  methods are enabled, so these calls are answered with `result=` `UNKNOWN_METHOD`, even
-  for a logged-in user.
+* **Write methods are disabled by default.**
+  The message processor only dispatches `add…`, `delete…` and `set…` when
+  `writeMethodsEnabled` is true. Otherwise these calls are answered with `result=`
+  `UNKNOWN_METHOD`, even for a logged-in user. `readMethodsEnabled = false` does the same
+  for the `get…` methods.
 * **`source=engine` reads from the cache.** The cache follows the master through
   events, so a record written a moment ago can still be missing there.
 
@@ -191,9 +194,10 @@ All keys are under `smartmet.plugin.grid-admin`:
 |-----|---------|
 | `authenticationRequired` | Require login for the browser and for `method=` calls (default `false`). |
 | `usersFile`, `groupsFile` | The CSV files above. |
+| `readMethodsEnabled`, `writeMethodsEnabled` | Which Content Server API methods `method=` may call (defaults `true` and `false`). |
 | `content-server.type` | `redis`, `postgresql`, `corba` or `http`. |
 | `content-server.redis.address`, `.port`, `.tablePrefix`, `.secondaryPort`, `.password` | Redis connection. |
-| `content-server.redis.secondartAddress` | Secondary Redis address. |
+| `content-server.redis.secondaryAddress` | Secondary Redis address. The misspelt `secondartAddress` of older configurations is also read. |
 | `content-server.redis.lockEnabled` | Redis write lock. |
 | `content-server.postgresql.primaryConnectionString`, `.secondaryConnectionString` | PostgreSQL connection. |
 | `content-server.corba.ior`, `content-server.http.url` | Remote content server. |

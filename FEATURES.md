@@ -36,7 +36,9 @@ without going through the grid engine.
 
 - **Full Content Server method surface** — every `add*`, `delete*`,
   `set*`, `get*` method documented in
-  `smartmet-library-grid-content/FEATURES.md` §2.
+  `smartmet-library-grid-content/FEATURES.md` §2. The `get*` methods
+  are enabled by default (`readMethodsEnabled`), the `add*`, `delete*`
+  and `set*` methods only with `writeMethodsEnabled = true`.
 - **Case-insensitive method dispatch** (e.g. `method=getProducerInfoList`).
 - **Line-based `key=value` wire format** (records as CSV) as defined by `ServerInterface`; responses are `text/plain`.
 
@@ -111,13 +113,14 @@ Optional; controlled by `authenticationRequired` in the config.
 ## 8. Integration with the SmartMet stack
 
 - **Engine dependency** — `smartmet-engine-grid` (resolved at runtime by
-  the server; used only for the browser UI, not for API requests).
+  the server; required at startup, used for the browser UI and for
+  `source=engine` API requests).
 - **Library dependencies** — `smartmet-library-grid-content`,
   `smartmet-library-grid-files`, `smartmet-library-spine`,
   `smartmet-library-macgyver`.
-- **Direct content-server connection** — the API surface does **not**
-  go through the grid engine, so it can be used in deployments that
-  have a Content Server but no grid engine.
+- **Direct content-server connection** — API requests without
+  `source=engine` do **not** go through the grid engine's cache; they
+  reach the master Content Server directly.
 
 ## 9. Configuration
 
@@ -127,6 +130,8 @@ Optional; controlled by `authenticationRequired` in the config.
   - `content-server.type` — `redis` | `postgresql` | `http` | `corba`
   - `authenticationRequired` — enables login flow.
   - `usersFile` / `groupsFile` — CSV files in `cfg/`.
+  - `readMethodsEnabled` / `writeMethodsEnabled` — which API methods
+    are allowed (defaults `true` / `false`).
 - **Environment-driven endpoints** — addresses pulled from
   `SMARTMET_ENV_FILE`.
 - **Config validation** via `make configtest` (`cfgvalidate`).

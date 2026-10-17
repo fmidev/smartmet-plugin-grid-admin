@@ -74,5 +74,6 @@ Config file path: `cfg/grid-admin-plugin.conf` (libconfig format). `%(DIR)` expa
 - `content-server.type` — `redis` | `postgresql` | `http` | `corba`
 - `authenticationRequired` — enables login/session management
 - `usersFile` / `groupsFile` — CSV files for user/group auth (in `cfg/`)
+- `readMethodsEnabled` / `writeMethodsEnabled` — which Content Server API methods `method=` requests may call (defaults `true` / `false`)
 
 The config uses environment variables from `SMARTMET_ENV_FILE` for content server addresses (e.g. `REDIS_CONTENT_SERVER_PRIMARY_ADDRESS`, `REDIS_CONTENT_SERVER_PRIMARY_PORT`, `PG_CONTENT_SERVER_PRIMARY_CONNECTION_STRING`, `CORBA_CONTENT_SERVER_IOR`, `HTTP_CONTENT_SERVER_URL`).
