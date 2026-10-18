@@ -108,7 +108,8 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.tablePrefix", itsContentServerRedisTablePrefix);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryAddress", itsContentServerRedisSecondaryAddress);
     // Older configurations may still use the misspelt key that was read before.
-    itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondartAddress", itsContentServerRedisSecondaryAddress);
+    if (!itsConfigurationFile.findAttribute("smartmet.plugin.grid-admin.content-server.redis.secondaryAddress"))
+      itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondartAddress", itsContentServerRedisSecondaryAddress);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.secondaryPort", itsContentServerRedisSecondaryPort);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.lockEnabled", itsContentServerRedisLockEnabled);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.redis.password", itsContentServerRedisPassword);

@@ -197,7 +197,7 @@ All keys are under `smartmet.plugin.grid-admin`:
 | `readMethodsEnabled`, `writeMethodsEnabled` | Which Content Server API methods `method=` may call (defaults `true` and `false`). |
 | `content-server.type` | `redis`, `postgresql`, `corba` or `http`. |
 | `content-server.redis.address`, `.port`, `.tablePrefix`, `.secondaryPort`, `.password` | Redis connection. |
-| `content-server.redis.secondaryAddress` | Secondary Redis address. The misspelt `secondartAddress` of older configurations is also read. |
+| `content-server.redis.secondaryAddress` | Secondary Redis address. The misspelt `secondartAddress` of older configurations is read only when `secondaryAddress` is not set. |
 | `content-server.redis.lockEnabled` | Redis write lock. |
 | `content-server.postgresql.primaryConnectionString`, `.secondaryConnectionString` | PostgreSQL connection. |
 | `content-server.corba.ior`, `content-server.http.url` | Remote content server. |
