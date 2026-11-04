@@ -3,8 +3,8 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 26.10.17
-Release: 2%{?dist}.fmi
+Version: 26.11.5
+Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
 URL: https://github.com/fmidev/smartmet-plugin-grid-admin
@@ -71,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
 
 %changelog
+* Thu Nov 5 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.11.5-1.fmi
+- Restrict the page and target parameters echoed into the login and unknown-page responses to a safe identifier character set
+
 * Mon Oct 19 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.17-2.fmi
 - Repackaged: simultaneous CI runs corrupted the 26.10.17-1 RPMs
 * Sat Oct 17 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.10.17-1.fmi

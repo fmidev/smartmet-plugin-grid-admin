@@ -14,6 +14,24 @@ namespace Plugin
 {
 namespace GridAdmin
 {
+namespace
+{
+// page/target are navigation identifiers reflected into the login page's HTML
+// attributes, a JavaScript string and a URL. Restrict them to a safe identifier
+// character set so request text cannot break out of any of those contexts
+// (reflected XSS). Anything else is dropped.
+std::string safe_nav_value(const std::string& value)
+{
+  std::string out;
+  out.reserve(value.size());
+  for (const char c : value)
+  {
+    if (std::isalnum(static_cast<unsigned char>(c)) != 0 || c == '-' || c == '_')
+      out += c;
+  }
+  return out;
+}
+}  // namespace
 
 
 /*! \brief GridAdmin: Constructor. */
@@ -500,14 +518,14 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     output << "<H2>Login</H2>\n";
     output << "<TABLE border=\"1\" width=\"400\" style=\"font-size:12;\">\n";
     output << "<TR><TD width=\"140\" bgColor=\"#D0D0D0\">Username</TD><TD><INPUT style=\"width:100%;\"  type=\"text\" id=\"username\" value=\"\"></TD></TR>\n";
-    output << R"(<TR><TD width="140" bgColor="#D0D0D0">Password</TD><TD><INPUT style="width:100%;"  type="password" id="password" value="" onkeydown="if (event.key == 'Enter'){login(this,parent,'/grid-admin?page=)"+ *page + "&target=" + *target + "');}else{}\"></TD></TR>\n";
+    output << R"(<TR><TD width="140" bgColor="#D0D0D0">Password</TD><TD><INPUT style="width:100%;"  type="password" id="password" value="" onkeydown="if (event.key == 'Enter'){login(this,parent,'/grid-admin?page=)"+ safe_nav_value(*page) + "&target=" + safe_nav_value(*target) + "');}else{}\"></TD></TR>\n";
     output << "</TABLE>\n";
 
     std::string bg = "#C0C0C0";
     output << "<HR>\n";
     output << "<TABLE style=\"font-size:12;\">\n";
     output << "<TR>\n";
-    output << R"(<TD width="150" height="25" align="center" style="background:)"+bg+";\" onmouseout=\"this.style='background:"+bg+R"(;'" onmouseover="this.style='background:#0000FF; color:#FFFFFF';" onClick="login(this,parent,'/grid-admin?page=)"+ *page + "&target=" + *target + "');\" >Login</TD>\n";
+    output << R"(<TD width="150" height="25" align="center" style="background:)"+bg+";\" onmouseout=\"this.style='background:"+bg+R"(;'" onmouseover="this.style='background:#0000FF; color:#FFFFFF';" onClick="login(this,parent,'/grid-admin?page=)"+ safe_nav_value(*page) + "&target=" + safe_nav_value(*target) + "');\" >Login</TD>\n";
     output << "</TR>\n";
     output << "</TABLE>\n";
 
@@ -876,7 +894,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     output << "<HTML>\n";
     output << "<BODY style=\"font-size:12;\">\n";
 
-    output << "Unknown page : " << *page << "\n";
+    output << "Unknown page : " << safe_nav_value(*page) << "\n";
     output << "</BODY>\n";
     output << "</HTML>\n";
 
