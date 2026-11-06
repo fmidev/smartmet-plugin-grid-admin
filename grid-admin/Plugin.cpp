@@ -6,6 +6,7 @@
 
 #include "Plugin.h"
 
+#include <boost/algorithm/string.hpp>
 #include <grid-content/contentServer/corba/client/ClientImplementation.h>
 #include <grid-content/contentServer/http/client/ClientImplementation.h>
 #include "grid-content/contentServer/postgresql/PostgresqlImplementation.h"
