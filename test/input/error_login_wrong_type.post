@@ -1,0 +1,7 @@
+POST /grid-console/api/login HTTP/1.0
+X-Test-Headers: Cache-Control
+Content-Type: application/json
+X-Grid-Console: 1
+Content-Length: 2
+
+{}

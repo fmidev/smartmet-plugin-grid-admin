@@ -2,7 +2,7 @@ SUBNAME = grid-admin
 SPEC = smartmet-plugin-$(SUBNAME)
 INCDIR = smartmet/plugins/$(SUBNAME)
 
-REQUIRES = gdal configpp
+REQUIRES = gdal configpp jsoncpp
 
 include $(shell echo $${PREFIX-/usr})/share/smartmet/devel/makefile.inc
 
@@ -92,9 +92,11 @@ format:
 install:
 	@mkdir -p $(plugindir)
 	$(INSTALL_PROG) $(LIBFILE) $(plugindir)/$(LIBFILE)
+	@mkdir -p $(datadir)/smartmet/grid-admin
+	$(INSTALL_DATA) ui/*.html ui/*.js ui/*.css $(datadir)/smartmet/grid-admin/
 
 test:
-	if test -f test/Makefile; then cd test && make test; fi
+	@if [ -f test/Makefile ] ; then $(MAKE) -C test $@; else echo "No tests available"; fi
 
 objdir:
 	@mkdir -p $(objdir)

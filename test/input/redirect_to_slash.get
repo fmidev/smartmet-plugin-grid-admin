@@ -1,0 +1,3 @@
+GET /grid-console HTTP/1.0
+X-Test-Headers: Location
+

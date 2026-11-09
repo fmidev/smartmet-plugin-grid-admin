@@ -1,0 +1,6 @@
+POST /grid-console/api/login HTTP/1.0
+X-Test-Headers: Cache-Control
+Content-Type: text/plain
+Content-Length: 9
+
+user:hash

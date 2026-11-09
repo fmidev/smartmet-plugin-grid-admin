@@ -1,0 +1,7 @@
+POST /grid-console/api/logcontrol HTTP/1.0
+X-Test-Headers: Cache-Control
+Content-Type: text/plain
+X-Grid-Console: 1
+Content-Length: 52
+
+{"server":"content","type":"debug","action":"clear"}

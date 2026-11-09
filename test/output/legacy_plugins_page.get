@@ -1,0 +1,14 @@
+Status: 200
+Content-Type: text/html; charset=UTF-8
+
+<HTML>
+<BODY style="font-size:12;">
+<HR>
+<A href="grid-admin">SmartMet Server</A> / <HR>
+<H2>Plugins</H2>
+<HR>
+    <OL>
+      <LI>        <H4>Grid Admin</H4>      </LI>      <LI>        <H4>Grid GUI</H4>      </LI>    </OL>
+<HR>
+</BODY>
+</HTML>

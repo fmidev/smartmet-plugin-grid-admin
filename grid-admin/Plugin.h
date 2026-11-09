@@ -5,6 +5,9 @@
 #include <grid-files/common/ConfigurationFile.h>
 #include <grid-content/contentServer/http/server/ServerInterface.h>
 #include "Browser.h"
+#include <json/json.h>
+#include <map>
+#include <mutex>
 
 
 
@@ -55,6 +58,36 @@ class Plugin : public SmartMetPlugin
     bool                request(const Spine::Reactor& theReactor,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool                apiRequest(const Spine::Reactor &theReactor,const Spine::HTTP::Request &theRequest,Spine::HTTP::Response &theResponse);
 
+    // The new user interface (Ui.cpp)
+    int                 ui_request(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse,const std::string& path);
+    int                 ui_file(const std::string& name,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    int                 ui_api(const std::string& name,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
+    Json::Value         api_session(SessionManagement::SessionInfo& session);
+    Json::Value         api_overview();
+    Json::Value         api_producers(const Spine::HTTP::Request& theRequest);
+    Json::Value         api_generations(const Spine::HTTP::Request& theRequest);
+    Json::Value         api_files(const Spine::HTTP::Request& theRequest);
+    Json::Value         api_contents(const Spine::HTTP::Request& theRequest);
+    Json::Value         api_config();
+    Json::Value         api_configfile(const Spine::HTTP::Request& theRequest);
+    Json::Value         api_logs();
+    Json::Value         api_log(const Spine::HTTP::Request& theRequest);
+    Json::Value         api_software();
+    Json::Value         api_modify(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& session);
+    Json::Value         api_logcontrol(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& session);
+    bool                canModify(SessionManagement::SessionInfo& session);
+    bool                canControlLogs(SessionManagement::SessionInfo& session);
+    Json::Value         sourcesJson();
+    ContentServer_sptr  requestedContentServer(const Spine::HTTP::Request& theRequest);
+
+    /*! \brief A file of the user interface kept in memory, read again when it changes. */
+    struct UiFile
+    {
+      time_t            modificationTime = 0;
+      std::string       content;
+      std::string       etag;
+    };
+
 
     const std::string   itsModuleName;                      //!< Plugin name returned by getPluginName().
     Spine::Reactor*     itsReactor;                         //!< Back-pointer to the server reactor (not owned).
@@ -78,6 +111,11 @@ class Plugin : public SmartMetPlugin
     Browser             itsBrowser;                         //!< HTML browser UI instance.
     bool                itsReadMethodsEnabled;              //!< Read methods enabled.
     bool                itsWriteMethodsEnabled;             //!< Write methods enabled.
+    std::string         itsUiUrl;                           //!< URL of the new user interface (empty = disabled).
+    std::string         itsUiDirectory;                     //!< Directory of the files of the new user interface.
+    std::string         itsViewerUrl;                       //!< URL of the grid-gui viewer the content rows link to.
+    std::map<std::string,UiFile> itsUiFiles;                //!< Files of the new user interface by name.
+    std::mutex          itsUiFilesMutex;                    //!< Protects itsUiFiles.
 
     std::shared_ptr<Engine::Grid::Engine> itsGridEngine;    //!< Grid Engine reference used by the browser for grid-specific pages.
     ContentServer::HTTP::ServerInterface  itsMessageProcessor1;  //!< HTTP API processor backed by the direct content server.

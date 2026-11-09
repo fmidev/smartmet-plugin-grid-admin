@@ -358,23 +358,7 @@ bool Browser::page_login(SessionManagement::SessionInfo& session,const Spine::HT
     auto target = theRequest.getParameter("target");
     auto page = theRequest.getParameter("page");
 
-    std::random_device rd;
-    std::mt19937_64 gen(rd());
-    std::uniform_int_distribution<uint64_t> dist;
-
-    uint64_t kk[3];
-    for (unsigned long & t : kk)
-      t = dist(gen);
-
-    auto *k = (uchar*)kk;
-    std::string key;
-    for (uint t=0; t<20; t++)
-    {
-      char ch = (char)(32 + (k[t] % 96));
-      if (isalnum(ch))
-        key += ch;
-    }
-
+    std::string key = randomKey();
     session.setKey(key.c_str());
 
 
@@ -682,6 +666,233 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest) const
 
 
 
+/*! \brief GridAdmin: A random alphanumeric key for the login challenge. */
+
+std::string Browser::randomKey()
+{
+  try
+  {
+    std::random_device rd;
+    std::mt19937_64 gen(rd());
+    std::uniform_int_distribution<uint64_t> dist;
+
+    uint64_t kk[3];
+    for (unsigned long & t : kk)
+      t = dist(gen);
+
+    auto *k = (uchar*)kk;
+    std::string key;
+    for (uint t=0; t<20; t++)
+    {
+      char ch = (char)(32 + (k[t] % 96));
+      if (isalnum(ch))
+        key += ch;
+    }
+    return key;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: Sends the session id to the client as a cookie.
+ *
+ *  Path=/ makes the same session valid both in /grid-admin and in the new user
+ *  interface, whose requests are below its own URL (/grid-console/api/...). */
+
+void Browser::setSessionCookie(Spine::HTTP::Response& theResponse,T::SessionId sessionId)
+{
+  try
+  {
+    std::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
+    Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
+    Fmi::DateTime t_expires = t_now + Fmi::Seconds(3600);
+    std::string expiration = tformat->format(t_expires);
+    // HttpOnly: not readable by scripts (e.g. via an XSS in another plugin on the same
+    // origin). SameSite=Strict: not sent with cross-site requests (CSRF of API methods).
+    theResponse.setHeader("Set-Cookie","sessionId=" + std::to_string(sessionId) + "; expires=" + expiration + "; Path=/; HttpOnly; SameSite=Strict");
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: Whether the user must log in. */
+
+bool Browser::authenticationRequired() const
+{
+  return itsAuthenticationRequired;
+}
+
+
+
+
+/*! \brief GridAdmin: Opens the session of a request of the new user interface.
+ *
+ *  The session of the cookie is used if it is valid, otherwise a new session is
+ *  created. The cookie is sent with every response so that the session does not
+ *  expire while the page is used. */
+
+T::SessionId Browser::openSession(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse,SessionManagement::SessionInfo& sessionInfo)
+{
+  try
+  {
+    sessionInfo.setSessionId(0);
+    T::SessionId sessionId = parse_session_id(theRequest);
+
+    if (sessionId != 0)
+      sessionId = validateSession(theRequest,sessionId,sessionInfo);
+
+    if (sessionId == 0)
+    {
+      SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+      sessionInfo.setAddress(theRequest.getClientIP().c_str());
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      sessionId = sessionInfo.getSessionId();
+    }
+
+    if (sessionId > 0)
+      setSessionCookie(theResponse,sessionId);
+
+    return sessionId;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: A new login challenge key for the session. */
+
+std::string Browser::newLoginKey(SessionManagement::SessionInfo& sessionInfo)
+{
+  try
+  {
+    std::string key = randomKey();
+    sessionInfo.setKey(key.c_str());
+    SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+    return key;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: Logs the user in with "username:hash" in the request content.
+ *
+ *  The challenge key is used only once: it is replaced after every attempt, so that
+ *  a captured answer cannot be sent again. */
+
+bool Browser::login(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& sessionInfo)
+{
+  try
+  {
+    if (!itsAuthenticationRequired)
+      return true;
+
+    std::string key = sessionInfo.getKey();
+    if (!key.empty() && sessionInfo.mUserInfo.getUserId() == 0)
+      authenticateUser(theRequest,sessionInfo);
+
+    std::string newKey = randomKey();
+    sessionInfo.setKey(newKey.c_str());
+    SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+
+    return sessionInfo.mUserInfo.getUserId() != 0;
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: Ends the session and starts a new one without a user. */
+
+void Browser::logout(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse,SessionManagement::SessionInfo& sessionInfo)
+{
+  try
+  {
+    SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionInfo.getSessionId());
+    SessionManagement::SessionInfo newSessionInfo;
+    sessionInfo = newSessionInfo;
+    SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+    sessionInfo.setAddress(theRequest.getClientIP().c_str());
+    SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+    setSessionCookie(theResponse,sessionInfo.getSessionId());
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: Whether the session may view the grid engine information. Without
+ *  authentication everybody may, as in the legacy pages. */
+
+bool Browser::canView(SessionManagement::SessionInfo& sessionInfo) const
+{
+  try
+  {
+    if (!itsAuthenticationRequired)
+      return true;
+
+    if (sessionInfo.mUserInfo.getUserId() == 0)
+      return false;
+
+    return sessionInfo.mUserInfo.hasPermission("grid-content-view");
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
+/*! \brief GridAdmin: Whether the session belongs to a logged-in member of the grid-admin
+ *  group. Only they may modify the content information or control the logs in /grid-console,
+ *  and only when authentication is required, as in the grid engine browser. */
+
+bool Browser::isAdministrator(SessionManagement::SessionInfo& sessionInfo) const
+{
+  try
+  {
+    if (!itsAuthenticationRequired || sessionInfo.mUserInfo.getUserId() == 0)
+      return false;
+
+    return sessionInfo.mUserInfo.isUserGroupMember("grid-admin");
+  }
+  catch (...)
+  {
+    throw Fmi::Exception(BCP, "Operation failed!", nullptr);
+  }
+}
+
+
+
+
 /*! \brief GridAdmin: Validate the session of the request. Returns 0 if the session is not valid. */
 
 T::SessionId Browser::validateSession(const Spine::HTTP::Request& theRequest,T::SessionId sessionId,SessionManagement::SessionInfo& sessionInfo)
@@ -796,6 +1007,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
       // Creating new session
       SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
       sessionInfo.setAddress(theRequest.getClientIP().c_str());
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
       sessionId = sessionInfo.getSessionId();
     }
 
@@ -821,16 +1033,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     }
 
     if (sessionId > 0)
-    {
-      // The session information is send to the client as "a cookie".
-      std::shared_ptr<Fmi::TimeFormatter> tformat(Fmi::TimeFormatter::create("http"));
-      Fmi::DateTime t_now = Fmi::SecondClock::universal_time();
-      Fmi::DateTime t_expires = t_now + Fmi::Seconds(3600);
-      std::string expiration = tformat->format(t_expires);
-      // HttpOnly: not readable by scripts (e.g. via an XSS in another plugin on the same
-      // origin). SameSite=Strict: not sent with cross-site requests (CSRF of API methods).
-      theResponse.setHeader("Set-Cookie","sessionId=" + std::to_string(sessionId) + "; expires=" + expiration + "; HttpOnly; SameSite=Strict");
-    }
+      setSessionCookie(theResponse,sessionId);
 
     bool res = false;
     if (itsAuthenticationRequired && sessionInfo.mUserInfo.getUserId() == 0)

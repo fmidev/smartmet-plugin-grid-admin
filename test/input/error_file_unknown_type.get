@@ -1,0 +1,3 @@
+GET /grid-console/ui/grid-console.txt HTTP/1.0
+X-Test-Headers: Cache-Control
+

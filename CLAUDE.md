@@ -17,7 +17,7 @@ make                # Build grid-admin.so
 make clean          # Clean build artifacts (removes doc/html/)
 make install        # Install to $(plugindir)
 make rpm            # Build RPM package
-make test           # Run tests (currently no test suite exists)
+make test           # smartmet-plugin-test suite of /grid-console (test/input, test/output)
 make configtest     # Validate config with cfgvalidate (if installed)
 make format         # No-op — clang-format is disabled (.clang-format sets DisableFormat: true)
 make doc            # Generate Doxygen HTML documentation in doc/html/
@@ -34,14 +34,17 @@ All C++ source and headers live in the `grid-admin/` subdirectory. The Makefile 
 - **Libraries**: `smartmet-library-grid-files`, `smartmet-library-grid-content`, `smartmet-library-spine`, `smartmet-library-macgyver`
 - **Engine**: `smartmet-engine-grid` (resolved at runtime by the server)
 - **System**: `gdal`, `libconfig` (configpp), `omniORB4` (when CORBA enabled), `openssl` (SHA1 for auth)
-- **pkg-config**: `REQUIRES = gdal configpp`
+- **pkg-config**: `REQUIRES = gdal configpp jsoncpp`
 
 ## Architecture
 
-The plugin has only two source files:
+Source files:
 
 - **Plugin.cpp/.h** — Standard SmartMet plugin lifecycle (`init`, `shutdown`, `requestHandler`). Registers as a **private** content handler at `/grid-admin` (i.e. `isAdminQuery()` returns `true`). Routes requests: if a `method` parameter is present, delegates to the Content Server HTTP API (`apiRequest`); otherwise delegates to the `Browser` for HTML UI pages. Supports four content server backends: Redis (default), PostgreSQL, HTTP, and CORBA.
 - **Browser.cpp/.h** — Generates HTML pages for browsing server state (start, engines, plugins, software). Handles session management (cookies), authentication (optional, SHA1 challenge-response), and delegates grid-engine browsing to `Engine::Grid::Engine::browserRequest()`.
+- **Ui.cpp** — The new user interface at `/grid-console` (configurable `ui.url`): serves `ui/` (HTML, CSS, ES modules) and a JSON API (`/grid-console/api/NAME`), including `modify` and `logcontrol` (POST; grid-admin group + engine `browser.flags`, read via `isBrowserEnabled()`/`getBrowserFlags()` of engine >= 26.11.9-1). Shares the sessions and login of `Browser`. See docs/developer-guide.md section 8.
+- **ui/** — The page; no build step, plain ES modules. State is in the address hash.
+- **test/** — `smartmet-plugin-test` suite (`make test`); needs engine >= 26.11.9-1 installed, or a reactor conf whose engine `libfile` points at a local build.
 
 ### Dual message processors
 

@@ -1,0 +1,6 @@
+POST /grid-console/api/login HTTP/1.0
+Content-Type: text/plain
+X-Grid-Console: 1
+Content-Length: 9
+
+user:hash

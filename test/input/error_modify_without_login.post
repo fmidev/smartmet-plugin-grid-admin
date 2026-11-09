@@ -1,0 +1,7 @@
+POST /grid-console/api/modify HTTP/1.0
+X-Test-Headers: Cache-Control
+Content-Type: text/plain
+X-Grid-Console: 1
+Content-Length: 65
+
+{"source":"0","type":"producer","action":"delete","producer":"1"}

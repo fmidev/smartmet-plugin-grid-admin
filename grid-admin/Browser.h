@@ -47,12 +47,23 @@ class Browser
     bool      requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      isAuthenticated(const Spine::HTTP::Request& theRequest) const;
 
+    // The session handling of the new user interface (/grid-console)
+    bool      authenticationRequired() const;
+    T::SessionId openSession(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse,SessionManagement::SessionInfo& sessionInfo);
+    std::string newLoginKey(SessionManagement::SessionInfo& sessionInfo);
+    bool      login(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& sessionInfo);
+    void      logout(const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse,SessionManagement::SessionInfo& sessionInfo);
+    bool      canView(SessionManagement::SessionInfo& sessionInfo) const;
+    bool      isAdministrator(SessionManagement::SessionInfo& sessionInfo) const;
+
   private:
 
     void      countHash(const char *key,const char *password,char *hash);
     void      readUsers();
     T::SessionId validateSession(const Spine::HTTP::Request& theRequest,T::SessionId sessionId,SessionManagement::SessionInfo& sessionInfo);
     void      authenticateUser(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& sessionInfo);
+    static std::string randomKey();
+    static void setSessionCookie(Spine::HTTP::Response& theResponse,T::SessionId sessionId);
     bool      page_login(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_start(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);
     bool      page_engines(SessionManagement::SessionInfo& session,const Spine::HTTP::Request& theRequest,Spine::HTTP::Response& theResponse);

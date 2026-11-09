@@ -86,6 +86,21 @@ admin pages from a single URL: producer/generation/file/content
 listings, log viewers, parameter mapping editors, Lua script viewer,
 etc. (see `smartmet-engine-grid/FEATURES.md` §9).
 
+### New user interface (`/grid-console`)
+
+- Served below `ui.url` (default `/grid-console`) next to the legacy pages, which stay unchanged.
+- Views: overview (key figures, content sources, engine state tree, installed
+  SmartMet software), content browser (source › producer › generation › file ›
+  messages, paged by file id and message offset, with filters), configuration files
+  (passwords hidden) and logs (tail, filter, automatic refresh; only regular files).
+- Editing: add, update and delete producers, generations, files and messages in a
+  content source (not the engine cache); enable, disable and clear logs. Needs a
+  logged-in grid-admin group member and the engine's browser.flags, as in the legacy
+  pages.
+- State in the address, so views can be bookmarked; links from messages to the grid-gui viewer.
+- JSON API at `/grid-console/api/NAME`; same sessions and login as the legacy pages,
+  with a one-time login key.
+
 ## 6. Authentication
 
 Optional; controlled by `authenticationRequired` in the config.

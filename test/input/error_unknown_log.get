@@ -1,0 +1,3 @@
+GET /grid-console/api/log?server=foo&type=debug HTTP/1.0
+X-Test-Headers: Cache-Control
+

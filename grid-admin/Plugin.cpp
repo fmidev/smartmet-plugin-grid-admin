@@ -119,6 +119,33 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.postgresql.primaryConnectionString", itsPrimaryConnectionString);
     itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.content-server.postgresql.secondaryConnectionString", itsSecondaryConnectionString);
 
+    // The new user interface: its page, files and JSON API are below one URL prefix.
+    // The legacy pages and the method= API stay at /grid-admin.
+
+    itsUiUrl = "/grid-console";
+    itsUiDirectory = "/usr/share/smartmet/grid-admin";
+    itsViewerUrl = "/gui";
+    if (itsConfigurationFile.findAttribute("smartmet.plugin.grid-admin.ui.url"))
+      itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.ui.url", itsUiUrl);
+    if (itsConfigurationFile.findAttribute("smartmet.plugin.grid-admin.ui.directory"))
+      itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.ui.directory", itsUiDirectory);
+    if (itsConfigurationFile.findAttribute("smartmet.plugin.grid-admin.ui.viewer"))
+      itsConfigurationFile.getAttributeValue("smartmet.plugin.grid-admin.ui.viewer", itsViewerUrl);
+
+    if (!itsUiUrl.empty())
+    {
+      if (itsUiUrl[0] != '/' || itsUiUrl == "/grid-admin" || itsUiUrl.back() == '/')
+        throw Fmi::Exception(BCP, "ui.url must start with '/', must not end with '/' and must differ from /grid-admin").addParameter("ui.url", itsUiUrl);
+
+      // Private like /grid-admin: not advertised to the frontends. The login is posted
+      // as text/plain.
+      if (!theReactor->addPrivateContentHandler(this, itsUiUrl,
+                                                boost::bind(&Plugin::callRequestHandler,
+                                                            this, ph::_1, ph::_2, ph::_3),
+                                                {"text/plain"}, true))
+        throw Fmi::Exception(BCP, "Failed to register the grid-admin user interface handler");
+    }
+
   }
   catch (...)
   {
@@ -342,6 +369,15 @@ void Plugin::requestHandler(Spine::Reactor &theReactor,const Spine::HTTP::Reques
     {
       // No CORS header: this is an administrative interface authenticated with a
       // session cookie, and it must not be scriptable from other origins.
+
+      // The new user interface
+      const std::string resource = theRequest.getResource();
+      if (!itsUiUrl.empty() && resource.compare(0, itsUiUrl.size(), itsUiUrl) == 0 &&
+          (resource.size() == itsUiUrl.size() || resource[itsUiUrl.size()] == '/'))
+      {
+        theResponse.setStatus(ui_request(theRequest, theResponse, resource.substr(itsUiUrl.size())));
+        return;
+      }
 
       // Security: the Content Server API (method=) path performs the full, potentially
       // destructive Content Server operations (delete/add producer, file and content

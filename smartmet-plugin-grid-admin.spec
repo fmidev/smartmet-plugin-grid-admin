@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 26.11.6
+Version: 26.11.9
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -32,14 +32,15 @@ BuildRequires: smartmet-library-macgyver-devel >= 26.10.16
 BuildRequires: smartmet-library-newbase-devel >= 26.10.16
 BuildRequires: smartmet-library-grid-files-devel >= 26.10.16
 BuildRequires: smartmet-library-grid-content-devel >= 26.10.16
-BuildRequires: smartmet-engine-grid-devel >= 26.10.16
+BuildRequires: smartmet-engine-grid-devel >= 26.11.9-1
 BuildRequires: gdal312-devel
+BuildRequires: jsoncpp-devel
 Requires: libconfig17
 Requires: smartmet-library-locus >= 26.10.16
 Requires: smartmet-library-macgyver >= 26.10.17
 Requires: smartmet-library-newbase >= 26.10.17
 Requires: smartmet-library-spine >= 26.10.17
-Requires: smartmet-engine-grid >= 26.10.17
+Requires: smartmet-engine-grid >= 26.11.9-1
 Requires: smartmet-server >= 26.10.17
 #Requires: %{smartmet_boost}-filesystem
 #Requires: %{smartmet_boost}-iostreams
@@ -47,7 +48,13 @@ Requires: smartmet-server >= 26.10.17
 #Requires: %{smartmet_boost}-system
 #Requires: %{smartmet_boost}-threadk
 Requires: openssl
+Requires: jsoncpp
 Provides: %{SPECNAME}
+#TestRequires: smartmet-library-spine-plugin-test >= 26.10.16
+#TestRequires: smartmet-engine-grid >= 26.11.9-1
+#TestRequires: valkey
+#TestRequires: smartmet-test-data >= 26.8.26
+#TestRequires: smartmet-library-grid-files-test >= 26.10.26
 
 %description
 SmartMet grid admin plugin
@@ -69,8 +76,16 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(0775,root,root,0775)
 %{_datadir}/smartmet/plugins/%{DIRNAME}.so
+%defattr(0664,root,root,0775)
+%{_datadir}/smartmet/%{DIRNAME}
 
 %changelog
+* Mon Nov 9 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.11.9-1.fmi
+- New admin pages at /grid-console: overview, content browser and editor, configuration files, logs and installed software over a JSON API; the legacy pages at /grid-admin are unchanged for a testing period
+- Modifications in /grid-console need a logged-in grid-admin group member and the grid engine browser.flags, as in the legacy pages; the login key is used only once
+- The session cookie has Path=/ so that a login is valid in both interfaces
+- /grid-console reads and clears logs only when they are regular files
+- Requires smartmet-engine-grid 26.11.9-1 (isBrowserEnabled, getBrowserFlags)
 * Fri Nov 6 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.11.6-1.fmi
 - Include the headers used directly instead of relying on transitive includes
 

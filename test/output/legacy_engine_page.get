@@ -1,0 +1,14 @@
+Status: 200
+Content-Type: text/html; charset=UTF-8
+
+<HTML>
+<BODY style="font-size:12;">
+<HR>
+<A href="grid-admin?target=grid-admin&page=start">SmartMet Server</A> / <A href="grid-admin?target=grid-admin&page=engines">Engines</A> / <A href="grid-admin?target=grid-engine&page=start">Grid Engine</A> / <HR>
+<H2>Configuration</H2>
+<HR>
+            <OL>
+              <LI>                <A href="/grid-admin?&target=grid-engine&page=configurationFile">Configuration file</A>              </LI>              <LI>                <A href="/grid-admin?&target=grid-engine&page=parameterMappingFiles">Parameter mapping files</A>              </LI>              <LI>                <A href="/grid-admin?&target=grid-engine&page=producerMappingFiles">Producer mapping files</A>              </LI>              <LI>                <A href="/grid-admin?&target=grid-engine&page=parameterAliasFiles">Parameter alias files</A>              </LI>              <LI>                <A href="/grid-admin?&target=grid-engine&page=luaFiles">LUA files</A>              </LI>              <LI>                <A href="/grid-admin?&target=grid-engine&page=producerFile">Producer search file</A>              </LI>            </OL>
+<HR>
+</BODY>
+</HTML>
