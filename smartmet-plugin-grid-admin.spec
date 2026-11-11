@@ -3,7 +3,7 @@
 %define SPECNAME smartmet-plugin-%{DIRNAME}
 Summary: SmartMet grid admin plugin
 Name: %{SPECNAME}
-Version: 26.11.9
+Version: 26.11.11
 Release: 1%{?dist}.fmi
 License: MIT
 Group: SmartMet/Plugins
@@ -80,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/smartmet/%{DIRNAME}
 
 %changelog
+* Wed Nov 11 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.11.11-1.fmi
+- /grid-console says why modifications are disabled (session modifyNote and logControlNote) instead of silently hiding the controls
+
 * Mon Nov 9 2026 Mika Heiskanen <mika.heiskanen@fmi.fi> - 26.11.9-1.fmi
 - New admin pages at /grid-console: overview, content browser and editor, configuration files, logs and installed software over a JSON API; the legacy pages at /grid-admin are unchanged for a testing period
 - Modifications in /grid-console need a logged-in grid-admin group member and the grid engine browser.flags, as in the legacy pages; the login key is used only once

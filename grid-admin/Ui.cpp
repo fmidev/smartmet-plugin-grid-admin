@@ -876,6 +876,16 @@ Json::Value Plugin::api_session(SessionManagement::SessionInfo& session)
     // What the session may modify. The server checks these again for every modification.
     result["canModify"] = canModify(session);
     result["canControlLogs"] = canControlLogs(session);
+    // Why a permission is missing, so that the page can say it instead of silently
+    // hiding the controls
+    if (!result["canModify"].asBool())
+      result["modifyNote"] = permissionNote(
+          session, Engine::Grid::Browser::Flags::contentModificationEnabled,
+          "contentModificationEnabled (bit 0)", "modify the content information");
+    if (!result["canControlLogs"].asBool())
+      result["logControlNote"] = permissionNote(
+          session, Engine::Grid::Browser::Flags::logModificationEnabled,
+          "logModificationEnabled (bit 1)", "control the logs");
     return result;
   }
   catch (...)
@@ -1508,6 +1518,28 @@ bool Plugin::canModify(SessionManagement::SessionInfo& session)
 {
   return (itsGridEngine->getBrowserFlags() & Engine::Grid::Browser::Flags::contentModificationEnabled) != 0 &&
          itsBrowser.isAdministrator(session);
+}
+
+/*! \brief The first missing condition of a modification permission as a sentence. */
+
+std::string Plugin::permissionNote(SessionManagement::SessionInfo& session,
+                                   std::uint64_t flag,
+                                   const std::string& flagName,
+                                   const std::string& action)
+{
+  if (!itsBrowser.authenticationRequired())
+    return "Read-only: to " + action +
+           ", set authenticationRequired = true in the grid-admin configuration and log in as a "
+           "member of the grid-admin group.";
+  if (session.mUserInfo.getUserId() == 0)
+    return "Read-only: log in as a member of the grid-admin group to " + action + ".";
+  if (!itsBrowser.isAdministrator(session))
+    return std::string("Read-only: user ") + session.mUserInfo.getUsername() +
+           " is not a member of the grid-admin group needed to " + action + ".";
+  if ((itsGridEngine->getBrowserFlags() & flag) == 0)
+    return "Read-only: " + flagName +
+           " is not set in browser.flags of the grid engine configuration.";
+  return "";
 }
 
 /*! \brief Whether the session may enable, disable and clear the logs. */

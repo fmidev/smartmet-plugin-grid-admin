@@ -223,7 +223,7 @@ login in the session. Message rows link to the grid-gui viewer (`ui.viewer`, def
 
 | Call | Parameters | Answer |
 |------|------------|--------|
-| `session` | | Whether a login is required and done, the user, what the session may view and modify (`canView`, `canModify`, `canControlLogs`), and the legacy and viewer URLs. |
+| `session` | | Whether a login is required and done, the user, what the session may view and modify (`canView`, `canModify`, `canControlLogs`) and, when it may not, why (`modifyNote`, `logControlNote`), and the legacy and viewer URLs. |
 | `login` | GET: none. POST: `username:hash` | GET returns a one-time challenge `key`. POST logs in, as in the legacy login, and answers like `session`, or 403. |
 | `logout` | POST | Ends the session. |
 | `overview` | | The engine state as a tree (`getStateAttributes()`) and the content sources. |

@@ -72,7 +72,8 @@ export function renderLogs(root, params, ctx)
         el('button', {type: 'button', class: 'danger', onclick: async () => {
           if (await confirmDialog('Clear the log', `Clear the ${typeNames[type] || type} of the ${serverNames[server] || server}?`, {confirmLabel: 'Clear'}))
             control('clear');
-        }}, 'Clear')) : null);
+        }}, 'Clear')) :
+        ctx.session.logControlNote ? el('span', {class: 'muted small'}, ctx.session.logControlNote) : null);
 
     async function control(action)
     {

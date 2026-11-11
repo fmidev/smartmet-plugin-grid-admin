@@ -98,6 +98,8 @@ export function renderContent(root, params, ctx)
         sourceSelect, filter,
         ctx.session.canModify && source === 'cache' ?
           el('p', {class: 'muted small'}, 'Choose a content source to modify the content information.') : null,
+        !ctx.session.canModify && ctx.session.modifyNote ?
+          el('p', {class: 'muted small'}, ctx.session.modifyNote) : null,
         producersPane),
       el('aside', {class: 'list panel', 'aria-label': 'Generations'},
         el('div', {class: 'list-heading'}, el('h2', {}, 'Generations'),

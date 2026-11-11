@@ -6,6 +6,7 @@
 #include <grid-content/contentServer/http/server/ServerInterface.h>
 #include "Browser.h"
 #include <json/json.h>
+#include <cstdint>
 #include <map>
 #include <mutex>
 
@@ -77,6 +78,10 @@ class Plugin : public SmartMetPlugin
     Json::Value         api_logcontrol(const Spine::HTTP::Request& theRequest,SessionManagement::SessionInfo& session);
     bool                canModify(SessionManagement::SessionInfo& session);
     bool                canControlLogs(SessionManagement::SessionInfo& session);
+    std::string         permissionNote(SessionManagement::SessionInfo& session,
+                                       std::uint64_t flag,
+                                       const std::string& flagName,
+                                       const std::string& action);
     Json::Value         sourcesJson();
     ContentServer_sptr  requestedContentServer(const Spine::HTTP::Request& theRequest);
 
