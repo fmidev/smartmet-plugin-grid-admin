@@ -72,7 +72,7 @@ class Browser
 
 
     Engine::Grid::Engine*   itsGridEngine;             //!< Grid engine used to delegate grid-specific browser pages (not owned).
-    T::SessionId            itsBroswerSessionId;       //!< Current browser session identifier.
+    T::SessionId            itsBrowserSessionId;       //!< Current browser session identifier.
     std::string             itsGroupsFile;             //!< Path to the groups CSV file for user authorisation.
     std::string             itsUsersFile;              //!< Path to the users CSV file for authentication.
     bool                    itsAuthenticationRequired; //!< Whether login is required before accessing browser pages.

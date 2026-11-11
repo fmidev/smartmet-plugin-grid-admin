@@ -42,7 +42,7 @@ Browser::Browser()
   {
     itsGridEngine = nullptr;
     itsAuthenticationRequired = false;
-    itsBroswerSessionId = 0;
+    itsBrowserSessionId = 0;
   }
   catch (...)
   {
@@ -634,7 +634,7 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest) const
       return false;
 
     SessionManagement::SessionInfo sessionInfo;
-    if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) != 0)
+    if (SessionManagement::localSessionManagement.getSessionInfo(itsBrowserSessionId,sessionId,sessionInfo) != 0)
       return false;  // Unknown session id.
 
     // The session must be bound to the same client IP.
@@ -645,7 +645,7 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest) const
     time_t currentTime = time(nullptr);
     if (currentTime > sessionInfo.getExpirationTime())
     {
-      SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
+      SessionManagement::localSessionManagement.deleteSession(itsBrowserSessionId,sessionId);
       return false;
     }
 
@@ -654,7 +654,7 @@ bool Browser::isAuthenticated(const Spine::HTTP::Request& theRequest) const
       return false;
 
     // Valid, authenticated session. Refreshing the last access time.
-    SessionManagement::localSessionManagement.updateSessionAccessTime(itsBroswerSessionId,sessionId);
+    SessionManagement::localSessionManagement.updateSessionAccessTime(itsBrowserSessionId,sessionId);
     return true;
   }
   catch (...)
@@ -753,9 +753,9 @@ T::SessionId Browser::openSession(const Spine::HTTP::Request& theRequest,Spine::
 
     if (sessionId == 0)
     {
-      SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.createSession(itsBrowserSessionId,sessionInfo);
       sessionInfo.setAddress(theRequest.getClientIP().c_str());
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       sessionId = sessionInfo.getSessionId();
     }
 
@@ -781,7 +781,7 @@ std::string Browser::newLoginKey(SessionManagement::SessionInfo& sessionInfo)
   {
     std::string key = randomKey();
     sessionInfo.setKey(key.c_str());
-    SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+    SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
     return key;
   }
   catch (...)
@@ -811,7 +811,7 @@ bool Browser::login(const Spine::HTTP::Request& theRequest,SessionManagement::Se
 
     std::string newKey = randomKey();
     sessionInfo.setKey(newKey.c_str());
-    SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+    SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
 
     return sessionInfo.mUserInfo.getUserId() != 0;
   }
@@ -830,12 +830,12 @@ void Browser::logout(const Spine::HTTP::Request& theRequest,Spine::HTTP::Respons
 {
   try
   {
-    SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionInfo.getSessionId());
+    SessionManagement::localSessionManagement.deleteSession(itsBrowserSessionId,sessionInfo.getSessionId());
     SessionManagement::SessionInfo newSessionInfo;
     sessionInfo = newSessionInfo;
-    SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+    SessionManagement::localSessionManagement.createSession(itsBrowserSessionId,sessionInfo);
     sessionInfo.setAddress(theRequest.getClientIP().c_str());
-    SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+    SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
     setSessionCookie(theResponse,sessionInfo.getSessionId());
   }
   catch (...)
@@ -902,7 +902,7 @@ T::SessionId Browser::validateSession(const Spine::HTTP::Request& theRequest,T::
     // Fetching session information according to the sessionId.
 
     time_t currentTime = time(nullptr);
-    if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) != 0)
+    if (SessionManagement::localSessionManagement.getSessionInfo(itsBrowserSessionId,sessionId,sessionInfo) != 0)
       return 0;  // Unknown session id.
 
     if (theRequest.getClientIP() != sessionInfo.getAddress())
@@ -911,12 +911,12 @@ T::SessionId Browser::validateSession(const Spine::HTTP::Request& theRequest,T::
     if (currentTime > sessionInfo.getExpirationTime())
     {
       // The session is old. Removing the session.
-      SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
+      SessionManagement::localSessionManagement.deleteSession(itsBrowserSessionId,sessionId);
       return 0;
     }
 
     // The session is valid. Updating the last access time.
-    SessionManagement::localSessionManagement.updateSessionAccessTime(itsBroswerSessionId,sessionId);
+    SessionManagement::localSessionManagement.updateSessionAccessTime(itsBrowserSessionId,sessionId);
     return sessionId;
   }
   catch (...)
@@ -942,7 +942,7 @@ void Browser::authenticateUser(const Spine::HTTP::Request& theRequest,SessionMan
 
     // Searching user according to the username.
     UserManagement::UserInfo user;
-    if (UserManagement::localUserManagement.getUserInfoByUsername(itsBroswerSessionId,list[0].c_str(),user) != 0)
+    if (UserManagement::localUserManagement.getUserInfoByUsername(itsBrowserSessionId,list[0].c_str(),user) != 0)
       return;
 
     // Checking the password
@@ -975,7 +975,7 @@ void Browser::authenticateUser(const Spine::HTTP::Request& theRequest,SessionMan
     if (strcmp(hash,list[1].c_str()) == 0)
     {
       sessionInfo.mUserInfo = user;
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
     }
   }
   catch (...)
@@ -1005,9 +1005,9 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (sessionId == 0)
     {
       // Creating new session
-      SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.createSession(itsBrowserSessionId,sessionInfo);
       sessionInfo.setAddress(theRequest.getClientIP().c_str());
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       sessionId = sessionInfo.getSessionId();
     }
 
@@ -1021,13 +1021,13 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
 
     if (itsAuthenticationRequired && page && *page == "logout")
     {
-      if (SessionManagement::localSessionManagement.getSessionInfo(itsBroswerSessionId,sessionId,sessionInfo) == 0)
+      if (SessionManagement::localSessionManagement.getSessionInfo(itsBrowserSessionId,sessionId,sessionInfo) == 0)
       {
-        SessionManagement::localSessionManagement.deleteSession(itsBroswerSessionId,sessionId);
+        SessionManagement::localSessionManagement.deleteSession(itsBrowserSessionId,sessionId);
         SessionManagement::SessionInfo newSessionInfo;
         sessionInfo = newSessionInfo;
         sessionInfo.setAddress(theRequest.getClientIP().c_str());
-        SessionManagement::localSessionManagement.createSession(itsBroswerSessionId,sessionInfo);
+        SessionManagement::localSessionManagement.createSession(itsBrowserSessionId,sessionInfo);
         sessionId = sessionInfo.getSessionId();
       }
     }
@@ -1039,7 +1039,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (itsAuthenticationRequired && sessionInfo.mUserInfo.getUserId() == 0)
     {
       res = page_login(sessionInfo,theRequest,theResponse);
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       return res;
     }
 
@@ -1059,7 +1059,7 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (target == "grid-engine" && itsGridEngine  &&  (sessionInfo.mUserInfo.getUserId() == 0 || sessionInfo.mUserInfo.hasPermission("grid-content-view")))
     {
       res = itsGridEngine->browserRequest(sessionInfo,theRequest,theResponse);
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       return res;
     }
 
@@ -1067,28 +1067,28 @@ bool Browser::requestHandler(const Spine::HTTP::Request& theRequest,Spine::HTTP:
     if (!page || *page == "start")
     {
       res = page_start(sessionInfo,theRequest,theResponse);
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       return res;
     }
 
     if (*page == "engines")
     {
       res = page_engines(sessionInfo,theRequest,theResponse);
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       return res;
     }
 
     if (*page == "plugins")
     {
       res = page_plugins(sessionInfo,theRequest,theResponse);
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       return res;
     }
 
     if (*page == "software")
     {
       res = page_software(sessionInfo,theRequest,theResponse);
-      SessionManagement::localSessionManagement.updateSessionInfo(itsBroswerSessionId,sessionInfo);
+      SessionManagement::localSessionManagement.updateSessionInfo(itsBrowserSessionId,sessionInfo);
       return res;
     }
 
