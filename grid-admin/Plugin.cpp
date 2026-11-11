@@ -73,7 +73,7 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
       throw Fmi::Exception(BCP, "GridContent plugin and Server API version mismatch");
 
     // Register the handler
-    if (!theReactor->addPrivateContentHandler(this, "/grid-admin",
+    if (!theReactor->addContentHandler(this, Spine::Reactor::HandlerOptions("/grid-admin").Private(),
 					      boost::bind(&Plugin::callRequestHandler,
 							  this, ph::_1, ph::_2, ph::_3)))
       throw Fmi::Exception(BCP, "Failed to register GridContent request handler");
@@ -139,10 +139,13 @@ Plugin::Plugin(Spine::Reactor *theReactor, const char *theConfig)
 
       // Private like /grid-admin: not advertised to the frontends. The login is posted
       // as text/plain.
-      if (!theReactor->addPrivateContentHandler(this, itsUiUrl,
-                                                boost::bind(&Plugin::callRequestHandler,
-                                                            this, ph::_1, ph::_2, ph::_3),
-                                                {"text/plain"}, true))
+      if (!theReactor->addContentHandler(this,
+                                         Spine::Reactor::HandlerOptions(itsUiUrl)
+                                             .Private()
+                                             .IsPrefix()
+                                             .addSupportedPostContentType("text/plain"),
+                                         boost::bind(&Plugin::callRequestHandler,
+                                                     this, ph::_1, ph::_2, ph::_3)))
         throw Fmi::Exception(BCP, "Failed to register the grid-admin user interface handler");
     }
 

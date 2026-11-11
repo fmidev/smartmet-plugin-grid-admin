@@ -26,7 +26,7 @@ BuildRequires: %{smartmet_boost}-devel
 BuildRequires: libconfig17-devel
 BuildRequires: omniORB-devel >= 4.3.0
 BuildRequires: openssl-devel
-BuildRequires: smartmet-library-spine-devel >= 26.10.16
+BuildRequires: smartmet-library-spine-devel >= 26.11.11
 BuildRequires: smartmet-library-locus-devel >= 26.10.16
 BuildRequires: smartmet-library-macgyver-devel >= 26.10.16
 BuildRequires: smartmet-library-newbase-devel >= 26.10.16
@@ -39,7 +39,7 @@ Requires: libconfig17
 Requires: smartmet-library-locus >= 26.10.16
 Requires: smartmet-library-macgyver >= 26.10.17
 Requires: smartmet-library-newbase >= 26.10.17
-Requires: smartmet-library-spine >= 26.10.17
+Requires: smartmet-library-spine >= 26.11.11
 Requires: smartmet-engine-grid >= 26.11.9-1
 Requires: smartmet-server >= 26.10.17
 #Requires: %{smartmet_boost}-filesystem
@@ -50,7 +50,7 @@ Requires: smartmet-server >= 26.10.17
 Requires: openssl
 Requires: jsoncpp
 Provides: %{SPECNAME}
-#TestRequires: smartmet-library-spine-plugin-test >= 26.10.16
+#TestRequires: smartmet-library-spine-plugin-test >= 26.11.11
 #TestRequires: smartmet-engine-grid >= 26.11.9-1
 #TestRequires: valkey
 #TestRequires: smartmet-test-data >= 26.8.26
