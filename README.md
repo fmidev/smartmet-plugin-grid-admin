@@ -4,7 +4,7 @@ Part of [SmartMet Server](https://github.com/fmidev/smartmet-server). See the [S
 
 ## Introduction
 
-The Grid-Admin Plugin is a simple plugin that offers an HTTP interface to the Content Information Storage. So, technically other system (for example, feeding systems) can use this interface for updating  and fetching content information from the Content Information Stroage
+The Grid-Admin Plugin is a simple plugin that offers an HTTP interface to the Content Information Storage. So, technically other system (for example, feeding systems) can use this interface for updating  and fetching content information from the Content Information Storage
 
 The Grid-Admin Plugin connects directly to the Content Server by using its own configuration information. It also requires the Grid Engine, whose cached content server is available with `source=engine` and whose browser pages it hosts.
 
