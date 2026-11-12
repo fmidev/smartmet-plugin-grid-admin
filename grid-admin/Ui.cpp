@@ -19,13 +19,34 @@
  */
 // ======================================================================
 
-#include "Plugin.h"
-
 #include <grid-files/common/GeneralFunctions.h>
 #include <grid-files/identification/GridDef.h>
 #include <grid-content/contentServer/definition/ServiceResults.h>
 #include <macgyver/Hash.h>
 #include <spine/HTTP.h>
+#include <engines/grid/Browser.h>
+#include <engines/grid/Engine.h>
+#include <grid-content/contentServer/definition/ContentInfo.h>
+#include <grid-content/contentServer/definition/ContentInfoList.h>
+#include <grid-content/contentServer/definition/FileInfo.h>
+#include <grid-content/contentServer/definition/FileInfoList.h>
+#include <grid-content/contentServer/definition/GenerationInfo.h>
+#include <grid-content/contentServer/definition/GenerationInfoList.h>
+#include <grid-content/contentServer/definition/ProducerInfo.h>
+#include <grid-content/contentServer/definition/ProducerInfoList.h>
+#include <grid-content/contentServer/definition/ServiceInterface.h>
+#include <grid-content/dataServer/definition/ServiceInterface.h>
+#include <grid-content/queryServer/definition/ServiceInterface.h>
+#include <grid-content/sessionManagement/definition/SessionInfo.h>
+#include <grid-content/userManagement/definition/UserInfo.h>
+#include <grid-files/common/AttributeNode.h>
+#include <grid-files/common/ConfigurationFile.h>
+#include <grid-files/common/Log.h>
+#include <grid-files/common/Typedefs.h>
+#include <grid-files/grid/Typedefs.h>
+#include <grid-files/identification/LevelDef.h>
+#include <json/json.h>
+#include <macgyver/Exception.h>
 #include <algorithm>
 #include <cctype>
 #include <filesystem>
@@ -33,6 +54,22 @@
 #include <set>
 #include <sstream>
 #include <tuple>
+#include <cstdio>
+#include <cmath>
+#include <cstdint>
+#include <ctime>
+#include <iterator>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <stdexcept>
+#include <string>
+#include <system_error>
+#include <utility>
+#include <vector>
+#include "Plugin.h"
+#include "Browser.h"
 
 namespace SmartMet
 {

@@ -3,9 +3,26 @@
 #include <macgyver/DateTime.h>
 #include <grid-content/userManagement/implementation/ServiceImplementation.h>
 #include <openssl/sha.h>
+#include <engines/grid/Engine.h>
+#include <grid-content/sessionManagement/definition/SessionInfo.h>
+#include <grid-content/sessionManagement/implementation/ServiceImplementation.h>
+#include <grid-content/userManagement/definition/UserInfo.h>
+#include <grid-files/common/GeneralFunctions.h>
+#include <grid-files/common/Typedefs.h>
+#include <macgyver/Exception.h>
+#include <spine/HTTP.h>
 #include <random>
 #include <cstdint>
 #include <vector>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+#include <cctype>
+#include <iterator>
+#include <optional>
+#include <set>
+#include <sstream>
+#include <utility>
 
 namespace SmartMet
 {

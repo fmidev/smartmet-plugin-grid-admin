@@ -1,14 +1,51 @@
 #pragma once
 #include <spine/SmartMetPlugin.h>
-#include <spine/Reactor.h>
-#include <spine/HTTP.h>
 #include <grid-files/common/ConfigurationFile.h>
 #include <grid-content/contentServer/http/server/ServerInterface.h>
-#include "Browser.h"
 #include <json/json.h>
 #include <cstdint>
 #include <map>
 #include <mutex>
+#include <ctime>
+#include <memory>
+#include <string>
+#include "Browser.h"
+
+namespace SmartMet
+{
+namespace Engine
+{
+namespace Grid
+{
+class Engine;
+}
+}
+}
+namespace SmartMet
+{
+namespace SessionManagement
+{
+class SessionInfo;
+}
+}
+namespace SmartMet
+{
+namespace Spine
+{
+class Reactor;
+}
+}
+namespace SmartMet
+{
+namespace Spine
+{
+namespace HTTP
+{
+class Request;
+class Response;
+}
+}
+}
 
 
 

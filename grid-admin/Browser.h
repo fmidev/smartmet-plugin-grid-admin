@@ -1,14 +1,41 @@
 #pragma once
-#include <spine/SmartMetPlugin.h>
-#include <spine/Reactor.h>
-#include <spine/HTTP.h>
-#include <grid-files/common/ConfigurationFile.h>
-#include <grid-content/contentServer/http/server/ServerInterface.h>
-#include <grid-content/sessionManagement/implementation/ServiceImplementation.h>
-#include <grid-content/userManagement/implementation/ServiceImplementation.h>
-#include <engines/grid/Engine.h>
 
 
+
+#include <grid-content/contentServer/definition/ServiceInterface.h>
+#include <grid-files/grid/Typedefs.h>
+#include <map>
+#include <memory>
+#include <string>
+
+namespace SmartMet
+{
+namespace Engine
+{
+namespace Grid
+{
+class Engine;
+}
+}
+}
+namespace SmartMet
+{
+namespace SessionManagement
+{
+class SessionInfo;
+}
+}
+namespace SmartMet
+{
+namespace Spine
+{
+namespace HTTP
+{
+class Request;
+class Response;
+}
+}
+}
 
 namespace SmartMet
 {

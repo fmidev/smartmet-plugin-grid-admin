@@ -5,11 +5,9 @@
 // ======================================================================
 
 #include "Plugin.h"
-
 #include <boost/algorithm/string.hpp>
 #include <grid-content/contentServer/corba/client/ClientImplementation.h>
 #include <grid-content/contentServer/http/client/ClientImplementation.h>
-#include "grid-content/contentServer/postgresql/PostgresqlImplementation.h"
 #include <grid-content/contentServer/redis/RedisImplementation.h>
 #include <spine/Convenience.h>
 #include <spine/SmartMet.h>
@@ -17,7 +15,19 @@
 #include <macgyver/AnsiEscapeCodes.h>
 #include <macgyver/DateTime.h>
 #include <boost/bind/bind.hpp>
+#include <engines/grid/Engine.h>
+#include <grid-content/contentServer/definition/ServiceInterface.h>
+#include <grid-content/contentServer/http/common/RequestMessage.h>
+#include <grid-content/contentServer/http/common/ResponseMessage.h>
+#include <grid-files/common/Typedefs.h>
+#include <macgyver/Exception.h>
+#include <spine/HTTP.h>
+#include <spine/Reactor.h>
 #include <sstream>
+#include <iostream>
+#include <optional>
+#include <utility>
+#include "grid-content/contentServer/postgresql/PostgresqlImplementation.h"
 
 namespace ph = boost::placeholders;
 
